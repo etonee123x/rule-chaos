@@ -1,0 +1,14 @@
+root = true
+
+[*.cs]
+indent_style = space
+indent_size = 2
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_labels = one_less_than_current
+csharp_indent_switch_labels = true
+trim_trailing_whitespace = true
+insert_final_newline = true
+dotnet_diagnostic.IDE0002.severity = none
+dotnet_diagnostic.IDE0003.severity = none
+dotnet_diagnostic.IDE0009.severity = none

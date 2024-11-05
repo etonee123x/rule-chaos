@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+@tailwind base;
+
+@layer base {
+
+  html,
+  body {
+    font-family: "Shantell Sans", cursive;
+  }
+
+  .container {
+    @apply w-11/12 max-w-[100rem];
+  }
+}
+
+@tailwind components;
+@tailwind utilities;

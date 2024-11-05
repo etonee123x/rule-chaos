@@ -1,0 +1,12 @@
+<html>
+<script>
+  const ws = new WebSocket("ws://localhost:8080?session=1488");
+  ws.onopen = () => {
+    console.log("Connected");
+  };
+  ws.onmessage = (msg) => console.log("Received:", msg.data);
+
+  console.log('here!')
+</script>
+
+</html>

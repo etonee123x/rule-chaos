@@ -1,0 +1,13 @@
+<RuleSet Name="Custom StyleCop Rules" Description="Custom rules for StyleCop" ToolsVersion="15.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1516" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="CS1591" Action="None" />
+    <Rule Id="SA1010" Action="None" />
+    <Rule Id="SA1201" Action="None" />
+    <Rule Id="SA1602" Action="None" />
+    <Rule Id="CS4014" Action="None" />
+  </Rules>
+</RuleSet>
