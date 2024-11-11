@@ -1,29 +1,14 @@
 using System.Net.WebSockets;
-using System.Reflection.Metadata;
 using System.Text;
-using System.Text.Json;
+using RuleChaos.Models.Messages;
 
 namespace RuleChaos.Models
 {
   public class GameSession
   {
-    private interface IMessageParams
-    {
-    }
+    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
-    private class Message<T>
-      where T : IMessageParams
-    {
-      public enum MessageType
-      {
-        Move,
-      }
-
-      public MessageType Type { get; set; }
-      public T Params { get; set; }
-    }
-
-    private static byte playersNumber = 2;
+    private static readonly byte PlayersNumber = 2;
 
     private string Id { get; }
 
@@ -31,32 +16,11 @@ namespace RuleChaos.Models
 
     private Player? ActivePlayer { get; set; }
 
+    private string[] PlayersNames { get => [.. this.Players.ConvertAll((player) => player.Name)]; }
+
     public GameSession(string id)
     {
       this.Id = id;
-    }
-
-    public bool IsReady
-    {
-      get => this.Players.Count == GameSession.playersNumber;
-    }
-
-    public void AddPlayer(Player player)
-    {
-      try
-      {
-        if (this.Players.Count >= GameSession.playersNumber)
-        {
-          throw new Exception($"{this.Players.Count} игроков из ${GameSession.playersNumber}");
-        }
-
-        this.Players.Add(player);
-        this.Log($"Игрок {player.Id} подключился");
-      }
-      catch (Exception exception)
-      {
-        this.Log(exception);
-      }
     }
 
     public void MakeFirstOrNextPlayerActive()
@@ -84,35 +48,69 @@ namespace RuleChaos.Models
       }
     }
 
-    public void HandlePlayerMessage(Player player, string message)
+    public void HandlePlayer(Player player)
+    {
+      this.AddPlayer(player);
+
+      Task.Run(async () =>
+      {
+        var buffer = new byte[1024 * 4];
+
+        while (player.WebSocket.State == WebSocketState.Open)
+        {
+          var result = await player.WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+          var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+          if (result.MessageType == WebSocketMessageType.Close)
+          {
+            await player.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+            break;
+          }
+
+          this.HandlePlayerMessage(player, message);
+        }
+
+        this.RemovePlayer(player);
+        this.SendMessageToPlayers(new MessagePlayerLeftSession(player.Name, this.PlayersNames));
+      });
+    }
+
+    private void SendMessageToPlayers(Message message)
+    {
+      this.Players.ForEach((player) => player.SendMessage(message));
+    }
+
+    private void HandlePlayerMessage(Player player, string message)
     {
       Console.WriteLine(message);
-      var deserializedMessage = JsonSerializer.Deserialize<Message<IMessageParams>>(message);
+    }
 
-      // TODO: заменить?
-      if (deserializedMessage?.Equals(null) ?? true)
+    private void AddPlayer(Player player)
+    {
+      try
       {
-        return;
+        if (this.Players.Count >= GameSession.PlayersNumber)
+        {
+          throw new Exception($"{this.Players.Count} игроков из ${GameSession.PlayersNumber}");
+        }
+
+        this.Players.Add(player);
+        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player.Name, this.PlayersNames));
+
+        this.Log($"Игрок {player.Id} подключился");
       }
-
-      switch (deserializedMessage.Type)
+      catch (Exception exception)
       {
-        case Message<IMessageParams>.MessageType.Move:
-          this.HandleMove(player, deserializedMessage);
-          return;
+        this.Log(exception);
       }
     }
 
-    private void HandleMove(Player player, Message<IMessageParams> message)
+    private void RemovePlayer(Player player)
     {
-      if (!player.Id.Equals(this.ActivePlayer?.Id))
-      {
-        return;
-      }
+      this.Players.Remove(player);
 
-      /* делать ход */
-
-      this.MakeFirstOrNextPlayerActive();
+      this.Log($"Игрок {player.Id} отключился");
     }
 
     private void Log(params object[] args)

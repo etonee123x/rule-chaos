@@ -27,64 +27,25 @@ namespace RuleChaos.Models
       while (true)
       {
         var context = await this.HttpListener.GetContextAsync();
-        if (!context.Request.IsWebSocketRequest)
+        var maybeSessionId = context.Request.QueryString["session_code"];
+        var maybePlayerName = context.Request.QueryString["player_name"];
+
+        if (!context.Request.IsWebSocketRequest || string.IsNullOrEmpty(maybeSessionId) || string.IsNullOrEmpty(maybePlayerName))
         {
           context.Response.StatusCode = 400;
           context.Response.Close();
           continue;
         }
 
-        var sessionId = context.Request.QueryString["session_code"];
-        if (string.IsNullOrEmpty(sessionId))
+        var gameSession = this.GameSessions.GetOrAdd(maybeSessionId, maybeSessionId => new GameSession(maybeSessionId));
+        if (gameSession.HasEnoughPlayers)
         {
           context.Response.StatusCode = 400;
           context.Response.Close();
           continue;
         }
 
-        Console.WriteLine("Новое подключение!");
-
-        var gameSession = this.GameSessions.GetOrAdd(sessionId, sessionId => new GameSession(sessionId));
-        var playerWebSocket = (await context.AcceptWebSocketAsync(null)).WebSocket;
-
-        if (gameSession.IsReady)
-        {
-          await playerWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Session full", CancellationToken.None);
-          context.Response.StatusCode = 400;
-          context.Response.Close();
-          continue;
-        }
-
-        var player = new Player(playerWebSocket);
-
-        // Мб лучше перенести в GameSession.HandlePlayerMessage ???
-        gameSession.AddPlayer(player);
-
-        if (!gameSession.IsReady)
-        {
-          continue;
-        }
-
-        Console.WriteLine("Мы тут, сессия началась!");
-
-        Task.Run(async () =>
-        {
-          var buffer = new byte[1024 * 4];
-
-          while (player.WebSocket.State == WebSocketState.Open)
-          {
-            var result = await player.WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-            if (result.MessageType == WebSocketMessageType.Close)
-            {
-              break;
-            }
-
-            gameSession.HandlePlayerMessage(player, message);
-          }
-        });
+        gameSession.HandlePlayer(new Player(maybePlayerName, (await context.AcceptWebSocketAsync(null)).WebSocket));
       }
     }
   }
