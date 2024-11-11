@@ -47,7 +47,7 @@ export const TextInputBase = ({
         onFocus={onFocus}
         onBlur={onBlur}
       />
-      <div className="-me-3 flex items-center justify-center">
+      <div className="-me-1 flex items-center justify-center">
         {children ?? (
           <button
             tabIndex={-1}

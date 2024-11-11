@@ -23,12 +23,21 @@ export const Default = () => {
 
   return (
     <div className="">
-      <header className="sticky top-0">
-        <nav className="m-auto mx-auto container">
-          <ul className="flex gap-2">
+      <header className="z-50 sticky top-0 bg-white">
+        <nav className="py-2 text-lg mx-auto container">
+          <ul className="flex gap-4">
             {NAV_LINKS.map((navLink) => (
               <li key={navLink.id}>
-                <NavLink to={navLink.to}>{navLink.text}</NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-primary-500 font-semibold relative after:absolute after:bottom-0 after:block after:w-full after:h-px after:bg-current'
+                      : ''
+                  }
+                  to={navLink.to}
+                >
+                  {navLink.text}
+                </NavLink>
               </li>
             ))}
           </ul>
@@ -40,7 +49,7 @@ export const Default = () => {
       </main>
       <footer className="mt-auto">
         <hr />
-        <div className="mx-auto container">footer</div>
+        <div className="py-2 mx-auto container">footer</div>
       </footer>
     </div>
   );

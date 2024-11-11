@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wdth,wght@90,400..900&display=swap');
 
 @tailwind base;
 
@@ -6,7 +6,10 @@
 
   html,
   body {
-    font-family: "Shantell Sans", cursive;
+    font-family: "Tektur", sans-serif;
+    font-variation-settings:
+      "wdth" 90;
+    font-optical-sizing: auto;
     @apply text-neutral-900;
   }
 
@@ -47,14 +50,14 @@
   }
 
   .text-input-base {
-    @apply min-h-8 flex items-center gap-2 bg-white border border-current rounded px-3 cursor-text justify-between box-border;
+    @apply min-w-60 min-h-8 flex items-center gap-1 bg-white border border-current rounded px-2 cursor-text justify-between box-border;
     @apply has-[input:read-only]:cursor-pointer;
     @apply has-[input:disabled]:pointer-events-none;
     @apply has-[input:focus]:outline has-[input:focus]:outline-2;
 
     input {
       all: unset;
-      @apply text-body-initial flex-1 min-w-0;
+      @apply text-body-initial flex-1;
     }
   }
 }
