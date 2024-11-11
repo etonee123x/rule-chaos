@@ -9,6 +9,11 @@ export const ViewPlayForm = () => {
   const [sessionCode, setSessionCode] = useState('');
   const [playerName, setPlayerName] = useState('');
 
+  const model = {
+    sessionCode,
+    playerName,
+  };
+
   const { sessionCode: paramsSessionCode } = useParams();
 
   const { PLAY_WITH_SESSION_CODE, PLAY } = ROUTER_ID_TO_PATH_BUILDER;
@@ -33,10 +38,10 @@ export const ViewPlayForm = () => {
 
   return (
     <>
-      <div className="flex h-10 items-center">
-        <form onSubmit={onSubmit}>
-          <BaseInputText label="Код сессии" value={sessionCode} onChange={onChangeSessionCode} />
-          <BaseInputText label="Имя" value={playerName} onChange={onChangePlayerName} />
+      <div>
+        <form className="flex gap-4 py-2 items-center" onSubmit={onSubmit}>
+          <BaseInputText label="Код сессии" value={model.sessionCode} onChange={onChangeSessionCode} />
+          <BaseInputText label="Имя" value={model.playerName} onChange={onChangePlayerName} />
           <BaseButton>Подключиться</BaseButton>
         </form>
         {paramsSessionCode && <BaseButton onClick={onClickExit}>Выйти</BaseButton>}

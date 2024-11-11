@@ -1,4 +1,4 @@
-import { type InputHTMLAttributes, type ReactNode } from 'react';
+import { useRef, type InputHTMLAttributes, type ReactNode } from 'react';
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
 
@@ -24,11 +24,19 @@ export const TextInputBase = ({
   onBlur,
   children,
 }: Props) => {
-  const onClickButtonClear = () => onChange?.('');
+  const refInput = useRef<HTMLInputElement>(null);
+
+  const onClickButtonClear = () => {
+    onChange?.('');
+    refInput.current?.focus();
+  };
+
+  const onClickRoot = () => refInput.current?.focus();
 
   return (
-    <div className="text-input-base group">
+    <div className="text-input-base group" onClick={onClickRoot}>
       <input
+        ref={refInput}
         type="text"
         id={id}
         value={value}
@@ -43,7 +51,7 @@ export const TextInputBase = ({
         {children ?? (
           <button
             tabIndex={-1}
-            className="hidden active:block group-has-[input:focus]:group-has-[input:read-only]:hidden group-has-[input:focus]:block cursor-pointer"
+            className="hidden text-body-initial active:block group-has-[input:focus]:group-has-[input:read-only]:hidden group-has-[input:focus]:block cursor-pointer"
             onClick={onClickButtonClear}
           >
             <BaseIcon path={mdiClose} />

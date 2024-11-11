@@ -16,14 +16,14 @@ export const TextInputWrapper = ({ errorMessage, labelFor, message, label, child
   const hasError = Boolean(errorMessage?.length);
 
   return (
-    <div className={['flex flex-col', hasError ? 'group has-error text-red-90' : 'text-blue-30'].join(' ')}>
+    <div className={['flex flex-col', hasError ? 'group has-error text-red-500' : 'text-primary-400'].join(' ')}>
       {label && (
         <label className={['mb-1', UI.ELEMENT_TITLE].join(' ')} htmlFor={labelFor}>
           {label}
         </label>
       )}
       {children}
-      <div className="flex mt-1 h-3 gap-2 items-center text-3xs text-initial group-[.has-error]:text-red-90">
+      <div className="flex mt-1 h-3 gap-2 items-center text-3xs text-body-initial group-[.has-error]:text-red-90">
         {childrenBottom ?? maybeMessage}
       </div>
     </div>

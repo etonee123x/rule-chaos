@@ -7,6 +7,7 @@
   html,
   body {
     font-family: "Shantell Sans", cursive;
+    @apply text-neutral-900;
   }
 
   a {
@@ -26,6 +27,34 @@
 
     &[disabled] {
       @apply pointer-events-none bg-primary-200;
+    }
+  }
+
+  .icon {
+    @apply size-6;
+
+    &.icon_size_sm {
+      @apply size-4;
+    }
+  }
+
+  .divider {
+    @apply flex after:w-full after:border-dotted after:border-t;
+  }
+
+  .element-title {
+    @apply text-neutral-500 text-sm;
+  }
+
+  .text-input-base {
+    @apply min-h-8 flex items-center gap-2 bg-white border border-current rounded px-3 cursor-text justify-between box-border;
+    @apply has-[input:read-only]:cursor-pointer;
+    @apply has-[input:disabled]:pointer-events-none;
+    @apply has-[input:focus]:outline has-[input:focus]:outline-2;
+
+    input {
+      all: unset;
+      @apply text-body-initial flex-1 min-w-0;
     }
   }
 }

@@ -6,6 +6,8 @@ export default {
   theme: {
     extend: {
       colors: {
+        initial: 'initial',
+        'body-initial': colors.neutral[900],
         transparent: 'transparent',
         'current-color': 'currentColor',
         primary: colors.emerald,
