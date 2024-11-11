@@ -91,6 +91,7 @@ export default [
   {
     name: 'global rules',
     rules: {
+      'no-unused-vars': ['off'],
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'no-unexpected-multiline': 'error',
       'no-var': 'error',

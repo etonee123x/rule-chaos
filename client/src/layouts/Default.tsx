@@ -21,8 +21,6 @@ export const Default = () => {
     },
   ];
 
-  console.log('Баден!');
-
   return (
     <div className="">
       <header className="sticky top-0">

@@ -1,15 +1,26 @@
 export let webSocket: WebSocket | null;
 
-export const connect = (sessionCode: string) =>
+export const open = (sessionCode: string, playerName: string) =>
   new Promise<void>((resolve, reject) => {
-    webSocket = new WebSocket(`http://localhost:8080?session_code=${sessionCode}`);
+    const url = new URL('/', 'ws://localhost:8080');
+
+    url.searchParams.append('session_code', sessionCode);
+    url.searchParams.append('player_name', playerName);
+
+    if (isOpened() && webSocket?.url === url.toString()) {
+      return resolve();
+    }
+
+    webSocket = new WebSocket(url);
 
     webSocket.onclose = reject;
     webSocket.onerror = reject;
     webSocket.onopen = () => resolve();
   });
 
-export const disconnect = () => {
+export const isOpened = () => Boolean(webSocket) && webSocket?.readyState === WebSocket.OPEN;
+
+export const close = () => {
   if (webSocket) {
     webSocket.close();
   }

@@ -9,8 +9,24 @@
     font-family: "Shantell Sans", cursive;
   }
 
+  a {
+    @apply hover:text-primary-600;
+  }
+
   .container {
     @apply w-11/12 max-w-[100rem];
+  }
+
+  .button {
+    @apply cursor-pointer bg-primary-500 text-white h-8 px-4 rounded;
+
+    &:hover {
+      @apply bg-primary-600;
+    }
+
+    &[disabled] {
+      @apply pointer-events-none bg-primary-200;
+    }
   }
 }
 
