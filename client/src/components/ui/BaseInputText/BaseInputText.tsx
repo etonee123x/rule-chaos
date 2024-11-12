@@ -21,7 +21,7 @@ export const BaseInputText = ({
   message,
   label,
   readonly,
-  childrenBottom,
+  componentBottom,
   childrenEnd,
   value,
   onChange,
@@ -35,7 +35,7 @@ export const BaseInputText = ({
       labelFor={id}
       errorMessage={errorMessage}
       message={message}
-      childrenBottom={childrenBottom}
+      componentBottom={componentBottom}
     >
       <TextInputBase id={propsId ?? id} disabled={isDisabled} readonly={readonly} value={value} onChange={onChange}>
         {childrenEnd}

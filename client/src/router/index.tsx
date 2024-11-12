@@ -3,8 +3,8 @@ import { createBrowserRouter, createRoutesFromElements, Route } from 'react-rout
 import { ViewPage404 } from '@/views/Page404';
 import { ViewHome } from '@/views/Home';
 import { ViewRules } from '@/views/Rules';
-import { ViewPlayForm } from '@/views/PlayForm';
 import { ViewPlay } from '@/views/Play';
+import { FormSessionConnection } from '@/components/FormSessionConnection';
 
 import { Default as LayoutDefault } from '@/layouts/Default';
 import { Empty as LayoutEmpty } from '@/layouts/Empty';
@@ -31,9 +31,10 @@ export const router = createBrowserRouter(
       <Route element={<LayoutDefault />}>
         <Route path="/" id={ROUTER_IDS.HOME} element={<ViewHome />} />
         <Route path="/rules" id={ROUTER_IDS.RULES} element={<ViewRules />} />
-        <Route path="/play" id={ROUTER_IDS.PLAY} element={<ViewPlayForm />}>
-          <Route path="/play/:sessionCode" id={ROUTER_IDS.PLAY_WITH_SESSION_CODE} element={<ViewPlay />} />
-        </Route>
+      </Route>
+      <Route element={<LayoutDefault componentHeaderEnd={<FormSessionConnection />} />}>
+        <Route path="/play" id={ROUTER_IDS.PLAY} element={<ViewPlay />} />
+        <Route path="/play/:sessionCode" id={ROUTER_IDS.PLAY_WITH_SESSION_CODE} element={<ViewPlay />} />
       </Route>
       <Route element={<LayoutEmpty />}>
         <Route path="/404" id={ROUTER_IDS.PAGE_404} element={<ViewPage404 />} />

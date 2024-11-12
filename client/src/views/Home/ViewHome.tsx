@@ -1,1 +1,1 @@
-export const ViewHome = () => <>Home!</>;
+export const ViewHome = () => <>Главная!</>;

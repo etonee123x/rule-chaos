@@ -14,6 +14,9 @@ export default {
         secondary: colors.orange,
         tetriary: colors.pink,
       },
+      spacing: {
+        '5.5': '22px',
+      },
     },
     borderRadius: {
       0: '0',

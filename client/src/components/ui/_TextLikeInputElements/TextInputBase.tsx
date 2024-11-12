@@ -36,6 +36,7 @@ export const TextInputBase = ({
   return (
     <div className="text-input-base group" onClick={onClickRoot}>
       <input
+        size={1}
         ref={refInput}
         type="text"
         id={id}

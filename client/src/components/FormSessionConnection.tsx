@@ -3,9 +3,9 @@ import { BaseButton } from '@/components/ui/BaseButton';
 import { BaseInputText } from '@/components/ui/BaseInputText';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import { useState, type FormEventHandler } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export const ViewPlayForm = () => {
+export const FormSessionConnection = () => {
   const [sessionCode, setSessionCode] = useState('');
   const [playerName, setPlayerName] = useState('');
 
@@ -37,16 +37,11 @@ export const ViewPlayForm = () => {
   };
 
   return (
-    <>
-      <div>
-        <form className="flex gap-4 py-2" onSubmit={onSubmit}>
-          <BaseInputText label="Код сессии" value={model.sessionCode} onChange={onChangeSessionCode} />
-          <BaseInputText label="Имя" value={model.playerName} onChange={onChangePlayerName} />
-          <BaseButton>Подключиться</BaseButton>
-        </form>
-        {paramsSessionCode && <BaseButton onClick={onClickExit}>Выйти</BaseButton>}
-      </div>
-      <Outlet />
-    </>
+    <form className="flex gap-4" onSubmit={onSubmit}>
+      <BaseInputText label="Код сессии" value={model.sessionCode} onChange={onChangeSessionCode} />
+      <BaseInputText label="Имя" value={model.playerName} onChange={onChangePlayerName} />
+      <BaseButton>Подключиться</BaseButton>
+      {paramsSessionCode && <BaseButton onClick={onClickExit}>Выйти</BaseButton>}
+    </form>
   );
 };

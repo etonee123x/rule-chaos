@@ -7,21 +7,24 @@ export interface Props
     errorMessage: string;
     message: string;
     label: string;
-    childrenBottom: ReactNode;
+    componentBottom: ReactNode;
     children: ReactNode;
   }> {}
 
-export const TextInputWrapper = ({ errorMessage, labelFor, message, label, childrenBottom, children }: Props) => {
-  const maybeMessage = errorMessage ?? message;
+export const TextInputWrapper = ({
+  errorMessage,
+  labelFor,
+  message,
+  label,
+  componentBottom: _componentBottom,
+  children,
+}: Props) => {
+  const componentBottom = _componentBottom ?? message;
+
   const hasError = Boolean(errorMessage?.length);
 
   return (
-    <div
-      className={[
-        'flex flex-col gap-0.5 relative',
-        hasError ? 'group has-error text-red-500' : 'text-primary-400',
-      ].join(' ')}
-    >
+    <div className={['flex flex-col gap-0.5 relative', hasError ? 'text-red-500' : 'text-primary-400'].join(' ')}>
       {label && (
         <label
           className={[
@@ -34,9 +37,12 @@ export const TextInputWrapper = ({ errorMessage, labelFor, message, label, child
         </label>
       )}
       {children}
-      <div className="h-5 text-sm text-body-initial group-[.has-error]:text-red-500">
-        {childrenBottom ?? maybeMessage}
-      </div>
+      {hasError && (
+        <div className="z-10 text-xs p-px absolute top-5.5 start-2 before:bg-white before:w-[calc(100%+2px)] before:-start-px before:top-1 before:z-[-1] before:h-2 before:absolute">
+          {errorMessage}
+        </div>
+      )}
+      {componentBottom && <div className="h-5 text-body-initial">{componentBottom}</div>}
     </div>
   );
 };

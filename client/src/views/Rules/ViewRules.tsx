@@ -1,1 +1,1 @@
-export const ViewRules = () => <>Rules!</>;
+export const ViewRules = () => <>Правила!</>;
