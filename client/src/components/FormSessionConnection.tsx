@@ -1,10 +1,11 @@
+import { useRef, useState, type FormEventHandler } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
 import { open, close, isOpened } from '@/api/websocket';
 import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseButton';
 import { BaseInputText } from '@/components/ui/BaseInputText';
+import { BaseForm } from '@/components/ui/BaseForm';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
-import { invoke } from '@/utils/invoke';
-import { useRef, useState, type FormEventHandler } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 export const FormSessionConnection = () => {
   const { sessionCode: paramsSessionCode, playerName: paramsPlayerName } = useParams();
@@ -35,11 +36,7 @@ export const FormSessionConnection = () => {
   const onChangeSessionCode = setSessionCode;
   const onChangePlayerName = setPlayerName;
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-
-    Object.values(formValidations).forEach(invoke);
-
+  const onSubmit: FormEventHandler<HTMLFormElement> = () => {
     if (!refForm.current?.checkValidity()) {
       return;
     }
@@ -55,7 +52,7 @@ export const FormSessionConnection = () => {
     navigate(PLAY());
   };
 
-  const formValidations = {
+  const validations = {
     sessionCode: () => {
       const { valueMissing, patternMismatch } = refInputSessionCode.current?.validity ?? {};
 
@@ -83,13 +80,7 @@ export const FormSessionConnection = () => {
   };
 
   return (
-    <form
-      ref={refForm}
-      className="flex gap-4"
-      onSubmit={onSubmit}
-      noValidate
-      onInvalid={(event) => event.preventDefault()}
-    >
+    <BaseForm className="flex gap-4" onSubmit={onSubmit} validations={validations}>
       <BaseInputText
         ref={refInputSessionCode}
         readonly={isConnected}
@@ -98,7 +89,7 @@ export const FormSessionConnection = () => {
         pattern="\w(?:.*\w)?"
         value={model.sessionCode}
         onChange={onChangeSessionCode}
-        onInput={formValidations.sessionCode}
+        onInput={validations.sessionCode}
       />
       <BaseInputText
         ref={refInputPlayerName}
@@ -108,7 +99,7 @@ export const FormSessionConnection = () => {
         pattern="\w(?:.*\w)?"
         value={model.playerName}
         onChange={onChangePlayerName}
-        onInput={formValidations.playerName}
+        onInput={validations.playerName}
       />
       {isConnected ? (
         <BaseButton type="reset" onClick={onClickExit}>
@@ -117,6 +108,6 @@ export const FormSessionConnection = () => {
       ) : (
         <BaseButton>Подключиться</BaseButton>
       )}
-    </form>
+    </BaseForm>
   );
 };

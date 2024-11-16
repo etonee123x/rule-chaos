@@ -1,15 +1,16 @@
+import type { PropsWithChildren, ReactNode } from 'react';
+
 import { UI } from '@/helpers/ui';
-import type { ReactNode } from 'react';
 
 export interface Props
-  extends Partial<{
-    labelFor: HTMLLabelElement['htmlFor'];
-    validationMessage: HTMLInputElement['validationMessage'];
-    message: string;
-    label: string;
-    componentBottom: ReactNode;
-    children: ReactNode;
-  }> {}
+  extends PropsWithChildren,
+    Partial<{
+      labelFor: HTMLLabelElement['htmlFor'];
+      validationMessage: HTMLInputElement['validationMessage'];
+      message: string;
+      label: string;
+      componentBottom: ReactNode;
+    }> {}
 
 export const TextInputWrapper = (props: Props) => {
   const componentBottom = props.componentBottom ?? props.message;

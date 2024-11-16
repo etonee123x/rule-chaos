@@ -1,14 +1,10 @@
+import type { ButtonHTMLAttributes, FC } from 'react';
+
 import { UI } from '@/helpers/ui';
-import type { MouseEventHandler, ReactNode } from 'react';
 
-export interface Props
-  extends Partial<{
-    type: HTMLButtonElement['type'];
-    children: ReactNode;
-    onClick: MouseEventHandler<HTMLButtonElement>;
-  }> {}
+export interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
-export const BaseButton = (props: Props) => (
+export const BaseButton: FC<Props> = (props) => (
   <button className={UI.BUTTON._name} type={props.type} onClick={props.onClick}>
     {props.children}
   </button>

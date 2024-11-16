@@ -1,4 +1,5 @@
-import { forwardRef, useImperativeHandle, useRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useRef, type InputHTMLAttributes, type PropsWithChildren } from 'react';
+
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
 import { pick } from '@/utils/pick';
@@ -10,9 +11,9 @@ export interface Props
     >,
     Partial<{
       readonly: InputHTMLAttributes<HTMLInputElement>['readOnly'];
-      children: ReactNode;
       onChange: (value: string) => void;
-    }> {}
+    }>,
+    PropsWithChildren {}
 
 export interface TextInputBase {
   setCustomValidity: HTMLInputElement['setCustomValidity'];
