@@ -15,7 +15,7 @@ export const FormSessionConnection = () => {
 
   const refInputSessionCode = useRef<BaseInputText>(null);
   const refInputPlayerName = useRef<BaseInputText>(null);
-  const refForm = useRef<HTMLFormElement>(null);
+  const refForm = useRef<BaseForm>(null);
 
   const model = {
     sessionCode,
@@ -37,7 +37,7 @@ export const FormSessionConnection = () => {
   const onChangePlayerName = setPlayerName;
 
   const onSubmit: FormEventHandler<HTMLFormElement> = () => {
-    if (!refForm.current?.checkValidity()) {
+    if (!refForm.current?.form?.checkValidity()) {
       return;
     }
 
@@ -80,7 +80,7 @@ export const FormSessionConnection = () => {
   };
 
   return (
-    <BaseForm className="flex gap-4" onSubmit={onSubmit} validations={validations}>
+    <BaseForm ref={refForm} className="flex gap-4" onSubmit={onSubmit} validations={validations}>
       <BaseInputText
         ref={refInputSessionCode}
         readonly={isConnected}
