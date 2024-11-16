@@ -21,5 +21,10 @@ namespace RuleChaos.Models
     {
       return this.WebSocket.SendAsync(Encoding.ASCII.GetBytes(message.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
     }
+
+    public override string ToString()
+    {
+      return $"{this.Name} ({this.Id})";
+    }
   }
 }

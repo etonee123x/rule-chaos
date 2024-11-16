@@ -1,11 +1,12 @@
-import { useRef, type InputHTMLAttributes, type ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useRef, type InputHTMLAttributes, type ReactNode } from 'react';
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
+import { pick } from '@/utils/pick';
 
 export interface Props
   extends Pick<
       InputHTMLAttributes<HTMLInputElement>,
-      'value' | 'placeholder' | 'onFocus' | 'onBlur' | 'id' | 'disabled'
+      'value' | 'placeholder' | 'id' | 'disabled' | 'required' | 'pattern' | 'onFocus' | 'onBlur' | 'onInput'
     >,
     Partial<{
       readonly: InputHTMLAttributes<HTMLInputElement>['readOnly'];
@@ -13,21 +14,32 @@ export interface Props
       onChange: (value: string) => void;
     }> {}
 
-export const TextInputBase = ({
-  value,
-  placeholder,
-  id,
-  disabled,
-  readonly,
-  onChange,
-  onFocus,
-  onBlur,
-  children,
-}: Props) => {
+export interface TextInputBase {
+  setCustomValidity: HTMLInputElement['setCustomValidity'];
+  validity: HTMLInputElement['validity'] | undefined;
+  input: HTMLInputElement | null;
+}
+
+export const TextInputBase = forwardRef<TextInputBase, Props>((props, ref) => {
   const refInput = useRef<HTMLInputElement>(null);
 
+  useImperativeHandle(ref, () => ({
+    setCustomValidity: (message) => {
+      if (!refInput.current) {
+        return;
+      }
+
+      refInput.current.setCustomValidity(message);
+      refInput.current.reportValidity();
+    },
+
+    validity: refInput.current?.validity,
+    validationMessage: refInput.current?.validationMessage,
+    input: refInput.current,
+  }));
+
   const onClickButtonClear = () => {
-    onChange?.('');
+    props.onChange?.('');
     refInput.current?.focus();
   };
 
@@ -39,17 +51,22 @@ export const TextInputBase = ({
         size={1}
         ref={refInput}
         type="text"
-        id={id}
-        value={value}
-        placeholder={placeholder}
-        disabled={disabled}
-        readOnly={readonly}
-        onChange={(e) => onChange?.(e.target.value)}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        {...pick(props, [
+          'id',
+          'value',
+          'placeholder',
+          'required',
+          'disabled',
+          'onFocus',
+          'onBlur',
+          'onInput',
+          'pattern',
+        ])}
+        readOnly={props.readonly}
+        onChange={(e) => props.onChange?.(e.target.value)}
       />
       <div className="-me-1 flex items-center justify-center">
-        {children ?? (
+        {props.children ?? (
           <button
             tabIndex={-1}
             className="hidden text-body-initial active:block group-has-[input:focus]:group-has-[input:read-only]:hidden group-has-[input:focus]:block cursor-pointer"
@@ -61,4 +78,6 @@ export const TextInputBase = ({
       </div>
     </div>
   );
-};
+});
+
+TextInputBase.displayName = 'TextInputBase';

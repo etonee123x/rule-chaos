@@ -98,7 +98,7 @@ namespace RuleChaos.Models
         this.Players.Add(player);
         this.SendMessageToPlayers(new MessagePlayerJoinedSession(player.Name, this.PlayersNames));
 
-        this.Log($"Игрок {player.Id} подключился");
+        this.Log($"Игрок {player} подключился");
       }
       catch (Exception exception)
       {
@@ -110,7 +110,7 @@ namespace RuleChaos.Models
     {
       this.Players.Remove(player);
 
-      this.Log($"Игрок {player.Id} отключился");
+      this.Log($"Игрок {player} отключился");
     }
 
     private void Log(params object[] args)
