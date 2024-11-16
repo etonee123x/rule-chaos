@@ -1,9 +1,9 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 
-import { ViewPage404 } from '@/views/Page404';
-import { ViewHome } from '@/views/Home';
-import { ViewRules } from '@/views/Rules';
-import { ViewPlay } from '@/views/Play';
+import { ViewPage404 } from '@/views/ViewPage404';
+import { ViewHome } from '@/views/ViewHome';
+import { ViewRules } from '@/views/ViewRules';
+import { ViewPlay } from '@/views/ViewPlay';
 import { FormSessionConnection } from '@/components/FormSessionConnection';
 
 import { Default as LayoutDefault } from '@/layouts/Default';

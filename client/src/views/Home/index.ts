@@ -1,1 +1,0 @@
-export { ViewHome } from './ViewHome';
