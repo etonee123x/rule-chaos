@@ -1,17 +1,17 @@
-import { useRef, useState, type FormEventHandler } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState, type FormEventHandler } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { open, close, isOpened } from '@/api/websocket';
 import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseButton';
 import { BaseInputText } from '@/components/ui/BaseInputText';
 import { BaseForm } from '@/components/ui/BaseForm';
-import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 
 export const FormSessionConnection = () => {
-  const { sessionCode: paramsSessionCode, playerName: paramsPlayerName } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [sessionCode, setSessionCode] = useState(paramsSessionCode ?? '');
-  const [playerName, setPlayerName] = useState(paramsPlayerName ?? '');
+  const [sessionCode, setSessionCode] = useState(searchParams.get('player_name') ?? '');
+  const [playerName, setPlayerName] = useState(searchParams.get('session_code') ?? '');
+  const [isConnected, setIsConnected] = useState(isOpened());
 
   const refInputSessionCode = useRef<BaseInputText>(null);
   const refInputPlayerName = useRef<BaseInputText>(null);
@@ -27,11 +27,23 @@ export const FormSessionConnection = () => {
     setPlayerName('');
   };
 
-  const isConnected = isOpened();
+  // TODO: prevent leaving with active session?
+  useEffect(() => close);
 
-  const { PLAY_WITH_SESSION_CODE, PLAY } = ROUTER_ID_TO_PATH_BUILDER;
+  useEffect(() => {
+    const maybePlayerName = searchParams.get('player_name');
+    const maybeSessionCode = searchParams.get('session_code');
 
-  const navigate = useNavigate();
+    if (!(maybePlayerName && maybeSessionCode)) {
+      close();
+      resetModel();
+      setIsConnected(isOpened());
+
+      return;
+    }
+
+    open(maybeSessionCode, maybePlayerName).then(() => setIsConnected(isOpened()));
+  }, [searchParams]);
 
   const onChangeSessionCode = setSessionCode;
   const onChangePlayerName = setPlayerName;
@@ -41,15 +53,17 @@ export const FormSessionConnection = () => {
       return;
     }
 
-    open(model.sessionCode, model.playerName).then(() => navigate(PLAY_WITH_SESSION_CODE(sessionCode)));
+    const urlSearchParams = new URLSearchParams();
+
+    urlSearchParams.set('session_code', sessionCode);
+    urlSearchParams.set('player_name', playerName);
+
+    setSearchParams(urlSearchParams);
   };
 
   const onClickExit: PropsBaseButton['onClick'] = (event) => {
     event.preventDefault();
-
-    close();
-    resetModel();
-    navigate(PLAY());
+    setSearchParams();
   };
 
   const validations = {
