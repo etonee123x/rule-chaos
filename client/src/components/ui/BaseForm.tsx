@@ -30,7 +30,7 @@ export const BaseForm = forwardRef<BaseForm, Props>((props, ref) => {
     event.preventDefault();
 
     if (props.validations) {
-      Object.values(props.validations).forEach(invoke);
+      Object.values(props.validations).forEach(invoke());
     }
 
     return props.onSubmit?.(event);

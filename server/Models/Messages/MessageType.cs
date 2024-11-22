@@ -4,5 +4,7 @@ namespace RuleChaos.Models.Messages
   {
     public const string PlayerJoinedSession = "PlayerJoinedSession";
     public const string PlayerLeftSession = "PlayerLeftSession";
+    public const string SessionWasStarted = "SessionWasStarted";
+    public const string NewActivePlayer = "NewActivePlayer";
   }
 }

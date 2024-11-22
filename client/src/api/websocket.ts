@@ -1,4 +1,19 @@
+import { invoke } from '@/utils/invoke';
+import { type Message } from './messages';
+
 export let webSocket: WebSocket | null;
+
+type Handler = (message: Message) => void | Promise<void>;
+
+const handlers = new Set<Handler>();
+
+const deserialize = (messageEvent: MessageEvent) => {
+  const result = JSON.parse(messageEvent.data) as Message;
+
+  // TODO: запилить обработку ошибок!
+
+  return result;
+};
 
 export const open = (sessionCode: string, playerName: string) =>
   new Promise<void>((resolve, reject) => {
@@ -15,6 +30,11 @@ export const open = (sessionCode: string, playerName: string) =>
 
     webSocket.onclose = reject;
     webSocket.onerror = reject;
+    webSocket.onmessage = (messageEvent) => {
+      const deserializedMessage = deserialize(messageEvent);
+
+      handlers.values().forEach(invoke(deserializedMessage));
+    };
     webSocket.onopen = () => resolve();
   });
 
@@ -26,4 +46,12 @@ export const close = () => {
   }
 
   webSocket = null;
+};
+
+export const addHandler = (handler: Handler) => {
+  handlers.add(handler);
+
+  return () => {
+    handlers.delete(handler);
+  };
 };

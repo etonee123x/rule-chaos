@@ -27,8 +27,7 @@ export const FormSessionConnection = () => {
     setPlayerName('');
   };
 
-  // TODO: prevent leaving with active session?
-  useEffect(() => close);
+  useEffect(() => close, []);
 
   useEffect(() => {
     const maybePlayerName = searchParams.get('player_name');

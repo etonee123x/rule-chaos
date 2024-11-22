@@ -23,34 +23,14 @@ namespace RuleChaos.Models
       this.Id = id;
     }
 
-    public void MakeFirstOrNextPlayerActive()
-    {
-      try
-      {
-        if (this.ActivePlayer == null)
-        {
-          this.ActivePlayer = this.Players[0];
-          return;
-        }
-
-        var index = this.Players.IndexOf(this.ActivePlayer);
-
-        if (index == -1)
-        {
-          throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
-        }
-
-        this.ActivePlayer = this.Players[(index + 1) % this.Players.Count];
-      }
-      catch (Exception exception)
-      {
-        this.Log(exception);
-      }
-    }
-
     public void HandlePlayer(Player player)
     {
       this.AddPlayer(player);
+
+      if (this.HasEnoughPlayers)
+      {
+        this.StartSession();
+      }
 
       Task.Run(async () =>
       {
@@ -74,6 +54,42 @@ namespace RuleChaos.Models
         this.RemovePlayer(player);
         this.SendMessageToPlayers(new MessagePlayerLeftSession(player.Name, this.PlayersNames));
       });
+    }
+
+    private void StartSession()
+    {
+      this.SendMessageToPlayers(new MessageSessionWasStarted());
+
+      this.MakeFirstOrNextPlayerActive();
+    }
+
+    private void MakeFirstOrNextPlayerActive()
+    {
+      try
+      {
+        if (this.ActivePlayer == null)
+        {
+          this.ActivePlayer = this.Players[0];
+          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.Name));
+
+          return;
+        }
+
+        var index = this.Players.IndexOf(this.ActivePlayer);
+
+        if (index == -1)
+        {
+          throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
+        }
+
+        this.ActivePlayer = this.Players[(index + 1) % this.Players.Count];
+
+        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.Name));
+      }
+      catch (Exception exception)
+      {
+        this.Log(exception);
+      }
     }
 
     private void SendMessageToPlayers(Message message)
