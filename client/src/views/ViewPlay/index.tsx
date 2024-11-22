@@ -1,28 +1,41 @@
-import { MessageType } from '@/api/messages';
+import { MessageType, type Player } from '@/api/messages';
 import { addHandler } from '@/api/websocket';
 import { doesMessageHasType } from '@/helpers/doesMessageHasType';
-import { useEffect, type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
+
+import { Players } from './components/Players';
 
 export const ViewPlay: FC = () => {
+  const [playersNames, setPlayersNames] = useState<Array<Player['name']>>([]);
+
   useEffect(() =>
     addHandler((message) => {
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
-        return console.log('Оппа, присоединился');
+        setPlayersNames(message.PlayersNames);
+
+        return;
       }
 
       if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
-        return console.log('Оппа, отсоединился');
+        setPlayersNames(message.PlayersNames);
+
+        return;
       }
 
       if (doesMessageHasType(message, MessageType.SessionWasStarted)) {
-        return console.log('Оппа, сессия началась');
+        return;
       }
 
       if (doesMessageHasType(message, MessageType.NewActivePlayer)) {
-        return console.log('Оппа, новый ход');
+        return;
       }
     }),
   );
 
-  return <>Игра!</>;
+  return (
+    <>
+      Игра!
+      {playersNames.length && <Players playersNames={playersNames} />}
+    </>
+  );
 };
