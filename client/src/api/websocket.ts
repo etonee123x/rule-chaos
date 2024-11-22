@@ -45,6 +45,10 @@ export const close = () => {
     webSocket.close();
   }
 
+  if (handlers.size) {
+    handlers.clear();
+  }
+
   webSocket = null;
 };
 
