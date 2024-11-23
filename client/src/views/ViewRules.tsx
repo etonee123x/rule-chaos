@@ -1,1 +1,3 @@
-export const ViewRules = () => <>Правила!</>;
+import { BasePage } from '@/components/BasePage';
+
+export const ViewRules = () => <BasePage>Правила!</BasePage>;

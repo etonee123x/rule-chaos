@@ -1,27 +1,23 @@
 using System.Net.WebSockets;
 using System.Text;
 using RuleChaos.Models.Messages;
+using RuleChaos.Models.Players;
 
 namespace RuleChaos.Models
 {
-  public class GameSession
+  public class GameSession(string id)
   {
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
     private static readonly byte PlayersNumber = 2;
 
-    private string Id { get; }
+    private string Id { get; } = id;
 
     private List<Player> Players { get; set; } = [];
 
     private Player? ActivePlayer { get; set; }
 
-    private string[] PlayersNames { get => [.. this.Players.ConvertAll((player) => player.Name)]; }
-
-    public GameSession(string id)
-    {
-      this.Id = id;
-    }
+    private PlayerDTO[] PlayersDTOs { get => [.. this.Players.ConvertAll((player) => player.ToDTO())]; }
 
     public void HandlePlayer(Player player)
     {
@@ -52,7 +48,7 @@ namespace RuleChaos.Models
         }
 
         this.RemovePlayer(player);
-        this.SendMessageToPlayers(new MessagePlayerLeftSession(player.Name, this.PlayersNames));
+        this.SendMessageToPlayers(new MessagePlayerLeftSession(player.ToDTO(), this.PlayersDTOs));
       });
     }
 
@@ -70,7 +66,7 @@ namespace RuleChaos.Models
         if (this.ActivePlayer == null)
         {
           this.ActivePlayer = this.Players[0];
-          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.Name));
+          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.ToDTO()));
 
           return;
         }
@@ -84,7 +80,7 @@ namespace RuleChaos.Models
 
         this.ActivePlayer = this.Players[(index + 1) % this.Players.Count];
 
-        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.Name));
+        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer.ToDTO()));
       }
       catch (Exception exception)
       {
@@ -112,7 +108,7 @@ namespace RuleChaos.Models
         }
 
         this.Players.Add(player);
-        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player.Name, this.PlayersNames));
+        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player.ToDTO(), this.PlayersDTOs));
 
         this.Log($"Игрок {player} подключился");
       }
@@ -124,6 +120,11 @@ namespace RuleChaos.Models
 
     private void RemovePlayer(Player player)
     {
+      if (player.Equals(this.ActivePlayer))
+      {
+        this.ActivePlayer = null;
+      }
+
       this.Players.Remove(player);
 
       this.Log($"Игрок {player} отключился");

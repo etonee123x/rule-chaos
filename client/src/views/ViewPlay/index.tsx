@@ -4,20 +4,26 @@ import { doesMessageHasType } from '@/helpers/doesMessageHasType';
 import { useEffect, useState, type FC } from 'react';
 
 import { Players } from './components/Players';
+import { arePlayersEqual } from '@/helpers/player';
+import { BasePage } from '@/components/BasePage';
 
 export const ViewPlay: FC = () => {
-  const [playersNames, setPlayersNames] = useState<Array<Player['name']>>([]);
+  const [players, setPlayers] = useState<Array<Player>>([]);
+  const [activePlayer, setActivePlayer] = useState<Player>();
+  const [player, setPlayer] = useState<Player>();
+
+  const isAbleToTurn = Boolean(player && activePlayer && arePlayersEqual(player, activePlayer));
 
   useEffect(() =>
     addHandler((message) => {
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
-        setPlayersNames(message.PlayersNames);
+        setPlayers(message.Players);
 
         return;
       }
 
       if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
-        setPlayersNames(message.PlayersNames);
+        setPlayers(message.Players);
 
         return;
       }
@@ -27,15 +33,28 @@ export const ViewPlay: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.NewActivePlayer)) {
+        setActivePlayer(message.Player);
+
         return;
+      }
+
+      if (doesMessageHasType(message, MessageType.PlayerSelfIdentification)) {
+        setPlayer(message.Player);
       }
     }),
   );
 
   return (
-    <>
-      Игра!
-      {playersNames.length && <Players playersNames={playersNames} />}
-    </>
+    <BasePage>
+      <div className="flex">
+        <div className="flex-1">
+          Игра!
+          {isAbleToTurn && <div>Твой ход!</div>}
+        </div>
+        {players.length > 0 && (
+          <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
+        )}
+      </div>
+    </BasePage>
   );
 };

@@ -1,17 +1,15 @@
+using RuleChaos.Models.Players;
+
 namespace RuleChaos.Models.Messages
 {
-  public class MessageNewActivePlayer : Message
+  public class MessageNewActivePlayer(PlayerDTO player)
+    : Message
   {
-    public string PlayerName { get; set; }
+    public PlayerDTO Player { get; set; } = player;
 
     public override string Type
     {
       get => MessageType.NewActivePlayer;
-    }
-
-    public MessageNewActivePlayer(string playerName)
-    {
-      this.PlayerName = playerName;
     }
   }
 }

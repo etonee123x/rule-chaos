@@ -25,7 +25,7 @@ export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: Re
   return (
     <div className="">
       <header className="z-50 sticky top-0 bg-white">
-        <div className="h-16 text-lg mx-auto container flex items-center">
+        <div className="min-h-16 py-2 text-lg mx-auto container flex flex-wrap justify-between gap-y-4 items-center">
           <nav className="text-lg">
             <ul className="flex gap-4">
               {NAV_LINKS.map((navLink) => (
@@ -44,7 +44,7 @@ export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: Re
               ))}
             </ul>
           </nav>
-          <div className="ms-auto">{componentHeaderEnd}</div>
+          {componentHeaderEnd}
         </div>
         <hr />
       </header>

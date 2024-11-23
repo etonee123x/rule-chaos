@@ -2,7 +2,7 @@ using System.Net.WebSockets;
 using System.Text;
 using RuleChaos.Models.Messages;
 
-namespace RuleChaos.Models
+namespace RuleChaos.Models.Players
 {
   public class Player
   {
@@ -15,11 +15,19 @@ namespace RuleChaos.Models
       this.Name = name;
       this.WebSocket = webSocket;
       this.Id = Guid.NewGuid();
+
+      // Пытаемся отправить игрока клиенту тут
+      this.SendMessage(new MessagePlayerSelfIdentification(this.ToDTO()));
     }
 
     public Task SendMessage(Message message)
     {
       return this.WebSocket.SendAsync(Encoding.ASCII.GetBytes(message.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+
+    public PlayerDTO ToDTO()
+    {
+      return new PlayerDTO(this);
     }
 
     public override string ToString()

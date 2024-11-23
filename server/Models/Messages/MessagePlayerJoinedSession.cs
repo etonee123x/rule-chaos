@@ -1,19 +1,16 @@
+using RuleChaos.Models.Players;
+
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerJoinedSession : Message
+  public class MessagePlayerJoinedSession(PlayerDTO player, PlayerDTO[] players)
+    : Message
   {
-    public string PlayerName { get; set; }
-    public string[] PlayersNames { get; set; }
+    public PlayerDTO Player { get; set; } = player;
+    public PlayerDTO[] Players { get; set; } = players;
 
     public override string Type
     {
       get => MessageType.PlayerJoinedSession;
-    }
-
-    public MessagePlayerJoinedSession(string playerName, string[] playersNames)
-    {
-      this.PlayerName = playerName;
-      this.PlayersNames = playersNames;
     }
   }
 }

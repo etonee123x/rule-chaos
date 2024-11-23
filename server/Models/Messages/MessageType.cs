@@ -6,5 +6,6 @@ namespace RuleChaos.Models.Messages
     public const string PlayerLeftSession = "PlayerLeftSession";
     public const string SessionWasStarted = "SessionWasStarted";
     public const string NewActivePlayer = "NewActivePlayer";
+    public const string PlayerSelfIdentification = "PlayerSelfIdentification";
   }
 }

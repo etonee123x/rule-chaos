@@ -1,10 +1,33 @@
 import type { Player } from '@/api/messages';
-import type { FC } from 'react';
+import { arePlayersEqual } from '@/helpers/player';
+import type { FC, HTMLAttributes } from 'react';
 
-export const Players: FC<{ playersNames: Array<Player['name']> }> = (props) => (
-  <ul>
-    {props.playersNames.map((playerName, index) => (
-      <li key={index}>{playerName}</li>
-    ))}
-  </ul>
-);
+interface Props extends HTMLAttributes<HTMLDivElement> {
+  players: Array<Player>;
+  player?: Player;
+  activePlayer?: Player;
+}
+
+//list-[disclosure-closed]
+
+export const Players: FC<Props> = (props) => {
+  const getClassName = (player: Player) => {
+    const className = ['mb-2 last:mb-0'];
+
+    if (props.activePlayer && arePlayersEqual(player, props.activePlayer)) {
+      className.push('list-[disclosure-closed]');
+    }
+
+    return className.join(' ');
+  };
+
+  return (
+    <ul className={[...(props.className ? [props.className] : []), 'list-inside'].join(' ')}>
+      {props.players.map((player, index) => (
+        <li className={getClassName(player)} title={player.Id} key={index}>
+          {player.Name} {props.player && arePlayersEqual(props.player, player) && '(you)'}
+        </li>
+      ))}
+    </ul>
+  );
+};

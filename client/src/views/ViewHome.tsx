@@ -1,1 +1,3 @@
-export const ViewHome = () => <>Главная!</>;
+import { BasePage } from '@/components/BasePage';
+
+export const ViewHome = () => <BasePage>Главная!</BasePage>;

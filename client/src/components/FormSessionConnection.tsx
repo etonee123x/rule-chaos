@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEventHandler } from 'react';
+import { useEffect, useRef, useState, type FC, type FormEventHandler } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { open, close, isOpened } from '@/api/websocket';
@@ -6,11 +6,11 @@ import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseB
 import { BaseInputText } from '@/components/ui/BaseInputText';
 import { BaseForm } from '@/components/ui/BaseForm';
 
-export const FormSessionConnection = () => {
+export const FormSessionConnection: FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [sessionCode, setSessionCode] = useState(searchParams.get('player_name') ?? '');
-  const [playerName, setPlayerName] = useState(searchParams.get('session_code') ?? '');
+  const [sessionCode, setSessionCode] = useState(searchParams.get('session_code') ?? '');
+  const [playerName, setPlayerName] = useState(searchParams.get('player_name') ?? '');
   const [isConnected, setIsConnected] = useState(isOpened());
 
   const refInputSessionCode = useRef<BaseInputText>(null);
@@ -93,7 +93,7 @@ export const FormSessionConnection = () => {
   };
 
   return (
-    <BaseForm ref={refForm} className="flex gap-4" onSubmit={onSubmit} validations={validations}>
+    <BaseForm ref={refForm} className="flex flex-wrap gap-4" onSubmit={onSubmit} validations={validations}>
       <BaseInputText
         ref={refInputSessionCode}
         readonly={isConnected}

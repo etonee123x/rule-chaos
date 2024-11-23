@@ -10,6 +10,8 @@ const handlers = new Set<Handler>();
 const deserialize = (messageEvent: MessageEvent) => {
   const result = JSON.parse(messageEvent.data) as Message;
 
+  console.log(result);
+
   // TODO: запилить обработку ошибок!
 
   return result;

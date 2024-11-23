@@ -1,19 +1,16 @@
+using RuleChaos.Models.Players;
+
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerLeftSession : Message
+  public class MessagePlayerLeftSession(PlayerDTO player, PlayerDTO[] players)
+    : Message
   {
-    public string PlayerName { get; set; }
-    public string[] PlayersNames { get; set; }
+    public PlayerDTO Player { get; set; } = player;
+    public PlayerDTO[] Players { get; set; } = players;
 
     public override string Type
     {
       get => MessageType.PlayerLeftSession;
-    }
-
-    public MessagePlayerLeftSession(string playerName, string[] playersNames)
-    {
-      this.PlayerName = playerName;
-      this.PlayersNames = playersNames;
     }
   }
 }

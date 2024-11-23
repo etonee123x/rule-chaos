@@ -9,6 +9,7 @@ import {
 
 import type { FunctionCallback } from '@/types';
 import { invoke } from '@/utils/invoke';
+import { omit } from '@/utils/omit';
 
 interface Props
   extends HTMLAttributes<HTMLFormElement>,
@@ -43,7 +44,7 @@ export const BaseForm = forwardRef<BaseForm, Props>((props, ref) => {
   };
 
   return (
-    <form {...props} ref={refForm} noValidate onInvalid={onInvalid} onSubmit={onSubmit}>
+    <form {...omit(props, ['validations'])} ref={refForm} noValidate onInvalid={onInvalid} onSubmit={onSubmit}>
       {props.children}
     </form>
   );
