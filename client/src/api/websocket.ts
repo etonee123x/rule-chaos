@@ -1,5 +1,5 @@
 import { invoke } from '@/utils/invoke';
-import { type Message } from './messages';
+import { MessageType, type Message, type MessageTypeToMessage } from './messages';
 
 export let webSocket: WebSocket | null;
 
@@ -60,4 +60,13 @@ export const addHandler = (handler: Handler) => {
   return () => {
     handlers.delete(handler);
   };
+};
+
+export const send = <T extends MessageType>(type: T, message: Omit<MessageTypeToMessage[T], 'Type'>) => {
+  const messageSerialized = JSON.stringify({
+    Type: type,
+    ...message,
+  });
+
+  webSocket?.send(messageSerialized);
 };

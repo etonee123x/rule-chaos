@@ -1,5 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using RuleChaos.Models.Messages;
 using RuleChaos.Models.Players;
 
@@ -36,7 +37,7 @@ namespace RuleChaos.Models
         {
           var result = await player.WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-          var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+          var serializedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
           if (result.MessageType == WebSocketMessageType.Close)
           {
@@ -44,7 +45,7 @@ namespace RuleChaos.Models
             break;
           }
 
-          this.HandlePlayerMessage(player, message);
+          this.HandlePlayerMessage(player, serializedMessage);
         }
 
         this.RemovePlayer(player);
@@ -52,14 +53,7 @@ namespace RuleChaos.Models
       });
     }
 
-    private void StartSession()
-    {
-      this.SendMessageToPlayers(new MessageSessionWasStarted());
-
-      this.MakeFirstOrNextPlayerActive();
-    }
-
-    private void MakeFirstOrNextPlayerActive()
+    public void MakeFirstOrNextPlayerActive()
     {
       try
       {
@@ -88,14 +82,33 @@ namespace RuleChaos.Models
       }
     }
 
+    private void StartSession()
+    {
+      this.SendMessageToPlayers(new MessageSessionWasStarted());
+
+      this.MakeFirstOrNextPlayerActive();
+    }
+
     private void SendMessageToPlayers(Message message)
     {
       this.Players.ForEach((player) => player.SendMessage(message));
     }
 
-    private void HandlePlayerMessage(Player player, string message)
+    private void HandlePlayerMessage(Player player, string serializedMessage)
     {
-      Console.WriteLine(message);
+      var messageTypeToMessage = new Dictionary<string, Type>
+      {
+          { MessageType.TEST_PlayerClickedButton, typeof(Message_TEST_PlayerClickedButton) },
+      };
+
+      var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("Type").GetString();
+
+      if (type == null || !messageTypeToMessage.TryGetValue(type, out var messageType))
+      {
+        return;
+      }
+
+      ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
     }
 
     private void AddPlayer(Player player)

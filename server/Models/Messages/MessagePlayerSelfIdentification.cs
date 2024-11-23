@@ -3,7 +3,7 @@ using RuleChaos.Models.Players;
 namespace RuleChaos.Models.Messages
 {
   public class MessagePlayerSelfIdentification(PlayerDTO playerDTO)
-    : Message
+    : MessageFromServer
   {
     public PlayerDTO Player { get; set; } = playerDTO;
 

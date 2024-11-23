@@ -1,7 +1,7 @@
 namespace RuleChaos.Models.Messages
 {
   public class MessageSessionWasStarted()
-    : Message
+    : MessageFromServer
   {
     public override string Type
     {

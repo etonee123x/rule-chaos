@@ -3,7 +3,7 @@ using RuleChaos.Models.Players;
 namespace RuleChaos.Models.Messages
 {
   public class MessageNewActivePlayer(PlayerDTO player)
-    : Message
+    : MessageFromServer
   {
     public PlayerDTO Player { get; set; } = player;
 

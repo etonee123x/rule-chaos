@@ -1,4 +1,5 @@
 using System.Text.Json;
+using RuleChaos.Models.Players;
 
 namespace RuleChaos.Models.Messages
 {
@@ -10,5 +11,14 @@ namespace RuleChaos.Models.Messages
     {
       return JsonSerializer.Serialize(this, this.GetType());
     }
+  }
+
+  public abstract class MessageFromClient : Message
+  {
+    public abstract void Handle(GameSession gameSession, Player player);
+  }
+
+  public abstract class MessageFromServer : Message
+  {
   }
 }

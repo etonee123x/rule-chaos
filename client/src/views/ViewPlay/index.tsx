@@ -1,11 +1,12 @@
 import { MessageType, type Player } from '@/api/messages';
-import { addHandler } from '@/api/websocket';
+import { addHandler, send } from '@/api/websocket';
 import { doesMessageHasType } from '@/helpers/doesMessageHasType';
 import { useEffect, useState, type FC } from 'react';
 
 import { Players } from './components/Players';
 import { arePlayersEqual } from '@/helpers/player';
 import { BasePage } from '@/components/BasePage';
+import { BaseButton } from '@/components/ui/BaseButton';
 
 export const ViewPlay: FC = () => {
   const [players, setPlayers] = useState<Array<Player>>([]);
@@ -44,12 +45,17 @@ export const ViewPlay: FC = () => {
     }),
   );
 
+  const onClickButton = () => send(MessageType.TEST_PlayerClickedButton, {});
+
   return (
     <BasePage>
       <div className="flex">
         <div className="flex-1">
-          Игра!
+          <div>Игра!</div>
           {isAbleToTurn && <div>Твой ход!</div>}
+          <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
+            тык
+          </BaseButton>
         </div>
         {players.length > 0 && (
           <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
