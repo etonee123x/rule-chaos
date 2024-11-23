@@ -96,14 +96,9 @@ namespace RuleChaos.Models
 
     private void HandlePlayerMessage(Player player, string serializedMessage)
     {
-      var messageTypeToMessage = new Dictionary<string, Type>
-      {
-          { MessageType.TEST_PlayerClickedButton, typeof(Message_TEST_PlayerClickedButton) },
-      };
-
       var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("Type").GetString();
 
-      if (type == null || !messageTypeToMessage.TryGetValue(type, out var messageType))
+      if (type == null || !MessageFromClient.MessageTypeToMessage.TryGetValue(type, out var messageType))
       {
         return;
       }
