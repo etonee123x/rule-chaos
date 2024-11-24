@@ -1,27 +1,7 @@
-import type { Message, MessageType, MessageTypeToMessage } from '@/api/messages';
+import { useCallback, useEffect, useRef, useState, type FC, type PropsWithChildren } from 'react';
+import { WebSocketContext, type Handler } from './_context';
 import { invoke } from '@/utils/invoke';
-import {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  type PropsWithChildren,
-  type FC,
-  useCallback,
-  useRef,
-} from 'react';
-
-type Handler = (message: Message) => void | Promise<void>;
-
-interface WebSocketContext {
-  isOpened: boolean;
-  open: (playerName: string, sessionCode: string) => void;
-  close: () => void;
-  addHandler: (handler: Handler) => () => void;
-  send: <T extends MessageType>(type: T, message: Omit<MessageTypeToMessage[T], 'Type'>) => void;
-}
-
-const WebSocketContext = createContext<WebSocketContext | null>(null);
+import type { Message } from '@/api/messages';
 
 export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
   const socketRef = useRef<WebSocket | null>(null);
@@ -102,14 +82,4 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
       {children}
     </WebSocketContext.Provider>
   );
-};
-
-export const useWebSocket = () => {
-  const context = useContext(WebSocketContext);
-
-  if (!context) {
-    throw new Error('Нету контекста!');
-  }
-
-  return context;
 };

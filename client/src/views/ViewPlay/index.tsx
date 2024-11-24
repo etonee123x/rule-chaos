@@ -6,7 +6,7 @@ import { Players } from './components/Players';
 import { arePlayersEqual } from '@/helpers/player';
 import { BasePage } from '@/components/BasePage';
 import { BaseButton } from '@/components/ui/BaseButton';
-import { useWebSocket } from '@/components/WebSocketProvider';
+import { useWebSocket } from '@/contexts/webSocket';
 
 export const ViewPlay: FC = () => {
   const { isOpened, addHandler, send } = useWebSocket();

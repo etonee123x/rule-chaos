@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseButton';
 import { BaseInputText } from '@/components/ui/BaseInputText';
 import { BaseForm } from '@/components/ui/BaseForm';
-import { useWebSocket } from '@/components/WebSocketProvider';
+import { useWebSocket } from '@/contexts/webSocket';
 
 export const FormSessionConnection: FC = () => {
   const { open, close, isOpened } = useWebSocket();
