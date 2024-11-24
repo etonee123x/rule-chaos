@@ -1,9 +1,10 @@
 import { createRoot } from 'react-dom/client';
-import { router } from '@/router';
-import { RouterProvider } from 'react-router-dom';
 
 import '@/assets/index.css';
 import 'modern-normalize/modern-normalize.css';
+import { WebSocketProvider } from '@/components/WebSocketProvider';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '@/router';
 
 const maybeRoot = document.getElementById('root');
 
@@ -11,4 +12,8 @@ if (!maybeRoot) {
   throw new Error('???');
 }
 
-createRoot(maybeRoot).render(<RouterProvider router={router} />);
+createRoot(maybeRoot).render(
+  <WebSocketProvider>
+    <RouterProvider router={router} />
+  </WebSocketProvider>,
+);

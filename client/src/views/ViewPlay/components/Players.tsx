@@ -15,7 +15,11 @@ export const Players: FC<Props> = (props) => {
     const className = ['mb-2 last:mb-0'];
 
     if (props.activePlayer && arePlayersEqual(player, props.activePlayer)) {
-      className.push('list-[disclosure-closed] font-semibold text-primary-500 marker:text-body-initial');
+      className.push('list-[disclosure-closed]');
+    }
+
+    if (props.player && arePlayersEqual(player, props.player)) {
+      className.push('font-semibold text-primary-500 marker:text-body-initial');
     }
 
     return className.join(' ');

@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState, type FC, type FormEventHandler } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { open, close, isOpened } from '@/api/websocket';
 import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseButton';
 import { BaseInputText } from '@/components/ui/BaseInputText';
 import { BaseForm } from '@/components/ui/BaseForm';
+import { useWebSocket } from '@/components/WebSocketProvider';
 
 export const FormSessionConnection: FC = () => {
+  const { open, close, isOpened } = useWebSocket();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [sessionCode, setSessionCode] = useState(searchParams.get('session_code') ?? '');
   const [playerName, setPlayerName] = useState(searchParams.get('player_name') ?? '');
-  const [isConnected, setIsConnected] = useState(isOpened());
 
   const refInputSessionCode = useRef<BaseInputText>(null);
   const refInputPlayerName = useRef<BaseInputText>(null);
@@ -27,7 +28,7 @@ export const FormSessionConnection: FC = () => {
     setPlayerName('');
   };
 
-  useEffect(() => close, []);
+  useEffect(() => close, [close]);
 
   useEffect(() => {
     const maybePlayerName = searchParams.get('player_name');
@@ -36,13 +37,12 @@ export const FormSessionConnection: FC = () => {
     if (!(maybePlayerName && maybeSessionCode)) {
       close();
       resetModel();
-      setIsConnected(isOpened());
 
       return;
     }
 
-    open(maybeSessionCode, maybePlayerName).then(() => setIsConnected(isOpened()));
-  }, [searchParams]);
+    open(maybePlayerName, maybeSessionCode);
+  }, [searchParams, open, close]);
 
   const onChangeSessionCode = setSessionCode;
   const onChangePlayerName = setPlayerName;
@@ -96,7 +96,7 @@ export const FormSessionConnection: FC = () => {
     <BaseForm ref={refForm} className="flex flex-wrap gap-4" onSubmit={onSubmit} validations={validations}>
       <BaseInputText
         ref={refInputSessionCode}
-        readonly={isConnected}
+        readonly={isOpened}
         required
         label="Код сессии"
         pattern="\w(?:.*\w)?"
@@ -106,7 +106,7 @@ export const FormSessionConnection: FC = () => {
       />
       <BaseInputText
         ref={refInputPlayerName}
-        readonly={isConnected}
+        readonly={isOpened}
         required
         label="Имя"
         pattern="\w(?:.*\w)?"
@@ -114,7 +114,7 @@ export const FormSessionConnection: FC = () => {
         onChange={onChangePlayerName}
         onInput={validations.playerName}
       />
-      {isConnected ? (
+      {isOpened ? (
         <BaseButton type="reset" onClick={onClickExit}>
           Выйти
         </BaseButton>
