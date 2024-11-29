@@ -4,21 +4,27 @@ using System.Text.Json;
 using RuleChaos.Models.Messages;
 using RuleChaos.Models.Players;
 
-namespace RuleChaos.Models
+namespace RuleChaos.Models.GameSessions
 {
-  public class GameSession(string id)
+  public class GameSession(bool isPrivate)
   {
+    public Guid Id { get; } = new();
+    public bool IsPrivate { get; } = isPrivate;
+
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
-    private static readonly byte PlayersNumber = 2;
+    public PlayerDTO[] PlayersDTOs { get => [.. this.Players.ConvertAll((player) => player.ToDTO())]; }
 
-    private string Id { get; } = id;
+    private static readonly byte PlayersNumber = 2;
 
     private List<Player> Players { get; set; } = [];
 
     private Player? ActivePlayer { get; set; }
 
-    private PlayerDTO[] PlayersDTOs { get => [.. this.Players.ConvertAll((player) => player.ToDTO())]; }
+    public GameSessionDTO ToDTO()
+    {
+      return new GameSessionDTO(this);
+    }
 
     public void HandlePlayer(Player player)
     {
@@ -140,7 +146,7 @@ namespace RuleChaos.Models
 
     private void Log(params object[] args)
     {
-      Console.WriteLine($"{this.Id}: {string.Join(' ', args)}");
+      Console.WriteLine(string.Join(' ', args));
     }
   }
 }
