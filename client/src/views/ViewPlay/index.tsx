@@ -50,25 +50,23 @@ export const ViewPlay: FC = () => {
   const onClickButton = () => send(MessageType.TEST_PlayerClickedButton, {});
 
   return (
-    <BasePage>
-      <div className="flex">
-        {isOpened ? (
-          <>
-            <div className="flex-1">
-              <div>Игра!</div>
-              {isAbleToTurn && <div>Твой ход!</div>}
-              <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
-                тык
-              </BaseButton>
-            </div>
-            {players.length > 0 && (
-              <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
-            )}
-          </>
-        ) : (
-          <div>Ну заполни форму там или чьчто...</div>
-        )}
-      </div>
+    <BasePage className="flex">
+      {isOpened ? (
+        <>
+          <div className="flex-1">
+            <div>Игра!</div>
+            {isAbleToTurn && <div>Твой ход!</div>}
+            <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
+              тык
+            </BaseButton>
+          </div>
+          {players.length > 0 && (
+            <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
+          )}
+        </>
+      ) : (
+        <div>Ну заполни форму там или чьчто...</div>
+      )}
     </BasePage>
   );
 };

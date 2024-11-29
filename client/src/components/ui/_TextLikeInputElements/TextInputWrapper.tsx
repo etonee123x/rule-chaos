@@ -1,4 +1,5 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react';
+import classNames from 'classnames';
 
 import { UI } from '@/helpers/ui';
 
@@ -19,13 +20,13 @@ export const TextInputWrapper: FC<Props> = (props) => {
 
   return (
     <div>
-      <div className={['relative', hasError ? 'text-red-500' : 'text-primary-400'].join(' ')}>
+      <div className={classNames(['relative', hasError ? 'text-red-500' : 'text-primary-400'])}>
         {props.label && (
           <label
-            className={[
+            className={classNames([
               UI.ELEMENT_TITLE,
               'absolute z-10 -top-3 start-2 p-px before:bg-white before:w-[calc(100%+2px)] before:-start-px before:top-2 before:z-[-1] before:h-2 before:absolute',
-            ].join(' ')}
+            ])}
             htmlFor={props.labelFor}
           >
             {props.label}
