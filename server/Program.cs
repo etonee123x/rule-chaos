@@ -13,13 +13,13 @@ app.UseCors(policyAllowAll);
 
 var gameServer = new GameServer();
 
-app.MapGet("/sessions", (context) => context.Response.WriteAsJsonAsync(gameServer.GameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO())));
+app.MapGet("/sessions", (context) => context.Response.WriteAsJsonAsync(gameServer.ActiveGameSessionsDTOs));
 
 app.MapPost("/sessions", async (context) =>
 {
   var isPrivate = bool.TryParse(context.Request.Form["isPrivate"], out bool result) && result;
   var gameSession = new GameSession(isPrivate);
-  gameServer.GameSessions.Add(gameSession);
+  gameServer.AddSession(gameSession);
 
   await context.Response.WriteAsJsonAsync(gameSession.ToDTO());
 });
