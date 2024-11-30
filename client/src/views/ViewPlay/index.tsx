@@ -7,6 +7,7 @@ import { arePlayersEqual } from '@/helpers/player';
 import { BasePage } from '@/components/BasePage';
 import { BaseButton } from '@/components/ui/BaseButton';
 import { useWebSocket } from '@/contexts/webSocket';
+import { BaseForm } from '@/components/ui/BaseForm';
 
 export const ViewPlay: FC = () => {
   const { isOpened, addHandler, send } = useWebSocket();
@@ -51,22 +52,7 @@ export const ViewPlay: FC = () => {
 
   return (
     <BasePage className="flex">
-      {isOpened ? (
-        <>
-          <div className="flex-1">
-            <div>Игра!</div>
-            {isAbleToTurn && <div>Твой ход!</div>}
-            <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
-              тык
-            </BaseButton>
-          </div>
-          {players.length > 0 && (
-            <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
-          )}
-        </>
-      ) : (
-        <div>Ну заполни форму там или чьчто...</div>
-      )}
+      <BaseButton >Создать</BaseButton>
     </BasePage>
   );
 };
