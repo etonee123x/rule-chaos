@@ -4,15 +4,17 @@ import { BaseCheckbox } from '@/components/ui/BaseCheckbox';
 import { BaseForm } from '@/components/ui/BaseForm';
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { mdiPlus } from '@mdi/js';
-import { useCallback, useRef, useState, type FC } from 'react';
+import { useCallback, useRef, useState, type FC, type HTMLAttributes } from 'react';
 import { type Session } from '@/api/sessions';
+import classNames from 'classnames';
 
-interface Props
+export interface Props
   extends Partial<{
-    onPost: (session: Session) => unknown;
-  }> {}
+      onPost: (session: Session) => unknown;
+    }>,
+    HTMLAttributes<HTMLDivElement> {}
 
-export const FormCreateSession: FC<Props> = ({ onPost }) => {
+export const FormCreateSession: FC<Props> = ({ onPost, ...restProps }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
 
@@ -29,7 +31,7 @@ export const FormCreateSession: FC<Props> = ({ onPost }) => {
   }, [postSession, onPost]);
 
   return (
-    <div>
+    <div className={classNames(restProps.className)}>
       {!isExpanded ? ( //
         <BaseButton propsIconPrepend={{ path: mdiPlus }} onClick={() => setIsExpanded(true)}>
           Создать

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
 export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: ReactNode }>) => {
-  const { HOME, RULES, PLAY } = ROUTER_ID_TO_PATH_BUILDER;
+  const { HOME, RULES, SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
   const NAV_LINKS = [
     {
       id: 0,
@@ -17,7 +17,7 @@ export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: Re
     },
     {
       id: 2,
-      to: PLAY(),
+      to: SESSIONS(),
       text: 'Играть',
     },
   ];

@@ -33,16 +33,16 @@ export interface MessagePlayerSelfIdentification extends Message<MessageType.Pla
 export interface Message_TEST_PlayerClickedButton extends Message<MessageType.TEST_PlayerClickedButton> {}
 
 export interface Player {
-  Name: string;
-  Id: string;
+  name: string;
+  id: string;
 }
 
 interface WithPlayer {
-  Player: Player;
+  player: Player;
 }
 
 interface WithPlayers {
-  Players: Array<Player>;
+  players: Array<Player>;
 }
 
 interface WithPlayerAndPlayers extends WithPlayer, WithPlayers {}
