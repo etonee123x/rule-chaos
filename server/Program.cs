@@ -1,16 +1,19 @@
-using System.Text;
 using RuleChaos.Models;
 using RuleChaos.Models.GameSessions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var policyAllowAll = "AllowSpecificOrigin";
+
+builder.Services.AddCors(options => options.AddPolicy(policyAllowAll, policy => policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod()));
+
 var app = builder.Build();
+
+app.UseCors(policyAllowAll);
 
 var gameServer = new GameServer();
 
-app.MapGet("/sessions", async (context) =>
-{
-  await context.Response.WriteAsJsonAsync(gameServer.GameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO()));
-});
+app.MapGet("/sessions", (context) => context.Response.WriteAsJsonAsync(gameServer.GameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO())));
 
 app.MapPost("/sessions", async (context) =>
 {

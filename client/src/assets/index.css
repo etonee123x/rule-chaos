@@ -22,7 +22,7 @@
   }
 
   .button {
-    @apply cursor-pointer bg-primary-500 text-white h-8 px-4 rounded;
+    @apply cursor-pointer bg-primary-500 text-white h-8 px-4 rounded flex items-center text-base;
 
     &:hover {
       @apply bg-primary-600;
@@ -58,6 +58,26 @@
     input {
       all: unset;
       @apply text-body-initial flex-1;
+    }
+  }
+
+  .checkbox {
+    @apply inline-flex items-center gap-2 cursor-pointer text-gray-300;
+    @apply has-[input:disabled]:pointer-events-none has-[input:disabled]:text-gray-300;
+    @apply has-[input:checked]:text-primary-500;
+    @apply has-[input:checked]:has-[input:disabled]:text-gray-300;
+    @apply hover:text-primary-500;
+
+    &.checkbox_size_sm {
+      .icon {
+        @apply size-4;
+      }
+    }
+
+    &.checkbox_size_xs {
+      .icon {
+        @apply size-3;
+      }
     }
   }
 }

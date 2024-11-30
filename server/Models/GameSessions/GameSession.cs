@@ -8,7 +8,7 @@ namespace RuleChaos.Models.GameSessions
 {
   public class GameSession(bool isPrivate)
   {
-    public Guid Id { get; } = new();
+    public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; } = isPrivate;
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }

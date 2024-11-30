@@ -7,14 +7,13 @@ namespace RuleChaos.Models.Players
   public class Player
   {
     public WebSocket WebSocket { get; }
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
     public string Name { get; }
 
     public Player(string name, WebSocket webSocket)
     {
       this.Name = name;
       this.WebSocket = webSocket;
-      this.Id = Guid.NewGuid();
 
       // Пытаемся отправить игрока клиенту тут
       this.SendMessage(new MessagePlayerSelfIdentification(this.ToDTO()));

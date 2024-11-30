@@ -15,6 +15,7 @@
     "@mdi/js": "^7.4.47",
     "classnames": "^2.5.1",
     "modern-normalize": "^3.0.1",
+    "ofetch": "^1.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"

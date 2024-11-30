@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FC, type FormEventHandler } from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { BaseButton, type Props as PropsBaseButton } from '@/components/ui/BaseButton';
@@ -47,7 +47,7 @@ export const FormSessionConnection: FC = () => {
   const onChangeSessionCode = setSessionCode;
   const onChangePlayerName = setPlayerName;
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = () => {
+  const onSubmit = () => {
     if (!refForm.current?.form?.checkValidity()) {
       return;
     }

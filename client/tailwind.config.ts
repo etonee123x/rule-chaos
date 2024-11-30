@@ -5,6 +5,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      cursor: {
+        inherit: 'inherit',
+      },
       colors: {
         initial: 'initial',
         'body-initial': colors.neutral[900],
