@@ -9,11 +9,10 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const [isOpened, setIsOpened] = useState(false);
 
-  const open: WebSocketContext['open'] = useCallback((playerName, sessionCode) => {
-    const url = new URL('/', 'ws://localhost:8080');
+  const open: WebSocketContext['open'] = useCallback((sessionId) => {
+    const url = new URL('/ws', 'ws://localhost:5023');
 
-    url.searchParams.append('session_code', sessionCode);
-    url.searchParams.append('player_name', playerName);
+    url.searchParams.append('session_id', sessionId);
 
     if (socketRef.current) {
       if (socketRef.current.url === url.toString()) {
@@ -70,8 +69,8 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const send = useCallback<WebSocketContext['send']>((type, message) => {
     const messageSerialized = JSON.stringify({
-      Type: type,
       ...message,
+      type,
     });
 
     socketRef.current?.send(messageSerialized);

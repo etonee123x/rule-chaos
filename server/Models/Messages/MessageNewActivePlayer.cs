@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using RuleChaos.Models.Players;
 
 namespace RuleChaos.Models.Messages
@@ -5,8 +6,10 @@ namespace RuleChaos.Models.Messages
   public class MessageNewActivePlayer(PlayerDTO player)
     : MessageFromServer
   {
-    public PlayerDTO Player { get; set; } = player;
+    [JsonPropertyName("player")]
+    public PlayerDTO Player { get; } = player;
 
+    [JsonPropertyName("type")]
     public override string Type
     {
       get => MessageType.NewActivePlayer;

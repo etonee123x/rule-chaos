@@ -1,5 +1,5 @@
 export interface Message<TType extends MessageType = MessageType> {
-  Type: TType;
+  type: TType;
 }
 
 export enum MessageType {

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using RuleChaos.Models.GameSessions;
 using RuleChaos.Models.Players;
 
@@ -6,6 +7,7 @@ namespace RuleChaos.Models.Messages
 {
   public abstract class Message
   {
+    [JsonPropertyName("type")]
     public abstract string Type { get; }
 
     public override string ToString()
@@ -18,7 +20,7 @@ namespace RuleChaos.Models.Messages
   {
     public abstract void Handle(GameSession gameSession, Player player);
 
-    public static readonly Dictionary<string, Type> MessageTypeToMessage = new ()
+    public static readonly Dictionary<string, Type> MessageTypeToMessage = new()
     {
       { MessageType.TEST_PlayerClickedButton, typeof(Message_TEST_PlayerClickedButton) },
     };

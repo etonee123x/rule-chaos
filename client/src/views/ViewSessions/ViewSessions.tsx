@@ -36,18 +36,20 @@ export const ViewSessions: FC = () => {
   }, [cancel, getAllSessions, start]);
 
   return (
-    <BasePage className="flex">
+    <BasePage className="flex flex-col">
       <FormCreateSession className="mb-4" onPost={onPost} />
-      <BaseButton propsIconPrepend={{ path: mdiRefresh }} onClick={onClickRefresh}></BaseButton>
-      {!sessions?.length ? ( //
-        <div>Нет сессий, будь первым сука</div>
-      ) : (
-        <ul>
-          {sessions.map((session) => (
-            <li key={session.id}>{JSON.stringify(session)}</li>
-          ))}
-        </ul>
-      )}
+      <div>
+        <BaseButton propsIconPrepend={{ path: mdiRefresh }} onClick={onClickRefresh}></BaseButton>
+        {!sessions?.length ? (
+          <div>Нет сессий, будь первым сука</div>
+        ) : (
+          <ul>
+            {sessions.map((session) => (
+              <li key={session.id}>{JSON.stringify(session)}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </BasePage>
   );
 };

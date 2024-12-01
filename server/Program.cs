@@ -35,7 +35,23 @@ app.Map("/ws", async context =>
     return;
   }
 
-  gameServer.HandleWebSocket(await context.WebSockets.AcceptWebSocketAsync());
+  string? maybeSessionId = context.Request.Query["session_id"];
+
+  if (maybeSessionId == null)
+  {
+    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+    await context.Response.WriteAsync("Session id is required.");
+    return;
+  }
+
+  if (!Guid.TryParse(maybeSessionId, out Guid sessionId))
+  {
+    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+    await context.Response.WriteAsync("Invalid session id format.");
+    return;
+  }
+
+  gameServer.HandleConnectionAttempt(sessionId, context);
 });
 
 app.Run();
