@@ -23,7 +23,7 @@ export const ROUTER_ID_TO_PATH_BUILDER = Object.freeze({
   [ROUTER_IDS.HOME]: () => '/',
   [ROUTER_IDS.RULES]: () => '/rules',
   [ROUTER_IDS.SESSIONS]: () => '/sessions',
-  [ROUTER_IDS.SESSION]: (id: Session['Id']) => `/sessions/${id}`,
+  [ROUTER_IDS.SESSION]: (id: Session['id']) => `/sessions/${id}`,
   [ROUTER_IDS.PAGE_404]: () => '/404',
 });
 
