@@ -31,17 +31,14 @@ namespace RuleChaos.Models
 
     private void CleanupInactiveSessions()
     {
-      var now = DateTime.UtcNow;
+      var inactiveGameSessions = this.gameSessions
+        .Where(session => session.IsInactive(GameServer.SessionTimeout))
+        .ToList();
 
-      this.gameSessions.ForEach(gameSession =>
+      foreach (var inactiveGameSession in inactiveGameSessions)
       {
-        if (!gameSession.IsInactive(GameServer.SessionTimeout))
-        {
-          return;
-        }
-
-        this.gameSessions.Remove(gameSession);
-      });
+        this.gameSessions.Remove(inactiveGameSession);
+      }
     }
   }
 }

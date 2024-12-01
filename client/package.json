@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",
+    "@reactuses/core": "^5.0.23",
     "classnames": "^2.5.1",
     "modern-normalize": "^3.0.1",
     "ofetch": "^1.4.1",

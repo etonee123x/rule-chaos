@@ -15,8 +15,8 @@ export interface Props
 
 export const BaseButton: FC<Props> = (props) => (
   <button className={classNames([UI.BUTTON._name, props.className])} {...pick(props, ['disabled', 'type', 'onClick'])}>
-    {props.propsIconPrepend && <BaseIcon className="me-1" {...props.propsIconPrepend} />}
+    {props.propsIconPrepend && <BaseIcon {...props.propsIconPrepend} />}
     {props.children}
-    {props.propsIconAppend && <BaseIcon className="ms-1" {...props.propsIconAppend} />}
+    {props.propsIconAppend && <BaseIcon {...props.propsIconAppend} />}
   </button>
 );

@@ -6,6 +6,9 @@ import { useAsyncData } from '@/hooks/useAsyncData';
 import { getAll } from '@/api/sessions';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import { useNavigate } from 'react-router-dom';
+import { useTimeoutFn } from '@reactuses/core';
+import { BaseButton } from '@/components/ui/BaseButton';
+import { mdiRefresh } from '@mdi/js';
 
 export const ViewSessions: FC = () => {
   const { SESSION } = ROUTER_ID_TO_PATH_BUILDER;
@@ -13,9 +16,11 @@ export const ViewSessions: FC = () => {
 
   const navigate = useNavigate();
 
+  const [, start, cancel] = useTimeoutFn(() => getAllSessions().finally(start), 60_000);
+
   useEffect(() => {
-    getAllSessions();
-  }, [getAllSessions]);
+    getAllSessions().finally(start);
+  }, [getAllSessions, start]);
 
   const onPost: NonNullable<PropsFormCreateSession['onPost']> = useCallback(
     (session) => {
@@ -25,9 +30,15 @@ export const ViewSessions: FC = () => {
     [getAllSessions, SESSION, navigate],
   );
 
+  const onClickRefresh = useCallback(() => {
+    cancel();
+    getAllSessions().finally(start);
+  }, [cancel, getAllSessions, start]);
+
   return (
     <BasePage className="flex">
       <FormCreateSession className="mb-4" onPost={onPost} />
+      <BaseButton propsIconPrepend={{ path: mdiRefresh }} onClick={onClickRefresh}></BaseButton>
       {!sessions?.length ? ( //
         <div>Нет сессий, будь первым сука</div>
       ) : (
