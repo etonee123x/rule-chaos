@@ -11,7 +11,7 @@ import { isNil } from '@/utils/isNil';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
-  const { addHandler, send, open, close, isOpened } = useWebSocket();
+  const { addHandler, send, open, close } = useWebSocket();
 
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player>();
@@ -64,10 +64,9 @@ export const ViewSession: FC = () => {
   return (
     <BasePage className="flex">
       <div className="flex-1">
-        {JSON.stringify(isOpened)}
         <div>Игра!</div>
         {isAbleToTurn && <div>Твой ход!</div>}
-        <BaseButton disabled={!isAbleToTurn && false} onClick={onClickButton}>
+        <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
           тык
         </BaseButton>
       </div>
