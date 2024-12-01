@@ -16,7 +16,7 @@ namespace RuleChaos.Models
 
     public GameServer()
     {
-      new Timer((state) => this.CleanupInactiveSessions(), null, GameServer.CleanupInterval, GameServer.CleanupInterval);
+      var timer = new Timer((state) => this.CleanupInactiveSessions(), null, GameServer.CleanupInterval, GameServer.CleanupInterval);
     }
 
     public async Task HandleConnectionAttempt(Guid sessionId, HttpContext context)
@@ -50,6 +50,7 @@ namespace RuleChaos.Models
       var inactiveGameSessions = this.gameSessions
         .Where(session => session.IsInactive(GameServer.SessionTimeout))
         .ToList();
+      Console.WriteLine(inactiveGameSessions);
 
       foreach (var inactiveGameSession in inactiveGameSessions)
       {

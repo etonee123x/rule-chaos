@@ -5,10 +5,11 @@ import { FormCreateSession, type Props as PropsFormCreateSession } from './compo
 import { useAsyncData } from '@/hooks/useAsyncData';
 import { getAll } from '@/api/sessions';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTimeoutFn } from '@reactuses/core';
 import { BaseButton } from '@/components/ui/BaseButton';
-import { mdiRefresh } from '@mdi/js';
+import { mdiChevronRight, mdiRefresh } from '@mdi/js';
+import { BaseIcon } from '@/components/ui/BaseIcon';
 
 export const ViewSessions: FC = () => {
   const { SESSION } = ROUTER_ID_TO_PATH_BUILDER;
@@ -39,15 +40,23 @@ export const ViewSessions: FC = () => {
     <BasePage className="flex flex-col">
       <FormCreateSession className="mb-4" onPost={onPost} />
       <div>
-        <BaseButton propsIconPrepend={{ path: mdiRefresh }} onClick={onClickRefresh}></BaseButton>
+        <div className="flex items-center gap-2 mb-4 justify-end">
+          <div>Найдено сессий: {sessions?.length ?? 0}</div>
+          <BaseButton propsIconPrepend={{ path: mdiRefresh }} onClick={onClickRefresh}></BaseButton>
+        </div>
         {!sessions?.length ? (
           <div>Нет сессий, будь первым сука</div>
         ) : (
-          <ul>
+          <ol>
             {sessions.map((session) => (
-              <li key={session.id}>{JSON.stringify(session)}</li>
+              <li className="mb-2 last:mb-0 rounded bg-slate-100" key={session.id}>
+                <Link className="flex items-center p-4" to={SESSION(session.id)}>
+                  <div>Игроков: {session.players.length}</div>
+                  <BaseIcon className="ms-auto" path={mdiChevronRight}></BaseIcon>
+                </Link>
+              </li>
             ))}
-          </ul>
+          </ol>
         )}
       </div>
     </BasePage>

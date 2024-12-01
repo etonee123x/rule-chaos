@@ -32,7 +32,7 @@ export const FormCreateSession: FC<Props> = ({ onPost, ...restProps }) => {
 
   return (
     <div className={classNames(restProps.className)}>
-      {!isExpanded ? ( //
+      {!isExpanded ? (
         <BaseButton propsIconPrepend={{ path: mdiPlus }} onClick={() => setIsExpanded(true)}>
           Создать
         </BaseButton>

@@ -10,7 +10,7 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isOpened, setIsOpened] = useState(false);
 
   const open: WebSocketContext['open'] = useCallback((sessionId) => {
-    const url = new URL('/ws', 'ws://localhost:5023');
+    const url = new URL('/ws', import.meta.env.VITE_API_URL_WS);
 
     url.searchParams.append('session_id', sessionId);
 

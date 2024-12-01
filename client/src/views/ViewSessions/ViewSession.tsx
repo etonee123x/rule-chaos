@@ -21,13 +21,13 @@ export const ViewSession: FC = () => {
 
   useEffect(() => {
     if (isNil(id)) {
-      return;
+      return close;
     }
 
     open(id);
-  }, [id, open, close]);
 
-  useEffect(() => close, [close]);
+    return close;
+  }, [id, open, close]);
 
   useEffect(() =>
     addHandler((message) => {
