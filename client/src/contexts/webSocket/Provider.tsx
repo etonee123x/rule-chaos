@@ -32,17 +32,23 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const webSocket = new WebSocket(url);
 
-    webSocket.onopen = () => setIsOpened(true);
-    webSocket.onclose = () => setIsOpened(false);
-    webSocket.onerror = (error) => console.error('Ошибка WebSocket:', error);
-
     webSocket.onmessage = (messageEvent) => {
       const deserializedMessage = deserialize(messageEvent);
 
       handlersRef.current.values().forEach(invoke(deserializedMessage));
     };
 
-    socketRef.current = webSocket;
+    webSocket.onerror = (error) => console.error('Ошибка WebSocket:', error);
+
+    webSocket.onclose = () => {
+      socketRef.current = null;
+      setIsOpened(false);
+    };
+
+    webSocket.onopen = () => {
+      socketRef.current = webSocket;
+      setIsOpened(true);
+    };
   }, []);
 
   const close = useCallback(() => {

@@ -20,25 +20,25 @@ namespace RuleChaos.Models
       new Timer((state) => this.CleanupInactiveSessions(), null, GameServer.CleanupInterval, GameServer.CleanupInterval);
     }
 
-    public async void HandleConnectionAttempt(Guid sessionId, HttpContext context)
+    public async Task HandleConnectionAttempt(Guid sessionId, HttpContext context)
     {
       var maybeGameSession = this.gameSessions.Find((gameSession) => gameSession.Id == sessionId);
 
       if (maybeGameSession == null)
       {
         context.Response.StatusCode = StatusCodes.Status404NotFound;
-        context.Response.WriteAsync("Session not found");
+        await context.Response.WriteAsync("Session not found");
         return;
       }
 
       if (maybeGameSession.HasEnoughPlayers)
       {
         context.Response.StatusCode = StatusCodes.Status409Conflict;
-        context.Response.WriteAsync("Session has enough players");
+        await context.Response.WriteAsync("Session has enough players");
         return;
       }
 
-      maybeGameSession.HandlePlayer(new Player(await context.WebSockets.AcceptWebSocketAsync()));
+      await maybeGameSession.HandlePlayer(new Player(await context.WebSockets.AcceptWebSocketAsync()));
     }
 
     public void AddSession(GameSession gameSession)

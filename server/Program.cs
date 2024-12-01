@@ -51,7 +51,7 @@ app.Map("/ws", async context =>
     return;
   }
 
-  gameServer.HandleConnectionAttempt(sessionId, context);
+  await gameServer.HandleConnectionAttempt(sessionId, context);
 });
 
 app.Run();

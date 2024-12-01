@@ -28,7 +28,7 @@ namespace RuleChaos.Models.GameSessions
       return new GameSessionDTO(this);
     }
 
-    public void HandlePlayer(Player player)
+    public Task HandlePlayer(Player player)
     {
       this.AddPlayer(player);
 
@@ -37,7 +37,7 @@ namespace RuleChaos.Models.GameSessions
         this.StartSession();
       }
 
-      Task.Run(async () =>
+      return Task.Run(async () =>
       {
         var buffer = new byte[1024 * 4];
 
@@ -116,7 +116,7 @@ namespace RuleChaos.Models.GameSessions
 
     private void HandlePlayerMessage(Player player, string serializedMessage)
     {
-      var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("Type").GetString();
+      var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("type").GetString();
 
       if (type == null || !MessageFromClient.MessageTypeToMessage.TryGetValue(type, out var messageType))
       {
