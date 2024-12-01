@@ -1,4 +1,4 @@
-import { createBrowserRouter, createRoutesFromElements, Outlet, Route } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 
 import { ViewPage404 } from '@/views/ViewPage404';
 import { ViewHome } from '@/views/ViewHome';
@@ -33,8 +33,8 @@ export const router = createBrowserRouter(
       <Route element={<LayoutDefault />}>
         <Route path="/" id={ROUTER_IDS.HOME} element={<ViewHome />} />
         <Route path="/rules" id={ROUTER_IDS.RULES} element={<ViewRules />} />
-        <Route path="/sessions" id={ROUTER_IDS.SESSIONS} element={<Outlet />}>
-          <Route index element={<ViewSessions />} />
+        <Route path="/sessions">
+          <Route index id={ROUTER_IDS.SESSIONS} element={<ViewSessions />} />
           <Route path=":id" id={ROUTER_IDS.SESSION} element={<ViewSession />} />
         </Route>
       </Route>
