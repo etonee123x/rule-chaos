@@ -12,7 +12,7 @@ namespace RuleChaos.Models
 
     private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
-    private readonly List<GameSession> gameSessions = [];
+    private List<GameSession> gameSessions = [];
 
     public GameServer()
     {
@@ -47,15 +47,7 @@ namespace RuleChaos.Models
 
     private void CleanupInactiveSessions()
     {
-      var inactiveGameSessions = this.gameSessions
-        .Where(session => session.IsInactive(GameServer.SessionTimeout))
-        .ToList();
-      Console.WriteLine(inactiveGameSessions);
-
-      foreach (var inactiveGameSession in inactiveGameSessions)
-      {
-        this.gameSessions.Remove(inactiveGameSession);
-      }
+      this.gameSessions = this.gameSessions.FindAll((gameSession) => !gameSession.IsInactive(GameServer.SessionTimeout));
     }
   }
 }

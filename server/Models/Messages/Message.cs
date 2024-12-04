@@ -20,7 +20,9 @@ namespace RuleChaos.Models.Messages
   {
     public abstract void Handle(GameSession gameSession, Player player);
 
+#pragma warning disable SA1000 // new
     public static readonly Dictionary<string, Type> MessageTypeToMessage = new()
+#pragma warning restore SA1000
     {
       { MessageType.TEST_PlayerClickedButton, typeof(Message_TEST_PlayerClickedButton) },
     };
