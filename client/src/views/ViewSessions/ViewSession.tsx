@@ -31,6 +31,7 @@ export const ViewSession: FC = () => {
 
   useEffect(() =>
     addHandler((message) => {
+      console.log(message);
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
         setPlayers(message.players);
 
@@ -43,7 +44,7 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.SessionWasStarted)) {
+      if (doesMessageHasType(message, MessageType.RoundWasStarted)) {
         return;
       }
 

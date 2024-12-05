@@ -2,13 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageSessionWasStarted()
+  public class MessageRoundWasStarted()
     : MessageFromServer
   {
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.SessionWasStarted;
+      get => MessageType.RoundWasStarted;
     }
   }
 }

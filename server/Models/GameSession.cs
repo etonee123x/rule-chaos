@@ -7,16 +7,27 @@ using RuleChaos.Models.Messages;
 
 namespace RuleChaos.Models
 {
-  public class GameSession(bool isPrivate)
+  public class GameSession
   {
+    public GameSession(bool isPrivate)
+    {
+      this.IsPrivate = isPrivate;
+
+      Task.Run(async () =>
+      {
+        this.ItemGenerator = await ItemGenerator.CreateInstanse();
+      });
+    }
+
     public Guid Id { get; } = Guid.NewGuid();
-    public bool IsPrivate { get; } = isPrivate;
+    public bool IsPrivate { get; }
 
     public bool HasEnoughPlayers { get => this.players.Count == GameSession.PlayersNumber; }
 
     public PlayerDTO[] PlayersDTOs { get => [.. this.players.ConvertAll((player) => player.ToDTO())]; }
 
     private static readonly byte PlayersNumber = 2;
+    private static readonly byte ItemsPerPlayer = 8;
 
     private readonly List<Player> players = [];
 
@@ -24,7 +35,18 @@ namespace RuleChaos.Models
 
     private Player? activePlayer;
 
+    private ItemGenerator? ItemGenerator { get; set; }
+
     private Item.Item[] items = [];
+
+    private Item.Item[] Items
+    {
+      set
+      {
+        this.SendMessageToPlayers(new MessageItemsUpdate(this.items.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
+        this.items = value;
+      }
+    }
 
     private bool IsRoundActive { get => this.activePlayer != null; }
 
@@ -39,7 +61,7 @@ namespace RuleChaos.Models
 
       if (this.HasEnoughPlayers)
       {
-        this.StartSession();
+        this.StartRound();
       }
 
       return Task.Run(async () =>
@@ -107,10 +129,16 @@ namespace RuleChaos.Models
       return DateTime.UtcNow - this.lastActivity > timeSpan;
     }
 
-    private void StartSession()
+    private void StartRound()
     {
-      this.SendMessageToPlayers(new MessageSessionWasStarted());
+      this.SendMessageToPlayers(new MessageRoundWasStarted());
 
+      if (this.ItemGenerator == null)
+      {
+        throw new Exception("Has no item generator");
+      }
+
+      this.Items = new Item.Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
       this.MakeFirstOrNextPlayerActive();
     }
 

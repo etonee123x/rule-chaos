@@ -5,7 +5,7 @@ export interface Message<TType extends MessageType = MessageType> {
 export enum MessageType {
   PlayerJoinedSession = 'PlayerJoinedSession',
   PlayerLeftSession = 'PlayerLeftSession',
-  SessionWasStarted = 'SessionWasStarted',
+  RoundWasStarted = 'RoundWasStarted',
   NewActivePlayer = 'NewActivePlayer',
   PlayerSelfIdentification = 'PlayerSelfIdentification',
   TEST_PlayerClickedButton = 'TEST_PlayerClickedButton',
@@ -13,7 +13,7 @@ export enum MessageType {
 
 export interface MessageTypeToMessage {
   [MessageType.NewActivePlayer]: MessageNewActivePlayer;
-  [MessageType.SessionWasStarted]: MessageSessionWasStarted;
+  [MessageType.RoundWasStarted]: MessageRoundWasStarted;
   [MessageType.PlayerJoinedSession]: MessagePlayerJoinedSession;
   [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
   [MessageType.PlayerSelfIdentification]: MessagePlayerSelfIdentification;
@@ -26,7 +26,7 @@ export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJo
 
 export interface MessageNewActivePlayer extends Message<MessageType.NewActivePlayer>, WithPlayer {}
 
-export interface MessageSessionWasStarted extends Message<MessageType.SessionWasStarted> {}
+export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {}
 
 export interface MessagePlayerSelfIdentification extends Message<MessageType.PlayerSelfIdentification>, WithPlayer {}
 
