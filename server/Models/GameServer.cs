@@ -1,6 +1,3 @@
-using RuleChaos.Models.GameSessions;
-using RuleChaos.Models.Players;
-
 namespace RuleChaos.Models
 {
   public class GameServer

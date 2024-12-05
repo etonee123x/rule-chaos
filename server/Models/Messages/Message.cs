@@ -1,7 +1,5 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using RuleChaos.Models.GameSessions;
-using RuleChaos.Models.Players;
 
 namespace RuleChaos.Models.Messages
 {

@@ -1,5 +1,4 @@
 using RuleChaos.Models;
-using RuleChaos.Models.GameSessions;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,9 @@
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json.Serialization;
 using RuleChaos.Models.Messages;
 
-namespace RuleChaos.Models.Players
+namespace RuleChaos.Models
 {
   public class Player
   {
@@ -55,5 +56,14 @@ namespace RuleChaos.Models.Players
     {
       return $"{this.Name} ({this.Id})";
     }
+  }
+
+  public class PlayerDTO(Player player)
+  {
+    [JsonPropertyName("id")]
+    public Guid Id { get; } = player.Id;
+
+    [JsonPropertyName("name")]
+    public string Name { get; } = player.Name;
   }
 }

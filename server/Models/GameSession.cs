@@ -1,10 +1,11 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using RuleChaos.Models.Item;
 using RuleChaos.Models.Messages;
-using RuleChaos.Models.Players;
 
-namespace RuleChaos.Models.GameSessions
+namespace RuleChaos.Models
 {
   public class GameSession(bool isPrivate)
   {
@@ -22,6 +23,10 @@ namespace RuleChaos.Models.GameSessions
     private DateTime lastActivity = DateTime.UtcNow;
 
     private Player? activePlayer;
+
+    private Item.Item[] items = [];
+
+    private bool IsRoundActive { get => this.activePlayer != null; }
 
     public GameSessionDTO ToDTO()
     {
@@ -162,5 +167,14 @@ namespace RuleChaos.Models.GameSessions
     {
       Console.WriteLine(string.Join(' ', args));
     }
+  }
+
+  public class GameSessionDTO(GameSession gameSession)
+  {
+    [JsonPropertyName("id")]
+    public Guid Id { get; } = gameSession.Id;
+
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
   }
 }
