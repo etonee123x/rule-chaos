@@ -1,8 +1,12 @@
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
-import type { ReactNode } from 'react';
+import type { FC } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 
-export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: ReactNode }>) => {
+interface Props {
+  hasNoFooter?: boolean;
+}
+
+export const Default: FC<Props> = (props) => {
   const { HOME, RULES, SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
   const NAV_LINKS = [
     {
@@ -23,7 +27,7 @@ export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: Re
   ];
 
   return (
-    <div className="">
+    <div className="min-h-screen flex flex-col">
       <header className="z-50 sticky top-0 bg-white">
         <div className="min-h-16 py-2 text-lg mx-auto container flex flex-wrap justify-between gap-y-4 items-center">
           <nav className="text-lg">
@@ -44,17 +48,18 @@ export const Default = ({ componentHeaderEnd }: Partial<{ componentHeaderEnd: Re
               ))}
             </ul>
           </nav>
-          {componentHeaderEnd}
         </div>
         <hr />
       </header>
-      <main className="min-h-screen mx-auto container">
+      <main className="mx-auto flex-1 container flex flex-col">
         <Outlet />
       </main>
-      <footer className="mt-auto">
-        <hr />
-        <div className="py-2 mx-auto container">footer</div>
-      </footer>
+      {!props.hasNoFooter && (
+        <footer className="mt-auto">
+          <hr />
+          <div className="py-2 mx-auto container">footer</div>
+        </footer>
+      )}
     </div>
   );
 };

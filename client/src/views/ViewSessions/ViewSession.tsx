@@ -1,4 +1,4 @@
-import { MessageType, type Player } from '@/api/messages';
+import { MessageType, type Item, type Player } from '@/api/messages';
 import { BasePage } from '@/components/BasePage';
 import { BaseButton } from '@/components/ui/BaseButton';
 import { useWebSocket } from '@/contexts/webSocket';
@@ -8,6 +8,7 @@ import { useEffect, useState, type FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { Players } from './components/Players';
 import { isNil } from '@/utils/isNil';
+import { TheHand } from './components/TheHand';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export const ViewSession: FC = () => {
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player>();
   const [player, setPlayer] = useState<Player>();
+  const [items, setItems] = useState<Array<Item>>([]);
 
   const isAbleToTurn = Boolean(player && activePlayer && arePlayersEqual(player, activePlayer));
 
@@ -31,9 +33,14 @@ export const ViewSession: FC = () => {
 
   useEffect(() =>
     addHandler((message) => {
-      console.log(message);
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
         setPlayers(message.players);
+
+        return;
+      }
+
+      if (doesMessageHasType(message, MessageType.ItemsUpdate)) {
+        setItems(message.itemsCurrent);
 
         return;
       }
@@ -56,24 +63,31 @@ export const ViewSession: FC = () => {
 
       if (doesMessageHasType(message, MessageType.PlayerSelfIdentification)) {
         setPlayer(message.player);
+
+        return;
       }
+
+      console.warn(message);
     }),
   );
 
   const onClickButton = () => send(MessageType.TEST_PlayerClickedButton, {});
 
   return (
-    <BasePage className="flex">
-      <div className="flex-1">
-        <div>Игра!</div>
-        {isAbleToTurn && <div>Твой ход!</div>}
-        <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
-          тык
-        </BaseButton>
+    <BasePage className="flex-1 flex flex-col">
+      <div className="flex">
+        <div className="flex-1">
+          <div>Игра!</div>
+          {isAbleToTurn && <div>Твой ход!</div>}
+          <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
+            тык
+          </BaseButton>
+        </div>
+        {players.length > 0 && (
+          <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
+        )}
       </div>
-      {players.length > 0 && (
-        <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
-      )}
+      {items.length > 0 && <TheHand className="mt-auto" items={items} />}
     </BasePage>
   );
 };

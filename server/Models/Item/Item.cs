@@ -9,6 +9,7 @@ namespace RuleChaos.Models.Item
     public string Value { get; }
     public Category.Category[] Categories { get; }
 
+    [JsonConstructor]
     private Item(string value, string text, Category.Category[] categories)
     {
       this.Value = value;
@@ -29,28 +30,21 @@ namespace RuleChaos.Models.Item
 
     [JsonPropertyName("value")]
     public string Value { get; } = item.Value;
+
+    [JsonPropertyName("categories")]
+    public Category.CategoryDTO[] Categories { get; } = item.Categories.Select((category) => category.ToDTO()).ToArray();
   }
 
   public class ItemGenerator
   {
     public static async Task<ItemGenerator> CreateInstanse()
     {
-      try
-      {
-        Console.WriteLine("ЩАС КАК СОЗДАДИМ ИТЕМЫ!");
-        using var streamReader = new StreamReader("items.json");
-        var jsonAsString = await streamReader.ReadToEndAsync();
-        Console.WriteLine(jsonAsString);
-        var items = JsonSerializer.Deserialize<Item[]>(jsonAsString) ?? throw new Exception("NULL!");
+      using var streamReader = new StreamReader("items.json");
+      var jsonAsString = await streamReader.ReadToEndAsync();
+      var items = JsonSerializer.Deserialize<Item[]>(jsonAsString) ?? throw new Exception("NULL!");
 
-        return new ItemGenerator(items);
-      }
-      catch (Exception exception)
-      {
-        Console.WriteLine(exception.Message);
-      }
+      return new ItemGenerator(items);
 
-      return new ItemGenerator([]);
     }
 
     private readonly Item[] items;

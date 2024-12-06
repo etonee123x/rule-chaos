@@ -35,8 +35,10 @@ export const router = createBrowserRouter(
         <Route path="/rules" id={ROUTER_IDS.RULES} element={<ViewRules />} />
         <Route path="/sessions">
           <Route index id={ROUTER_IDS.SESSIONS} element={<ViewSessions />} />
-          <Route path=":id" id={ROUTER_IDS.SESSION} element={<ViewSession />} />
         </Route>
+      </Route>
+      <Route element={<LayoutDefault hasNoFooter />}>
+        <Route path="/sessions/:id" id={ROUTER_IDS.SESSION} element={<ViewSession />} />
       </Route>
       <Route element={<LayoutEmpty />}>
         <Route path="/404" id={ROUTER_IDS.PAGE_404} element={<ViewPage404 />} />

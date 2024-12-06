@@ -2,10 +2,17 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Category
 {
-  public class Category(string value, string text)
+  public class Category
   {
-    public string Text { get; } = text;
-    public string Value { get; } = value;
+    public string Text { get; }
+    public string Value { get; }
+
+    [JsonConstructor]
+    private Category(string value, string text)
+    {
+      this.Text = text;
+      this.Value = value;
+    }
 
     public CategoryDTO ToDTO()
     {

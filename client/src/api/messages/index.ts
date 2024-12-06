@@ -8,6 +8,7 @@ export enum MessageType {
   RoundWasStarted = 'RoundWasStarted',
   NewActivePlayer = 'NewActivePlayer',
   PlayerSelfIdentification = 'PlayerSelfIdentification',
+  ItemsUpdate = 'ItemsUpdate',
   TEST_PlayerClickedButton = 'TEST_PlayerClickedButton',
 }
 
@@ -18,6 +19,7 @@ export interface MessageTypeToMessage {
   [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
   [MessageType.PlayerSelfIdentification]: MessagePlayerSelfIdentification;
   [MessageType.TEST_PlayerClickedButton]: Message_TEST_PlayerClickedButton;
+  [MessageType.ItemsUpdate]: MessageItemsUpdate;
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession>, WithPlayerAndPlayers {}
@@ -31,6 +33,11 @@ export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStar
 export interface MessagePlayerSelfIdentification extends Message<MessageType.PlayerSelfIdentification>, WithPlayer {}
 
 export interface Message_TEST_PlayerClickedButton extends Message<MessageType.TEST_PlayerClickedButton> {}
+
+export interface MessageItemsUpdate extends Message<MessageType.ItemsUpdate> {
+  itemsCurrent: Array<Item>;
+  itemsPrevious: Array<Item>;
+}
 
 export interface Player {
   name: string;
@@ -46,3 +53,12 @@ interface WithPlayers {
 }
 
 interface WithPlayerAndPlayers extends WithPlayer, WithPlayers {}
+
+interface WithTextAndValue {
+  text: string;
+  value: string;
+}
+
+export interface Item extends WithTextAndValue {
+  category: unknown;
+}

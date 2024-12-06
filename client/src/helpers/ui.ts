@@ -14,4 +14,5 @@ export const UI = Object.freeze({
       XS: 'checkbox_size_xs',
     }),
   }),
+  NO_SCROLLBAR: 'no-scrollbar',
 });
