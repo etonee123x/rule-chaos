@@ -10,21 +10,24 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Players: FC<Props> = (props) => (
-  <ul className={classNames([props.className, 'list-inside'])}>
-    {props.players.map((player, index) => (
-      <li
-        className={classNames([
-          'mb-2 last:mb-0',
-          props.activePlayer && arePlayersEqual(player, props.activePlayer) && 'list-[disclosure-closed]',
-          props.player &&
-            arePlayersEqual(player, props.player) &&
-            'font-semibold text-primary-500 marker:text-body-initial',
-        ])}
-        title={player.id}
-        key={index}
-      >
-        {player.name} {props.player && arePlayersEqual(props.player, player) && '(you)'}
-      </li>
-    ))}
-  </ul>
+  <div className={props.className}>
+    Игроки:
+    <ul className="list-inside">
+      {props.players.map((player, index) => (
+        <li
+          className={classNames([
+            'mb-2 last:mb-0',
+            props.activePlayer && arePlayersEqual(player, props.activePlayer) && 'list-[disclosure-closed]',
+            props.player &&
+              arePlayersEqual(player, props.player) &&
+              'font-semibold text-primary-500 marker:text-body-initial',
+          ])}
+          title={player.id}
+          key={index}
+        >
+          {player.name} {props.player && arePlayersEqual(props.player, player) && '(you)'}
+        </li>
+      ))}
+    </ul>
+  </div>
 );

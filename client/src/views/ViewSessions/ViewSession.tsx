@@ -1,25 +1,23 @@
 import { MessageType, type Item, type Player } from '@/api/messages';
 import { BasePage } from '@/components/BasePage';
-import { BaseButton } from '@/components/ui/BaseButton';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/doesMessageHasType';
-import { arePlayersEqual } from '@/helpers/player';
 import { useEffect, useState, type FC } from 'react';
 import { useParams } from 'react-router-dom';
 import { Players } from './components/Players';
 import { isNil } from '@/utils/isNil';
 import { TheHand } from './components/TheHand';
+import { TheField } from './components/TheField';
+import { TheHistoryFeed } from './components/TheHistoryFeed';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
-  const { addHandler, send, open, close } = useWebSocket();
+  const { addHandler, open, close } = useWebSocket();
 
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player>();
   const [player, setPlayer] = useState<Player>();
   const [items, setItems] = useState<Array<Item>>([]);
-
-  const isAbleToTurn = Boolean(player && activePlayer && arePlayersEqual(player, activePlayer));
 
   useEffect(() => {
     if (isNil(id)) {
@@ -71,17 +69,12 @@ export const ViewSession: FC = () => {
     }),
   );
 
-  const onClickButton = () => send(MessageType.TEST_PlayerClickedButton, {});
-
   return (
     <BasePage className="flex-1 flex flex-col">
-      <div className="flex">
-        <div className="flex-1">
-          <div>Игра!</div>
-          {isAbleToTurn && <div>Твой ход!</div>}
-          <BaseButton disabled={!isAbleToTurn} onClick={onClickButton}>
-            тык
-          </BaseButton>
+      <div className="flex mb-5 gap-8">
+        <div className="flex-1 flex gap-8">
+          <TheField />
+          <TheHistoryFeed className="flex-1" />
         </div>
         {players.length > 0 && (
           <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />

@@ -11,7 +11,7 @@ export const TheHand: FC<Props> = (props) => (
   <div className={props.className}>
     <ul className={classNames(['flex gap-2 overflow-x-auto', UI.NO_SCROLLBAR])}>
       {props.items.map((item, index) => (
-        <li key={index} className="min-h-20 min-w-20 border">
+        <li key={index} className="size-20 border shrink-0 flex justify-center items-center cursor-pointer select-none">
           <div>{item.text}</div>
         </li>
       ))}
