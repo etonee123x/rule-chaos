@@ -13,7 +13,7 @@ const indexToRowCol = (index: number) => ({
 const getCellClassNameByIndex = (index: number) => {
   const { row, col } = indexToRowCol(index);
 
-  return classNames(['size-20', (row + col) % 2 ? 'bg-primary-300' : 'bg-gray-200']);
+  return classNames(['size-16', (row + col) % 2 ? 'bg-primary-300' : 'bg-gray-200']);
 };
 
 export const TheField: FC<Props> = (props) => (

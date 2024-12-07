@@ -3,16 +3,20 @@ import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/doesMessageHasType';
 import { useEffect, useState, type FC } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Players } from './components/Players';
 import { isNil } from '@/utils/isNil';
 import { TheHand } from './components/TheHand';
 import { TheField } from './components/TheField';
 import { TheHistoryFeed } from './components/TheHistoryFeed';
+import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
-  const { addHandler, open, close } = useWebSocket();
+  const { addEventListener, open, close } = useWebSocket();
+  const navigate = useNavigate();
+
+  const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
 
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player>();
@@ -29,8 +33,10 @@ export const ViewSession: FC = () => {
     return close;
   }, [id, open, close]);
 
+  useEffect(() => addEventListener('close', () => navigate(SESSIONS())));
+
   useEffect(() =>
-    addHandler((message) => {
+    addEventListener('message', (message) => {
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
         setPlayers(message.players);
 
