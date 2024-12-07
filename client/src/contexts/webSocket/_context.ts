@@ -1,4 +1,4 @@
-import type { Message, MessageType, MessageTypeToMessage } from '@/api/messages';
+import type { Message, MessageType, MessageTypeToMessage } from '@/helpers/message';
 import type { Session } from '@/api/sessions';
 import { createContext } from 'react';
 

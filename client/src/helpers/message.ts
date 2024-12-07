@@ -1,3 +1,5 @@
+import type { Player } from '@/helpers/player';
+
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
 }
@@ -39,11 +41,6 @@ export interface MessageItemsUpdate extends Message<MessageType.ItemsUpdate> {
   itemsPrevious: Array<Item>;
 }
 
-export interface Player {
-  name: string;
-  id: string;
-}
-
 interface WithPlayer {
   player: Player;
 }
@@ -62,3 +59,8 @@ interface WithTextAndValue {
 export interface Item extends WithTextAndValue {
   category: unknown;
 }
+
+export const doesMessageHasType = <Type extends MessageType>(
+  message: Message,
+  type: Type,
+): message is MessageTypeToMessage[Type] => message.type === type;

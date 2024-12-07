@@ -1,4 +1,4 @@
-import type { Item } from '@/api/messages';
+import type { Item } from '@/helpers/message';
 import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
 import { type FC, type HTMLAttributes } from 'react';

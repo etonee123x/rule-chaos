@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, type FC, type PropsWithChildren } from 'react';
 import { WebSocketContext, type Handler, type WebSocketEventType } from './_context';
 import { invoke } from '@/utils/invoke';
-import type { Message } from '@/api/messages';
+import type { Message } from '@/helpers/message';
 
 const messageEventToMessage = (messageEvent: MessageEvent) => {
   const result = JSON.parse(messageEvent.data) as Message;

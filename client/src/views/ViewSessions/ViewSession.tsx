@@ -1,7 +1,7 @@
-import { MessageType, type Item, type Player } from '@/api/messages';
+import { MessageType, type Item } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
-import { doesMessageHasType } from '@/helpers/doesMessageHasType';
+import { doesMessageHasType } from '@/helpers/message';
 import { useEffect, useState, type FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Players } from './components/Players';
@@ -10,6 +10,7 @@ import { TheHand } from './components/TheHand';
 import { TheField } from './components/TheField';
 import { TheHistoryFeed } from './components/TheHistoryFeed';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
+import type { Player } from '@/helpers/player';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();

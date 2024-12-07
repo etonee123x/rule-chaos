@@ -1,5 +1,5 @@
 import { client } from '@/api/_client';
-import type { Player } from './messages';
+import type { Player } from '@/helpers/player';
 
 export interface Session {
   id: string;

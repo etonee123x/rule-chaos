@@ -1,5 +1,4 @@
-import type { Player } from '@/api/messages';
-import { arePlayersEqual } from '@/helpers/player';
+import { arePlayersEqual, type Player } from '@/helpers/player';
 import classNames from 'classnames';
 import type { FC, HTMLAttributes } from 'react';
 
