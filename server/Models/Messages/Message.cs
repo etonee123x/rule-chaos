@@ -22,7 +22,6 @@ namespace RuleChaos.Models.Messages
     public static readonly Dictionary<string, Type> MessageTypeToMessage = new()
 #pragma warning restore SA1000
     {
-      { MessageType.TEST_PlayerClickedButton, typeof(Message_TEST_PlayerClickedButton) },
     };
   }
 
