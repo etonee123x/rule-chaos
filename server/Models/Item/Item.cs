@@ -44,7 +44,6 @@ namespace RuleChaos.Models.Item
       var items = JsonSerializer.Deserialize<Item[]>(jsonAsString) ?? throw new Exception("NULL!");
 
       return new ItemGenerator(items);
-
     }
 
     private readonly Item[] items;

@@ -7,13 +7,12 @@ namespace RuleChaos.Models
       get => this.gameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO());
     }
 
-    private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(5);
-    private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
     private List<GameSession> gameSessions = [];
 
     public GameServer()
     {
-      var timer = new Timer((state) => this.CleanupInactiveSessions(), null, GameServer.CleanupInterval, GameServer.CleanupInterval);
+      // TODO: Не работает, скорее всего, нужен ref
+      SessionsCleaner.StartCleanupInterval(this.gameSessions);
     }
 
     public async Task HandleConnectionAttempt(Guid sessionId, HttpContext context)
@@ -41,10 +40,23 @@ namespace RuleChaos.Models
     {
       this.gameSessions.Add(gameSession);
     }
+  }
 
-    private void CleanupInactiveSessions()
+  internal static class SessionsCleaner
+  {
+    private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
+
+    internal static void StartCleanupInterval(List<GameSession> gameSessions)
     {
-      this.gameSessions = this.gameSessions.FindAll((gameSession) => !gameSession.IsInactive(GameServer.SessionTimeout));
+      var timer = new Timer(
+        (state) =>
+        {
+          gameSessions = gameSessions.FindAll((gameSession) => !gameSession.IsInactive(SessionsCleaner.SessionTimeout));
+        },
+        null,
+        SessionsCleaner.CleanupInterval,
+        SessionsCleaner.CleanupInterval);
     }
   }
 }
