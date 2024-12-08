@@ -10,12 +10,12 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 
 export const Players: FC<Props> = (props) => (
   <div className={props.className}>
-    Игроки:
+    <div className="sticky top-0 bg-white pb-2 text-xl">Игроки:</div>
     <ul className="list-inside">
       {props.players.map((player, index) => (
         <li
           className={classNames([
-            'mb-2 last:mb-0',
+            'mb-1 last:mb-0 text-lg',
             props.activePlayer && arePlayersEqual(player, props.activePlayer) && 'list-[disclosure-closed]',
             props.player &&
               arePlayersEqual(player, props.player) &&
