@@ -77,17 +77,13 @@ export const ViewSession: FC = () => {
   );
 
   return (
-    <BasePage className="flex-1 flex flex-col">
-      <div className="flex mb-5 gap-8">
-        <div className="flex-1 flex gap-8">
-          <TheField />
-          <TheHistoryFeed className="flex-1" />
-        </div>
-        {players.length > 0 && (
-          <Players className="w-1/6" players={players} player={player} activePlayer={activePlayer} />
-        )}
+    <BasePage className="flex flex-col h-[calc(100vh-65px)]">
+      <div className="flex mb-5 gap-8 h-5/6">
+        <TheField />
+        <TheHistoryFeed className="flex-1 overflow-y-auto" />
+        <Players className="w-1/6 overflow-y-auto" players={players} player={player} activePlayer={activePlayer} />
       </div>
-      {items.length > 0 && <TheHand className="mt-auto" items={items} />}
+      <TheHand className="mt-auto h-1/6" items={items} />
     </BasePage>
   );
 };

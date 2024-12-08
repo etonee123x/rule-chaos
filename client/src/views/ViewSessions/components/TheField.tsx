@@ -13,12 +13,12 @@ const indexToRowCol = (index: number) => ({
 const getCellClassNameByIndex = (index: number) => {
   const { row, col } = indexToRowCol(index);
 
-  return classNames(['size-16', (row + col) % 2 ? 'bg-primary-300' : 'bg-gray-200']);
+  return classNames([(row + col) % 2 ? 'bg-primary-300' : 'bg-gray-200']);
 };
 
 export const TheField: FC<Props> = (props) => (
-  <div className={props.className}>
-    <div className="grid grid-cols-8 w-fit border-8 border-gray-500">
+  <div className={classNames([props.className, 'aspect-square'])}>
+    <div className="size-full grid grid-cols-8 border-8 border-gray-500">
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => (
         <div key={index} className={getCellClassNameByIndex(index)}></div>
       ))}
