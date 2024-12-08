@@ -16,12 +16,12 @@ export const TheHand: FC<Props> = (props) => {
   };
 
   return (
-    <div className={classNames([props.className])}>
-      <ul className={classNames('flex gap-2 py-2 overflow-x-auto h-full')} onWheel={onWheel}>
-        {props.items.slice(0, 12).map((item, index) => (
+    <div className={classNames(props.className)}>
+      <ul className={classNames('flex gap-2 overflow-x-scroll py-2 h-full')} onWheel={onWheel}>
+        {props.items.map((item, index) => (
           <li
             key={index}
-            className="aspect-square max-h-24 border shrink-0 flex justify-center items-center cursor-pointer select-none"
+            className="aspect-square border shrink-0 flex justify-center items-center cursor-pointer select-none"
           >
             <div>{item.text}</div>
           </li>

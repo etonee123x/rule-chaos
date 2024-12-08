@@ -11,7 +11,6 @@ namespace RuleChaos.Models
 
     public GameServer()
     {
-      // TODO: Не работает, скорее всего, нужен ref
       SessionsCleaner.StartCleanupInterval(this.gameSessions);
     }
 
@@ -46,13 +45,17 @@ namespace RuleChaos.Models
   {
     private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(5);
     private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
+    private static readonly object Lock = new object();
 
     internal static void StartCleanupInterval(List<GameSession> gameSessions)
     {
-      var timer = new Timer(
-        (state) =>
+      _ = new Timer(
+        _ =>
         {
-          gameSessions = gameSessions.FindAll((gameSession) => !gameSession.IsInactive(SessionsCleaner.SessionTimeout));
+          lock (Lock)
+          {
+            gameSessions.RemoveAll(gameSession => gameSession.IsInactive(SessionTimeout));
+          }
         },
         null,
         SessionsCleaner.CleanupInterval,
