@@ -16,17 +16,21 @@ export const TheHand: FC<Props> = (props) => {
   };
 
   return (
-    <div className={classNames(props.className)}>
-      <ul className={classNames('flex gap-2 overflow-x-scroll py-2 h-full')} onWheel={onWheel}>
-        {props.items.map((item, index) => (
-          <li
-            key={index}
-            className="aspect-square border shrink-0 flex justify-center items-center cursor-pointer select-none"
-          >
-            <div>{item.text}</div>
-          </li>
-        ))}
-      </ul>
+    <div className={classNames([props.className, 'bg-gray-200 p-2 flex items-center'])}>
+      {props.items.length === 0 ? (
+        <span className="text-2xl mx-auto">Нету предметов!</span>
+      ) : (
+        <ul className={classNames('pb-2 flex gap-2 overflow-x-scroll size-full')} onWheel={onWheel}>
+          {props.items.map((item, index) => (
+            <li
+              key={index}
+              className="aspect-square border shrink-0 flex justify-center items-center cursor-pointer select-none border-gray-400"
+            >
+              <div>{item.text}</div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

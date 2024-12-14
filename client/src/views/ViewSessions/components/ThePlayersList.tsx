@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   activePlayer?: Player;
 }
 
-export const Players: FC<Props> = (props) => (
+export const ThePlayersList: FC<Props> = (props) => (
   <div className={props.className}>
     <div className="sticky top-0 bg-white pb-2 text-xl">Игроки:</div>
     <ul className="list-inside">

@@ -4,7 +4,7 @@ import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
 import { useEffect, useState, type FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Players } from './components/Players';
+import { ThePlayersList } from './components/ThePlayersList';
 import { isNil } from '@/utils/isNil';
 import { TheHand } from './components/TheHand';
 import { TheField } from './components/TheField';
@@ -87,8 +87,13 @@ export const ViewSession: FC = () => {
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
       <div className="flex mb-5 gap-8 h-5/6">
         <TheField />
+        <ThePlayersList
+          className="w-1/6 overflow-y-auto"
+          players={players}
+          player={player}
+          activePlayer={activePlayer}
+        />
         <TheHistoryFeed className="flex-1 overflow-y-auto" history={history} />
-        <Players className="w-1/6 overflow-y-auto" players={players} player={player} activePlayer={activePlayer} />
       </div>
       <TheHand className="mt-auto h-1/6" items={items} />
     </BasePage>
