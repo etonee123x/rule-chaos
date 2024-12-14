@@ -19,12 +19,15 @@ export const TheHistoryFeed: FC<Props> = (props) => (
         {props.history.map((historyRecord) => (
           <li key={historyRecord.id}>
             <span className="w-16 inline-block">
-              {new Date(historyRecord.timestamp).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false,
-              })}
+              {
+                //
+                new Date(historyRecord.timestamp).toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false,
+                })
+              }
             </span>
             <span dangerouslySetInnerHTML={{ __html: historyRecordMessageToHTML(historyRecord.message) }} />
           </li>
