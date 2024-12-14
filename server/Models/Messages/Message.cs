@@ -27,5 +27,6 @@ namespace RuleChaos.Models.Messages
 
   public abstract class MessageFromServer : Message
   {
+    public abstract string HistoryRecord { get; }
   }
 }

@@ -28,6 +28,7 @@ namespace RuleChaos.Models
 
     private static readonly byte PlayersNumber = 2;
     private static readonly byte ItemsPerPlayer = 8;
+    private static readonly byte HistoryRecordsCount = 20;
 
     private readonly List<Player> players = [];
 
@@ -45,6 +46,20 @@ namespace RuleChaos.Models
       {
         this.SendMessageToPlayers(new MessageItemsUpdate(this.items.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
         this.items = value;
+      }
+    }
+
+    private string[] history = [];
+
+    private string[] History
+    {
+      get => this.history;
+      set
+      {
+        var historyLast = value.Length >= GameSession.HistoryRecordsCount ? value[^GameSession.HistoryRecordsCount..] : value;
+
+        this.SendMessageToPlayers(new MessageHistory(historyLast));
+        this.history = historyLast;
       }
     }
 
@@ -86,7 +101,7 @@ namespace RuleChaos.Models
         }
 
         this.RemovePlayer(player);
-        this.SendMessageToPlayers(new MessagePlayerLeftSession(player.ToDTO(), this.PlayersDTOs));
+        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.players));
       });
     }
 
@@ -97,7 +112,7 @@ namespace RuleChaos.Models
         if (this.activePlayer == null)
         {
           this.activePlayer = this.players[0];
-          this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer.ToDTO()));
+          this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer));
 
           return;
         }
@@ -111,7 +126,7 @@ namespace RuleChaos.Models
 
         this.activePlayer = this.players[(index + 1) % this.players.Count];
 
-        this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer.ToDTO()));
+        this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer));
       }
       catch (Exception exception)
       {
@@ -142,9 +157,16 @@ namespace RuleChaos.Models
       this.MakeFirstOrNextPlayerActive();
     }
 
-    private void SendMessageToPlayers(Message message)
+    private void SendMessageToPlayers(MessageFromServer message)
     {
       this.players.ForEach((player) => player.SendMessage(message));
+
+      if (message.GetType().Equals(typeof(MessageHistory)))
+      {
+        return;
+      }
+
+      this.History = [.. this.History, message.HistoryRecord];
     }
 
     private void HandlePlayerMessage(Player player, string serializedMessage)
@@ -169,7 +191,7 @@ namespace RuleChaos.Models
         }
 
         this.players.Add(player);
-        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player.ToDTO(), this.PlayersDTOs));
+        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.players));
 
         this.Log($"Игрок {player} подключился");
       }

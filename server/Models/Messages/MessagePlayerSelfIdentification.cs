@@ -13,5 +13,11 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.PlayerSelfIdentification;
     }
+
+    [JsonIgnore]
+    public override string HistoryRecord
+    {
+      get => throw new NotImplementedException();
+    }
   }
 }

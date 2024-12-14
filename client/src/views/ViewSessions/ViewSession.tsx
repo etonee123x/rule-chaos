@@ -1,4 +1,4 @@
-import { MessageType, type Item } from '@/helpers/message';
+import { MessageType, type History, type Item } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
@@ -23,6 +23,7 @@ export const ViewSession: FC = () => {
   const [activePlayer, setActivePlayer] = useState<Player>();
   const [player, setPlayer] = useState<Player>();
   const [items, setItems] = useState<Array<Item>>([]);
+  const [history, setHistory] = useState<History>([]);
 
   useEffect(() => {
     if (isNil(id)) {
@@ -72,6 +73,12 @@ export const ViewSession: FC = () => {
         return;
       }
 
+      if (doesMessageHasType(message, MessageType.History)) {
+        setHistory(message.history);
+
+        return;
+      }
+
       console.warn(message);
     }),
   );
@@ -80,7 +87,7 @@ export const ViewSession: FC = () => {
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
       <div className="flex mb-5 gap-8 h-5/6">
         <TheField />
-        <TheHistoryFeed className="flex-1 overflow-y-auto" />
+        <TheHistoryFeed className="flex-1 overflow-y-auto" history={history} />
         <Players className="w-1/6 overflow-y-auto" players={players} player={player} activePlayer={activePlayer} />
       </div>
       <TheHand className="mt-auto h-1/6" items={items} />

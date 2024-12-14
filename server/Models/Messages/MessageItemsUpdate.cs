@@ -17,5 +17,10 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.ItemsUpdate;
     }
+
+    public override string HistoryRecord
+    {
+      get => "Изменены предметы.";
+    }
   }
 }

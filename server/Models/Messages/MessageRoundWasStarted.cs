@@ -10,5 +10,11 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.RoundWasStarted;
     }
+
+    [JsonIgnore]
+    public override string HistoryRecord
+    {
+      get => "Раунд начался!";
+    }
   }
 }
