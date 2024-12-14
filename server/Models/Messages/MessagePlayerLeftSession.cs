@@ -18,9 +18,9 @@ namespace RuleChaos.Models.Messages
     }
 
     [JsonIgnore]
-    public override string HistoryRecord
+    public override HistoryRecord HistoryRecord
     {
-      get => $"Игрок {player} отключается от сессии. Текущий состав игроков: {string.Join(", ", players.Select((player) => player.ToString()))}. Всего: {players.Count}.";
+      get => new HistoryRecord(string.Join(' ', [$"Игрок {HistoryRecord.Accent(player)} отключается от сессии.", players.Count > 0 ? $"Текущий состав игроков: {string.Join(", ", players.Select(HistoryRecord.Accent))} (всего: {HistoryRecord.Accent(players.Count)})" : "Нет игроков!"]));
     }
   }
 }

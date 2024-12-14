@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageHistory(string[] history)
+  public class MessageHistory(HistoryRecord[] history)
     : MessageFromServer
   {
     [JsonPropertyName("history")]
-    public string[] History { get; } = history;
+    public HistoryRecordDTO[] History { get; } = history.Select((historyRecord) => historyRecord.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
     public override string Type
@@ -15,9 +15,9 @@ namespace RuleChaos.Models.Messages
     }
 
     [JsonIgnore]
-    public override string HistoryRecord
+    public override HistoryRecord? HistoryRecord
     {
-      get => throw new NotImplementedException();
+      get => null;
     }
   }
 }

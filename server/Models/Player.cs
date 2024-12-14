@@ -39,7 +39,7 @@ namespace RuleChaos.Models
       this.WebSocket = webSocket;
 
       // Пытаемся отправить игрока клиенту тут
-      this.SendMessage(new MessagePlayerSelfIdentification(this.ToDTO()));
+      this.SendMessage(new MessagePlayerSelfIdentification(this));
     }
 
     public Task SendMessage(Message message)
@@ -54,7 +54,7 @@ namespace RuleChaos.Models
 
     public override string ToString()
     {
-      return $"{this.Name} ({this.Id})";
+      return this.Name;
     }
   }
 

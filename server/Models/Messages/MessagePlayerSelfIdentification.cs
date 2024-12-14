@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerSelfIdentification(PlayerDTO playerDTO)
+  public class MessagePlayerSelfIdentification(Player player)
     : MessageFromServer
   {
     [JsonPropertyName("player")]
-    public PlayerDTO Player { get; set; } = playerDTO;
+    public PlayerDTO Player { get; } = player.ToDTO();
 
     [JsonPropertyName("type")]
     public override string Type
@@ -15,9 +15,9 @@ namespace RuleChaos.Models.Messages
     }
 
     [JsonIgnore]
-    public override string HistoryRecord
+    public override HistoryRecord? HistoryRecord
     {
-      get => throw new NotImplementedException();
+      get => null;
     }
   }
 }

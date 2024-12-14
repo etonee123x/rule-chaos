@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using RuleChaos.Models.Item;
 
 namespace RuleChaos.Models.Messages
 {
@@ -18,9 +17,9 @@ namespace RuleChaos.Models.Messages
       get => MessageType.ItemsUpdate;
     }
 
-    public override string HistoryRecord
+    public override HistoryRecord HistoryRecord
     {
-      get => "Изменены предметы.";
+      get => new HistoryRecord("Изменены предметы.");
     }
   }
 }

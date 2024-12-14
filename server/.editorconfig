@@ -12,3 +12,4 @@ insert_final_newline = true
 dotnet_diagnostic.IDE0002.severity = none
 dotnet_diagnostic.IDE0003.severity = none
 dotnet_diagnostic.IDE0009.severity = none
+dotnet_diagnostic.IDE0130.severity = none

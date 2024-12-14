@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RuleChaos.Models.Item
+namespace RuleChaos.Models
 {
   public class Item
   {

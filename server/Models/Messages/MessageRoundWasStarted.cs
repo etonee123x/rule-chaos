@@ -12,9 +12,9 @@ namespace RuleChaos.Models.Messages
     }
 
     [JsonIgnore]
-    public override string HistoryRecord
+    public override HistoryRecord HistoryRecord
     {
-      get => "Раунд начался!";
+      get => new HistoryRecord("Раунд начался!");
     }
   }
 }

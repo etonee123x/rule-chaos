@@ -2,7 +2,6 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using RuleChaos.Models.Item;
 using RuleChaos.Models.Messages;
 
 namespace RuleChaos.Models
@@ -28,7 +27,7 @@ namespace RuleChaos.Models
 
     private static readonly byte PlayersNumber = 2;
     private static readonly byte ItemsPerPlayer = 8;
-    private static readonly byte HistoryRecordsCount = 20;
+    private static readonly byte HistoryRecordsCount = 50;
 
     private readonly List<Player> players = [];
 
@@ -38,9 +37,9 @@ namespace RuleChaos.Models
 
     private ItemGenerator? ItemGenerator { get; set; }
 
-    private Item.Item[] items = [];
+    private Item[] items = [];
 
-    private Item.Item[] Items
+    private Item[] Items
     {
       set
       {
@@ -49,9 +48,9 @@ namespace RuleChaos.Models
       }
     }
 
-    private string[] history = [];
+    private HistoryRecord[] history = [];
 
-    private string[] History
+    private HistoryRecord[] History
     {
       get => this.history;
       set
@@ -153,7 +152,7 @@ namespace RuleChaos.Models
         throw new Exception("Has no item generator");
       }
 
-      this.Items = new Item.Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
+      this.Items = new Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
       this.MakeFirstOrNextPlayerActive();
     }
 
@@ -161,12 +160,14 @@ namespace RuleChaos.Models
     {
       this.players.ForEach((player) => player.SendMessage(message));
 
-      if (message.GetType().Equals(typeof(MessageHistory)))
+      var maybeHistoryRecord = message.HistoryRecord;
+
+      if (maybeHistoryRecord == null)
       {
         return;
       }
 
-      this.History = [.. this.History, message.HistoryRecord];
+      this.History = [.. this.History, maybeHistoryRecord];
     }
 
     private void HandlePlayerMessage(Player player, string serializedMessage)

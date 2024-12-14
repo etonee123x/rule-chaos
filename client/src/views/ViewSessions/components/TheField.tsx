@@ -18,7 +18,7 @@ const getCellClassNameByIndex = (index: number) => {
 
 export const TheField: FC<Props> = (props) => (
   <div className={classNames([props.className, 'aspect-square'])}>
-    <div className="size-full grid grid-cols-8 border-8 border-gray-500">
+    <div className="size-full grid grid-cols-8 border-8 border-gray-400">
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => (
         <div key={index} className={getCellClassNameByIndex(index)}></div>
       ))}

@@ -35,7 +35,7 @@ export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStar
 export interface MessagePlayerSelfIdentification extends Message<MessageType.PlayerSelfIdentification>, WithPlayer {}
 
 export interface MessageHistory extends Message<MessageType.History> {
-  history: History;
+  history: Array<HistoryRecord>;
 }
 
 export interface MessageItemsUpdate extends Message<MessageType.ItemsUpdate> {
@@ -51,7 +51,11 @@ interface WithPlayers {
   players: Array<Player>;
 }
 
-export type History = Array<string>;
+export interface HistoryRecord {
+  id: string;
+  message: string;
+  timestamp: string;
+}
 
 interface WithPlayerAndPlayers extends WithPlayer, WithPlayers {}
 

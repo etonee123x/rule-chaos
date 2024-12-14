@@ -1,4 +1,4 @@
-import { MessageType, type History, type Item } from '@/helpers/message';
+import { MessageType, type HistoryRecord, type Item } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
@@ -23,7 +23,7 @@ export const ViewSession: FC = () => {
   const [activePlayer, setActivePlayer] = useState<Player>();
   const [player, setPlayer] = useState<Player>();
   const [items, setItems] = useState<Array<Item>>([]);
-  const [history, setHistory] = useState<History>([]);
+  const [history, setHistory] = useState<Array<HistoryRecord>>([]);
 
   useEffect(() => {
     if (isNil(id)) {
