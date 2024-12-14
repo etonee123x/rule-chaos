@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import type { HistoryRecord } from '@/helpers/message';
 import classNames from 'classnames';
 import type { FC, HTMLAttributes } from 'react';
@@ -8,17 +6,8 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   history: Array<HistoryRecord>;
 }
 
-const historyRecordToHTML = (historyRecord: HistoryRecord) => `
-<div>
-  <span class="w-16 inline-block">${new Date(historyRecord.timestamp).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false
-})}:</span>
-  <span>${historyRecord.message.replace(/{([^}]+)}/g, (...[, content]) =>`<span class="text-primary-500">${content}</span>`)}</span>
-</div>
-`;
+const historyRecordMessageToHTML = (historyRecordMessage: HistoryRecord['message']) =>
+  `<span>${historyRecordMessage.replace(/{([^}]+)}/g, (...[, content]) => `<span class="text-primary-500">${content}</span>`)}</span>`;
 
 export const TheHistoryFeed: FC<Props> = (props) => (
   <div className={classNames(props.className)}>
@@ -28,10 +17,17 @@ export const TheHistoryFeed: FC<Props> = (props) => (
     ) : (
       <ul>
         {props.history.map((historyRecord) => (
-          <li
-            key={historyRecord.id}
-            dangerouslySetInnerHTML={{ __html: historyRecordToHTML(historyRecord) }}
-          />
+          <li key={historyRecord.id}>
+            <span className="w-16 inline-block">
+              {new Date(historyRecord.timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+              })}
+            </span>
+            <span dangerouslySetInnerHTML={{ __html: historyRecordMessageToHTML(historyRecord.message) }} />
+          </li>
         ))}
       </ul>
     )}
