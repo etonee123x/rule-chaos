@@ -53,22 +53,22 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
       const webSocket = new WebSocket(url);
 
       webSocket.onmessage = (messageEvent) => {
-        eventListenersRef.current._messageRaw.values().forEach(invoke(messageEvent));
-        eventListenersRef.current.message.values().forEach(invoke(messageEventToMessage(messageEvent)));
+        eventListenersRef.current._messageRaw.forEach(invoke(messageEvent));
+        eventListenersRef.current.message.forEach(invoke(messageEventToMessage(messageEvent)));
       };
 
       webSocket.onerror = (event) => {
-        eventListenersRef.current.error.values().forEach(invoke(event));
+        eventListenersRef.current.error.forEach(invoke(event));
         console.error('Ошибка WebSocket:', event);
       };
 
       webSocket.onclose = (event) => {
-        eventListenersRef.current.close.values().forEach(invoke(event));
+        eventListenersRef.current.close.forEach(invoke(event));
         close();
       };
 
       webSocket.onopen = (event) => {
-        eventListenersRef.current.open.values().forEach(invoke(event));
+        eventListenersRef.current.open.forEach(invoke(event));
         socketRef.current = webSocket;
       };
     },
