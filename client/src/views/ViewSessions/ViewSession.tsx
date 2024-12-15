@@ -2,7 +2,7 @@ import { MessageType, type HistoryRecord, type Item } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
-import { useEffect, useState, type FC } from 'react';
+import { useCallback, useEffect, useState, type FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ThePlayersList } from './components/ThePlayersList';
 import { isNil } from '@/utils/isNil';
@@ -11,6 +11,8 @@ import { TheField } from './components/TheField';
 import { TheHistoryFeed } from './components/TheHistoryFeed';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import type { Player } from '@/helpers/player';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -83,19 +85,25 @@ export const ViewSession: FC = () => {
     }),
   );
 
+  const onDrop = useCallback((item: Item, [row, col]: [number, number]) => {
+    console.log('сейчас из компонента вьюхи отправим:', item, { row, col });
+  }, []);
+
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
-      <div className="flex mb-5 gap-8 h-5/6">
-        <TheField />
-        <ThePlayersList
-          className="w-1/6 overflow-y-auto"
-          players={players}
-          player={player}
-          activePlayer={activePlayer}
-        />
-        <TheHistoryFeed className="flex-1 overflow-y-auto" history={history} />
-      </div>
-      <TheHand className="mt-auto h-1/6" items={items} />
+      <DndProvider backend={HTML5Backend}>
+        <div className="flex mb-5 gap-8 h-5/6">
+          <TheField onDrop={onDrop} />
+          <ThePlayersList
+            className="w-1/6 overflow-y-auto"
+            players={players}
+            player={player}
+            activePlayer={activePlayer}
+          />
+          <TheHistoryFeed className="flex-1 overflow-y-auto" history={history} />
+        </div>
+        <TheHand className="mt-auto h-1/6" items={items} />
+      </DndProvider>
     </BasePage>
   );
 };

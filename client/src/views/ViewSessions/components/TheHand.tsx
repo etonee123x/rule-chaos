@@ -1,10 +1,34 @@
+import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import type { Item } from '@/helpers/message';
 import classNames from 'classnames';
 import { type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
+import { useDrag } from 'react-dnd';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   items: Array<Item>;
 }
+
+const ComponentItem: FC<{ item: Item }> = (props) => {
+  const [{ isDragging }, dragRef] = useDrag(() => ({
+    type: ITEM,
+    item: props.item,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <div
+      className={classNames([
+        'border size-full flex justify-center items-center cursor-pointer select-none border-gray-400',
+        isDragging && 'opacity-0',
+      ])}
+      ref={dragRef}
+    >
+      {props.item.text}
+    </div>
+  );
+};
 
 export const TheHand: FC<Props> = (props) => {
   const onWheel: WheelEventHandler<HTMLUListElement> = (event) => {
@@ -20,13 +44,10 @@ export const TheHand: FC<Props> = (props) => {
       {props.items.length === 0 ? (
         <span className="text-2xl mx-auto">Нету предметов!</span>
       ) : (
-        <ul className={classNames('pb-2 flex gap-2 overflow-x-scroll size-full')} onWheel={onWheel}>
+        <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
           {props.items.map((item, index) => (
-            <li
-              key={index}
-              className="aspect-square border shrink-0 flex justify-center items-center cursor-pointer select-none border-gray-400"
-            >
-              <div>{item.text}</div>
+            <li className="shrink-0 aspect-square" key={index}>
+              <ComponentItem item={item} />
             </li>
           ))}
         </ul>

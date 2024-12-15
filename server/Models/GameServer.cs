@@ -43,7 +43,7 @@ namespace RuleChaos.Models
 
   internal static class SessionsCleaner
   {
-    private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(5);
+    private static readonly TimeSpan SessionTimeout = TimeSpan.FromMinutes(50);
     private static readonly TimeSpan CleanupInterval = TimeSpan.FromMinutes(1);
     private static readonly object Lock = new object();
 
