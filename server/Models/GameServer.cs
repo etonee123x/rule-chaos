@@ -2,7 +2,7 @@ namespace RuleChaos.Models
 {
   public class GameServer
   {
-    public List<GameSessionDTO> ActiveGameSessionsDTOs
+    public List<GameSessionListingDTO> ActiveGameSessionsDTOs
     {
       get => this.gameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO());
     }

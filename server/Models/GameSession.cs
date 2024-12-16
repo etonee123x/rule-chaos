@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using RuleChaos.Models.Messages;
 
 namespace RuleChaos.Models
@@ -25,6 +26,8 @@ namespace RuleChaos.Models
 
     public PlayerDTO[] PlayersDTOs { get => [.. this.players.ConvertAll((player) => player.ToDTO())]; }
 
+    internal Player? ActivePlayer { get; set; }
+
     private static readonly byte PlayersNumber = 2;
     private static readonly byte ItemsPerPlayer = 8;
     private static readonly byte HistoryRecordsCount = 50;
@@ -33,24 +36,23 @@ namespace RuleChaos.Models
 
     private DateTime lastActivity = DateTime.UtcNow;
 
-    private Player? activePlayer;
-
     private ItemGenerator? ItemGenerator { get; set; }
 
-    private Item[] items = [];
+    private Item[] itemsInHand = [];
 
-    private Item[] Items
+    internal Item[] ItemsInHand
     {
+      get => this.itemsInHand;
       set
       {
-        this.SendMessageToPlayers(new MessageItemsUpdate(this.items.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
-        this.items = value;
+        this.SendMessageToPlayers(new MessageItemsUpdate(this.itemsInHand.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
+        this.itemsInHand = value;
       }
     }
 
     private HistoryRecord[] history = [];
 
-    private HistoryRecord[] History
+    internal HistoryRecord[] History
     {
       get => this.history;
       set
@@ -62,11 +64,11 @@ namespace RuleChaos.Models
       }
     }
 
-    private bool IsRoundActive { get => this.activePlayer != null; }
+    private bool IsRoundActive { get => this.ActivePlayer != null; }
 
-    public GameSessionDTO ToDTO()
+    public GameSessionListingDTO ToDTO()
     {
-      return new GameSessionDTO(this);
+      return new GameSessionListingDTO(this);
     }
 
     public Task HandlePlayer(Player player)
@@ -108,24 +110,24 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.activePlayer == null)
+        if (this.ActivePlayer == null)
         {
-          this.activePlayer = this.players[0];
-          this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer));
+          this.ActivePlayer = this.players[0];
+          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
 
           return;
         }
 
-        var index = this.players.IndexOf(this.activePlayer);
+        var index = this.players.IndexOf(this.ActivePlayer);
 
         if (index == -1)
         {
-          throw new Exception($"Не найден игрок с  id {this.activePlayer.Id}");
+          throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
         }
 
-        this.activePlayer = this.players[(index + 1) % this.players.Count];
+        this.ActivePlayer = this.players[(index + 1) % this.players.Count];
 
-        this.SendMessageToPlayers(new MessageNewActivePlayer(this.activePlayer));
+        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
       }
       catch (Exception exception)
       {
@@ -152,7 +154,7 @@ namespace RuleChaos.Models
         throw new Exception("Has no item generator");
       }
 
-      this.Items = new Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
+      this.ItemsInHand = new Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
       this.MakeFirstOrNextPlayerActive();
     }
 
@@ -204,9 +206,9 @@ namespace RuleChaos.Models
 
     private void RemovePlayer(Player player)
     {
-      if (player.Equals(this.activePlayer))
+      if (player.Equals(this.ActivePlayer))
       {
-        this.activePlayer = null;
+        this.ActivePlayer = null;
       }
 
       this.players.Remove(player);
@@ -220,12 +222,27 @@ namespace RuleChaos.Models
     }
   }
 
-  public class GameSessionDTO(GameSession gameSession)
+  public class GameSessionListingDTO(GameSession gameSession)
   {
     [JsonPropertyName("id")]
     public Guid Id { get; } = gameSession.Id;
 
     [JsonPropertyName("players")]
     public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
+  }
+
+  public class GameSessionDTO(GameSession gameSession)
+  {
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
+
+    [JsonPropertyName("activePlayer")]
+    public Player? ActivePlayer { get; } = gameSession.ActivePlayer;
+
+    [JsonPropertyName("itemsInHand")]
+    public Item[] ItemsInHand { get; } = gameSession.ItemsInHand;
+
+    [JsonPropertyName("history")]
+    public HistoryRecord[] History { get; } = gameSession.History;
   }
 }
