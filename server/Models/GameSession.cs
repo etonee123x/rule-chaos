@@ -66,9 +66,14 @@ namespace RuleChaos.Models
 
     private bool IsRoundActive { get => this.ActivePlayer != null; }
 
-    public GameSessionListingDTO ToDTO()
+    public GameSessionListingDTO ToListingDTO()
     {
       return new GameSessionListingDTO(this);
+    }
+
+    public GameSessionDTO ToDTO()
+    {
+      return new GameSessionDTO(this);
     }
 
     public Task HandlePlayer(Player player)

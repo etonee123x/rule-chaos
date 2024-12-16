@@ -30,7 +30,7 @@ const ComponentItem: FC<{ item: Item }> = (props) => {
 };
 
 export const TheHand: FC<Props> = (props) => {
-  const { items } = useSession();
+  const { itemsInHand } = useSession();
 
   const onWheel: WheelEventHandler<HTMLUListElement> = useCallback((event) => {
     if (!event.deltaY) {
@@ -42,11 +42,11 @@ export const TheHand: FC<Props> = (props) => {
 
   return (
     <div className={classNames([props.className, 'bg-gray-200 p-2 flex items-center'])}>
-      {items.length === 0 ? (
+      {itemsInHand.length === 0 ? (
         <span className="text-2xl mx-auto">Нету предметов!</span>
       ) : (
         <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
-          {items.map((item, index) => (
+          {itemsInHand.map((item, index) => (
             <li className="shrink-0 aspect-square" key={index}>
               <ComponentItem item={item} />
             </li>

@@ -1,4 +1,4 @@
-import { MessageType, type HistoryRecord, type Item } from '@/helpers/message';
+import { MessageType, type HistoryRecord, type Item, type SessionState } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
@@ -13,7 +13,7 @@ import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import type { Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-import { SessionProvider, type SessionContext } from '@/contexts/sessionContext';
+import { SessionProvider } from '@/contexts/sessionContext';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -25,18 +25,18 @@ export const ViewSession: FC = () => {
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
-  const [items, setItems] = useState<Array<Item>>([]);
+  const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
 
-  const session: SessionContext = useMemo(
+  const session: SessionState = useMemo(
     () => ({
       player,
       players,
-      items,
+      itemsInHand,
       history,
       activePlayer,
     }),
-    [player, players, items, history, activePlayer],
+    [player, players, itemsInHand, history, activePlayer],
   );
 
   useEffect(() => {
@@ -53,6 +53,16 @@ export const ViewSession: FC = () => {
 
   useEffect(() =>
     addEventListener('message', (message) => {
+      if (doesMessageHasType(message, MessageType.SessionInitialization)) {
+        setPlayer(message.player);
+        setPlayers(message.sessionState.players);
+        setHistory(message.sessionState.history);
+        setActivePlayer(message.sessionState.activePlayer);
+        setItemsInHand(message.sessionState.itemsInHand);
+
+        return;
+      }
+
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
         setPlayers(message.players);
 
@@ -60,7 +70,7 @@ export const ViewSession: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.ItemsUpdate)) {
-        setItems(message.itemsCurrent);
+        setItemsInHand(message.itemsCurrent);
 
         return;
       }
@@ -77,12 +87,6 @@ export const ViewSession: FC = () => {
 
       if (doesMessageHasType(message, MessageType.NewActivePlayer)) {
         setActivePlayer(message.player);
-
-        return;
-      }
-
-      if (doesMessageHasType(message, MessageType.PlayerSelfIdentification)) {
-        setPlayer(message.player);
 
         return;
       }

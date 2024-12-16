@@ -33,13 +33,13 @@ namespace RuleChaos.Models
     public Guid Id { get; } = Guid.NewGuid();
     public string Name { get; }
 
-    public Player(WebSocket webSocket)
+    public Player(WebSocket webSocket, GameSession gameSession)
     {
       this.Name = Player.GenerateName();
       this.WebSocket = webSocket;
 
-      // Пытаемся отправить игрока клиенту тут
-      this.SendMessage(new MessagePlayerSelfIdentification(this));
+      // тут пытаемся отправить клиенту игрока и состояние сессии
+      this.SendMessage(new MessageSessionInitialization(this, gameSession));
     }
 
     public Task SendMessage(Message message)

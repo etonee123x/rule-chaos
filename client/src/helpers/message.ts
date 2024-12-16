@@ -9,7 +9,7 @@ export enum MessageType {
   PlayerLeftSession = 'PlayerLeftSession',
   RoundWasStarted = 'RoundWasStarted',
   NewActivePlayer = 'NewActivePlayer',
-  PlayerSelfIdentification = 'PlayerSelfIdentification',
+  SessionInitialization = 'SessionInitialization',
   ItemsUpdate = 'ItemsUpdate',
   History = 'History',
 }
@@ -19,7 +19,7 @@ export interface MessageTypeToMessage {
   [MessageType.RoundWasStarted]: MessageRoundWasStarted;
   [MessageType.PlayerJoinedSession]: MessagePlayerJoinedSession;
   [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
-  [MessageType.PlayerSelfIdentification]: MessagePlayerSelfIdentification;
+  [MessageType.SessionInitialization]: MessageSessionInitialization;
   [MessageType.ItemsUpdate]: MessageItemsUpdate;
   [MessageType.History]: MessageHistory;
 }
@@ -32,7 +32,9 @@ export interface MessageNewActivePlayer extends Message<MessageType.NewActivePla
 
 export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {}
 
-export interface MessagePlayerSelfIdentification extends Message<MessageType.PlayerSelfIdentification>, WithPlayer {}
+export interface MessageSessionInitialization extends Message<MessageType.SessionInitialization>, WithPlayer {
+  sessionState: SessionState;
+}
 
 export interface MessageHistory extends Message<MessageType.History> {
   history: Array<HistoryRecord>;
@@ -66,6 +68,14 @@ interface WithTextAndValue {
 
 export interface Item extends WithTextAndValue {
   category: unknown;
+}
+
+export interface SessionState {
+  players: Array<Player>;
+  player: Player | null;
+  activePlayer: Player | null;
+  itemsInHand: Array<Item>;
+  history: Array<HistoryRecord>;
 }
 
 export const doesMessageHasType = <Type extends MessageType>(

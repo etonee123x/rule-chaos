@@ -4,7 +4,7 @@ namespace RuleChaos.Models
   {
     public List<GameSessionListingDTO> ActiveGameSessionsDTOs
     {
-      get => this.gameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToDTO());
+      get => this.gameSessions.FindAll((gameSession) => !gameSession.IsPrivate).ConvertAll((gameSession) => gameSession.ToListingDTO());
     }
 
     private List<GameSession> gameSessions = [];
@@ -32,7 +32,7 @@ namespace RuleChaos.Models
         return;
       }
 
-      await maybeGameSession.HandlePlayer(new Player(await context.WebSockets.AcceptWebSocketAsync()));
+      await maybeGameSession.HandlePlayer(new Player(await context.WebSockets.AcceptWebSocketAsync(), maybeGameSession));
     }
 
     public void AddSession(GameSession gameSession)
