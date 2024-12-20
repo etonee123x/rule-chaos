@@ -50,6 +50,18 @@ namespace RuleChaos.Models
       }
     }
 
+    private ItemWithPosition[] itemsOnField = [];
+
+    public ItemWithPosition[] ItemsOnField
+    {
+      get => this.itemsOnField;
+      set
+      {
+        this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(historyLast));
+        this.history = historyLast;
+      }
+    }
+
     private HistoryRecord[] history = [];
 
     internal HistoryRecord[] History

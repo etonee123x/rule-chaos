@@ -66,15 +66,27 @@ interface WithTextAndValue {
   value: string;
 }
 
+interface Position {
+  col: number;
+  row: number;
+}
+
+interface WithPosition {
+  position: Position;
+}
+
 export interface Item extends WithTextAndValue {
   category: unknown;
 }
+
+export interface ItemWithPosition extends Item, WithPosition {}
 
 export interface SessionState {
   players: Array<Player>;
   player: Player | null;
   activePlayer: Player | null;
   itemsInHand: Array<Item>;
+  itemsOnField: Array<ItemWithPosition>;
   history: Array<HistoryRecord>;
 }
 

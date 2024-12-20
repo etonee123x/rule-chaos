@@ -9,6 +9,13 @@ namespace RuleChaos.Models
     public string Value { get; }
     public Category.Category[] Categories { get; }
 
+    protected Item(Item item)
+    {
+      this.Value = item.Value;
+      this.Text = item.Text;
+      this.Categories = item.Categories;
+    }
+
     [JsonConstructor]
     private Item(string value, string text, Category.Category[] categories)
     {
@@ -21,6 +28,18 @@ namespace RuleChaos.Models
     {
       return new ItemDTO(this);
     }
+  }
+
+  public class Position(byte row, byte col)
+  {
+    public byte Row { get; } = row;
+    public byte Col { get; } = col;
+  }
+
+  public class ItemWithPosition(Item item, Position position)
+    : Item(item)
+  {
+    public Position Position { get; } = position;
   }
 
   public class ItemDTO(Item item)

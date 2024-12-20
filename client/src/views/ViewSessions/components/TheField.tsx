@@ -1,7 +1,8 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
+import { useSession } from '@/contexts/sessionContext';
 import type { Item } from '@/helpers/message';
 import classNames from 'classnames';
-import type { FC, HTMLAttributes } from 'react';
+import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
 
 interface PropsTheField extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrop'> {
@@ -22,6 +23,8 @@ const indexToRowCol = (index: number) => ({
 });
 
 const Cell: FC<PropsCell> = (props) => {
+  const { itemsOnField } = useSession();
+
   const [, dropRef] = useDrop(() => ({
     accept: ITEM,
     drop: props.onDrop,
@@ -30,11 +33,17 @@ const Cell: FC<PropsCell> = (props) => {
     }),
   }));
 
+  const maybeItem = useMemo(
+    () => itemsOnField.find((item) => item.position.col === props.col && item.position.row === props.row),
+    [itemsOnField, props.col, props.row],
+  );
+
   return (
     <div
       ref={dropRef}
       className={classNames(['relative', (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200'])}
     >
+      <pre>{JSON.stringify(maybeItem)}</pre>
       <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
         {props.row + 1}:{props.col + 1}
       </div>

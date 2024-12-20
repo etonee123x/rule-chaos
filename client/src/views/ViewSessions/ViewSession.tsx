@@ -1,4 +1,10 @@
-import { MessageType, type HistoryRecord, type Item, type SessionState } from '@/helpers/message';
+import {
+  MessageType,
+  type HistoryRecord,
+  type Item,
+  type ItemWithPosition,
+  type SessionState,
+} from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
@@ -26,6 +32,7 @@ export const ViewSession: FC = () => {
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
+  const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
 
   const session: SessionState = useMemo(
@@ -33,10 +40,11 @@ export const ViewSession: FC = () => {
       player,
       players,
       itemsInHand,
+      itemsOnField,
       history,
       activePlayer,
     }),
-    [player, players, itemsInHand, history, activePlayer],
+    [player, players, itemsInHand, history, activePlayer, itemsOnField],
   );
 
   useEffect(() => {
@@ -59,6 +67,7 @@ export const ViewSession: FC = () => {
         setHistory(message.sessionState.history);
         setActivePlayer(message.sessionState.activePlayer);
         setItemsInHand(message.sessionState.itemsInHand);
+        setItemsOnField(message.sessionState.itemsOnField);
 
         return;
       }
