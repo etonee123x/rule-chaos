@@ -11,7 +11,7 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.ItemsUpdate;
+      get => MessageType.ItemsOnFieldUpdate;
     }
 
     public override HistoryRecord HistoryRecord

@@ -1,108 +1,38 @@
 [
   {
     "Value": "value1",
-    "Text": "text1",
-    "Categories": [
-      {
-        "Value": "value5",
-        "Text": "text5"
-      },
-      {
-        "Value": "value2",
-        "Text": "text2"
-      }
-    ]
+    "Text": "text1"
   },
   {
     "Value": "value2",
-    "Text": "text2",
-    "Categories": [
-      {
-        "Value": "value4",
-        "Text": "text4"
-      },
-      {
-        "Value": "value1",
-        "Text": "text1"
-      }
-    ]
+    "Text": "text2"
   },
   {
     "Value": "value3",
-    "Text": "text3",
-    "Categories": [
-      {
-        "Value": "value2",
-        "Text": "text2"
-      }
-    ]
+    "Text": "text3"
   },
   {
     "Value": "value4",
-    "Text": "text4",
-    "Categories": [
-      {
-        "Value": "value2",
-        "Text": "text2"
-      }
-    ]
+    "Text": "text4"
   },
   {
     "Value": "value5",
-    "Text": "text5",
-    "Categories": [
-      {
-        "Value": "value7",
-        "Text": "text7"
-      }
-    ]
+    "Text": "text5"
   },
   {
     "Value": "value6",
-    "Text": "text6",
-    "Categories": [
-      {
-        "Value": "value7",
-        "Text": "text7"
-      },
-      {
-        "Value": "value8",
-        "Text": "text8"
-      }
-    ]
+    "Text": "text6"
   },
   {
     "Value": "value7",
-    "Text": "text7",
-    "Categories": [
-      {
-        "Value": "value8",
-        "Text": "text8"
-      },
-      {
-        "Value": "value7",
-        "Text": "text7"
-      }
-    ]
+    "Text": "text7"
   },
   {
     "Value": "value8",
-    "Text": "text8",
-    "Categories": [
-      {
-        "Value": "value9",
-        "Text": "text9"
-      }
-    ]
+    "Text": "text8"
   },
   {
     "Value": "value9",
-    "Text": "text9",
-    "Categories": [
-      {
-        "Value": "value9",
-        "Text": "text9"
-      }
-    ]
+    "Text": "text9"
   }
 ]

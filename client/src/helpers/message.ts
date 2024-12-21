@@ -12,6 +12,8 @@ export enum MessageType {
   SessionInitialization = 'SessionInitialization',
   ItemsInHandUpdate = 'ItemsInHandUpdate',
   History = 'History',
+
+  PlayerPlacingItem = 'PlayerPlacingItem',
 }
 
 export interface MessageTypeToMessage {
@@ -22,6 +24,7 @@ export interface MessageTypeToMessage {
   [MessageType.SessionInitialization]: MessageSessionInitialization;
   [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
   [MessageType.History]: MessageHistory;
+  [MessageType.PlayerPlacingItem]: MessagePlayerPlacingItem;
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession>, WithPlayerAndPlayers {}
@@ -45,6 +48,10 @@ export interface MessageItemsInHandUpdate extends Message<MessageType.ItemsInHan
   itemsPrevious: Array<Item>;
 }
 
+export interface MessagePlayerPlacingItem extends Message<MessageType.PlayerPlacingItem> {
+  itemOnField: ItemWithPosition;
+}
+
 interface WithPlayer {
   player: Player;
 }
@@ -66,7 +73,7 @@ interface WithTextAndValue {
   value: string;
 }
 
-interface Position {
+export interface Position {
   col: number;
   row: number;
 }

@@ -20,7 +20,7 @@ app.MapPost("/sessions", async (context) =>
   var gameSession = new GameSession(isPrivate);
   gameServer.AddSession(gameSession);
 
-  await context.Response.WriteAsJsonAsync(gameSession.ToDTO());
+  await context.Response.WriteAsJsonAsync(gameSession.ToListingDTO());
 });
 
 app.UseWebSockets();

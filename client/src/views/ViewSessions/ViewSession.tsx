@@ -23,7 +23,7 @@ import { SessionProvider } from '@/contexts/sessionContext';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
-  const { addEventListener, open, close } = useWebSocket();
+  const { addEventListener, open, close, send } = useWebSocket();
   const navigate = useNavigate();
 
   const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
@@ -78,7 +78,7 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.ItemsUpdate)) {
+      if (doesMessageHasType(message, MessageType.ItemsInHandUpdate)) {
         setItemsInHand(message.itemsCurrent);
 
         return;
@@ -110,9 +110,12 @@ export const ViewSession: FC = () => {
     }),
   );
 
-  const onDrop = useCallback((item: Item, [row, col]: [number, number]) => {
-    console.log('сейчас из компонента вьюхи отправим:', item, { row, col });
-  }, []);
+  const onDrop = useCallback(
+    (itemOnField: ItemWithPosition) => {
+      send(MessageType.PlayerPlacingItem, { itemOnField });
+    },
+    [send],
+  );
 
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">

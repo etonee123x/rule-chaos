@@ -1,18 +1,19 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import { useSession } from '@/contexts/sessionContext';
-import type { Item } from '@/helpers/message';
+import type { Item, ItemWithPosition } from '@/helpers/message';
+import { pick } from '@/utils/pick';
 import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
 
 interface PropsTheField extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrop'> {
-  onDrop: (item: Item, [row, col]: [number, number]) => void | Promise<void>;
+  onDrop: (itemOnField: ItemWithPosition) => void | Promise<void>;
 }
 
 interface PropsCell {
   row: number;
   col: number;
-  onDrop: (item: Item) => void | Promise<void>;
+  onDrop: (item: ItemWithPosition) => void | Promise<void>;
 }
 
 const SIZE = 8;
@@ -25,9 +26,9 @@ const indexToRowCol = (index: number) => ({
 const Cell: FC<PropsCell> = (props) => {
   const { itemsOnField } = useSession();
 
-  const [, dropRef] = useDrop(() => ({
+  const [, dropRef] = useDrop<Item>(() => ({
     accept: ITEM,
-    drop: props.onDrop,
+    drop: (item) => props.onDrop({ ...item, position: pick(props, ['col', 'row']) }),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -57,7 +58,7 @@ export const TheField: FC<PropsTheField> = (props) => (
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => {
         const { row, col } = indexToRowCol(index);
 
-        return <Cell row={row} col={col} key={index} onDrop={(item) => props.onDrop(item, [row, col])} />;
+        return <Cell row={row} col={col} key={index} onDrop={props.onDrop} />;
       })}
     </div>
   </div>

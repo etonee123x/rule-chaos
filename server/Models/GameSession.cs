@@ -189,6 +189,8 @@ namespace RuleChaos.Models
         return;
       }
 
+      Console.WriteLine(serializedMessage);
+
       ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
     }
 
@@ -245,12 +247,15 @@ namespace RuleChaos.Models
     public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
 
     [JsonPropertyName("activePlayer")]
-    public Player? ActivePlayer { get; } = gameSession.ActivePlayer;
+    public PlayerDTO? ActivePlayer { get; } = gameSession.ActivePlayer?.ToDTO();
 
     [JsonPropertyName("itemsInHand")]
-    public Item[] ItemsInHand { get; } = gameSession.ItemsInHand;
+    public ItemDTO[] ItemsInHand { get; } = gameSession.ItemsInHand.Select((itemInHand) => itemInHand.ToDTO()).ToArray();
+
+    [JsonPropertyName("itemsOnField")]
+    public ItemWithPositionDTO[] ItemsOnField { get; } = gameSession.ItemsOnField.Select((itemOnField) => itemOnField.ToDTO()).ToArray();
 
     [JsonPropertyName("history")]
-    public HistoryRecord[] History { get; } = gameSession.History;
+    public HistoryRecordDTO[] History { get; } = gameSession.History.Select((historyRecord) => historyRecord.ToDTO()).ToArray();
   }
 }

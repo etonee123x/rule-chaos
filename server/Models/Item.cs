@@ -7,21 +7,18 @@ namespace RuleChaos.Models
   {
     public string Text { get; }
     public string Value { get; }
-    public Category.Category[] Categories { get; }
+
+    [JsonConstructor]
+    public Item(string value, string text)
+    {
+      this.Value = value;
+      this.Text = text;
+    }
 
     protected Item(Item item)
     {
       this.Value = item.Value;
       this.Text = item.Text;
-      this.Categories = item.Categories;
-    }
-
-    [JsonConstructor]
-    private Item(string value, string text, Category.Category[] categories)
-    {
-      this.Value = value;
-      this.Text = text;
-      this.Categories = categories;
     }
 
     public ItemDTO ToDTO()
@@ -30,10 +27,31 @@ namespace RuleChaos.Models
     }
   }
 
-  public class Position(byte row, byte col)
+  public class ItemDTO
   {
-    public byte Row { get; } = row;
-    public byte Col { get; } = col;
+    [JsonPropertyName("text")]
+    public string Text { get; init; }
+
+    [JsonPropertyName("value")]
+    public string Value { get; init; }
+
+    public ItemDTO(Item item)
+    {
+      this.Text = item.Text;
+      this.Value = item.Value;
+    }
+  }
+
+  public class Position
+  {
+    public byte Row { get; }
+    public byte Col { get; }
+
+    public Position(byte row, byte col)
+    {
+      this.Row = row;
+      this.Col = col;
+    }
 
     public PositionDTO ToDTO()
     {
@@ -41,19 +59,30 @@ namespace RuleChaos.Models
     }
   }
 
-  public class PositionDTO(Position position)
+  public class PositionDTO
   {
     [JsonPropertyName("row")]
-    public byte Row { get; } = position.Row;
+    public byte Row { get; init; }
 
     [JsonPropertyName("col")]
-    public byte Col { get; } = position.Col;
+    public byte Col { get; init; }
+
+    public PositionDTO(Position position)
+    {
+      this.Row = position.Row;
+      this.Col = position.Col;
+    }
   }
 
-  public class ItemWithPosition(Item item, Position position)
-    : Item(item)
+  public class ItemWithPosition : Item
   {
-    public Position Position { get; } = position;
+    public Position Position { get; }
+
+    public ItemWithPosition(string value, string text, Position position)
+      : base(value, text)
+    {
+      this.Position = position;
+    }
 
     public new ItemWithPositionDTO ToDTO()
     {
@@ -61,22 +90,16 @@ namespace RuleChaos.Models
     }
   }
 
-  public class ItemDTO(Item item)
+  public class ItemWithPositionDTO : ItemDTO
   {
-    [JsonPropertyName("text")]
-    public string Text { get; } = item.Text;
+    [JsonPropertyName("position")]
+    public PositionDTO Position { get; init; }
 
-    [JsonPropertyName("value")]
-    public string Value { get; } = item.Value;
-
-    [JsonPropertyName("categories")]
-    public Category.CategoryDTO[] Categories { get; } = item.Categories.Select((category) => category.ToDTO()).ToArray();
-  }
-
-  public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
-    : ItemDTO(itemWithPosition)
-  {
-    public PositionDTO Position { get; } = itemWithPosition.Position.ToDTO();
+    public ItemWithPositionDTO(ItemWithPosition itemWithPosition)
+      : base(itemWithPosition)
+    {
+      this.Position = itemWithPosition.Position.ToDTO();
+    }
   }
 
   public class ItemGenerator

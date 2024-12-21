@@ -4,8 +4,8 @@ namespace RuleChaos.Models.Messages
 {
   public class MessagePlayerPlacingItem : MessageFromClient
   {
-    [JsonPropertyName("itemsOnField")]
-    required public ItemWithPositionDTO[] ItemsOnField { get; init; }
+    [JsonPropertyName("itemOnField")]
+    required public ItemWithPosition ItemOnField { get; init; }
 
     [JsonPropertyName("type")]
     public override string Type
