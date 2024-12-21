@@ -10,7 +10,7 @@ export enum MessageType {
   RoundWasStarted = 'RoundWasStarted',
   NewActivePlayer = 'NewActivePlayer',
   SessionInitialization = 'SessionInitialization',
-  ItemsUpdate = 'ItemsUpdate',
+  ItemsInHandUpdate = 'ItemsInHandUpdate',
   History = 'History',
 }
 
@@ -20,7 +20,7 @@ export interface MessageTypeToMessage {
   [MessageType.PlayerJoinedSession]: MessagePlayerJoinedSession;
   [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
   [MessageType.SessionInitialization]: MessageSessionInitialization;
-  [MessageType.ItemsUpdate]: MessageItemsUpdate;
+  [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
   [MessageType.History]: MessageHistory;
 }
 
@@ -40,7 +40,7 @@ export interface MessageHistory extends Message<MessageType.History> {
   history: Array<HistoryRecord>;
 }
 
-export interface MessageItemsUpdate extends Message<MessageType.ItemsUpdate> {
+export interface MessageItemsInHandUpdate extends Message<MessageType.ItemsInHandUpdate> {
   itemsCurrent: Array<Item>;
   itemsPrevious: Array<Item>;
 }

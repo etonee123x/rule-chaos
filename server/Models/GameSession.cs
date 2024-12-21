@@ -26,6 +26,9 @@ namespace RuleChaos.Models
 
     public PlayerDTO[] PlayersDTOs { get => [.. this.players.ConvertAll((player) => player.ToDTO())]; }
 
+    // this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(value));
+    public ItemWithPosition[] ItemsOnField { get; set; } = [];
+
     internal Player? ActivePlayer { get; set; }
 
     private static readonly byte PlayersNumber = 2;
@@ -45,20 +48,8 @@ namespace RuleChaos.Models
       get => this.itemsInHand;
       set
       {
-        this.SendMessageToPlayers(new MessageItemsUpdate(this.itemsInHand.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
+        this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.itemsInHand.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
         this.itemsInHand = value;
-      }
-    }
-
-    private ItemWithPosition[] itemsOnField = [];
-
-    public ItemWithPosition[] ItemsOnField
-    {
-      get => this.itemsOnField;
-      set
-      {
-        this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(historyLast));
-        this.history = historyLast;
       }
     }
 

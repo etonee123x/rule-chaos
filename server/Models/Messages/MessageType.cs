@@ -9,5 +9,6 @@ namespace RuleChaos.Models.Messages
     public const string SessionInitialization = "SessionInitialization";
     public const string ItemsUpdate = "ItemsUpdate";
     public const string History = "History";
+    public const string PlayerPlacingItem = "PlayerPlacingItem";
   }
 }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageItemsUpdate(ItemDTO[] itemsPrevious, ItemDTO[] itemsCurrent)
+  public class MessageItemsInHandUpdate(ItemDTO[] itemsPrevious, ItemDTO[] itemsCurrent)
     : MessageFromServer
   {
     [JsonPropertyName("itemsPrevious")]

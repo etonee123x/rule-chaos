@@ -34,12 +34,31 @@ namespace RuleChaos.Models
   {
     public byte Row { get; } = row;
     public byte Col { get; } = col;
+
+    public PositionDTO ToDTO()
+    {
+      return new PositionDTO(this);
+    }
+  }
+
+  public class PositionDTO(Position position)
+  {
+    [JsonPropertyName("row")]
+    public byte Row { get; } = position.Row;
+
+    [JsonPropertyName("col")]
+    public byte Col { get; } = position.Col;
   }
 
   public class ItemWithPosition(Item item, Position position)
     : Item(item)
   {
     public Position Position { get; } = position;
+
+    public new ItemWithPositionDTO ToDTO()
+    {
+      return new ItemWithPositionDTO(this);
+    }
   }
 
   public class ItemDTO(Item item)
@@ -52,6 +71,12 @@ namespace RuleChaos.Models
 
     [JsonPropertyName("categories")]
     public Category.CategoryDTO[] Categories { get; } = item.Categories.Select((category) => category.ToDTO()).ToArray();
+  }
+
+  public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
+    : ItemDTO(itemWithPosition)
+  {
+    public PositionDTO Position { get; } = itemWithPosition.Position.ToDTO();
   }
 
   public class ItemGenerator
