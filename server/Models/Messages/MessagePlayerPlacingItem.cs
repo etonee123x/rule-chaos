@@ -2,10 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerPlacingItem : MessageFromClient
+  public class MessagePlayerPlacingItem(ItemWithPosition itemWithPosition)
+    : MessageFromClient
   {
-    [JsonPropertyName("itemOnField")]
-    required public ItemWithPosition ItemOnField { get; init; }
+    [JsonPropertyName("itemWithPosition")]
+    public ItemWithPosition ItemWithPosition { get; } = itemWithPosition;
 
     [JsonPropertyName("type")]
     public override string Type
@@ -15,7 +16,7 @@ namespace RuleChaos.Models.Messages
 
     public override void Handle(GameSession gameSession, Player player)
     {
-      Console.WriteLine(this);
+      gameSession.PlaceItem(player, this.ItemWithPosition);
     }
   }
 }

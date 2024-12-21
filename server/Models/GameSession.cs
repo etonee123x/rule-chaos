@@ -143,6 +143,14 @@ namespace RuleChaos.Models
       }
     }
 
+    public void PlaceItem(Player player, ItemWithPosition itemWithPosition)
+    {
+      if (player != this.ActivePlayer)
+      {
+        return;
+      }
+    }
+
     public void UpdateActivity()
     {
       this.lastActivity = DateTime.UtcNow;
@@ -188,8 +196,6 @@ namespace RuleChaos.Models
       {
         return;
       }
-
-      Console.WriteLine(serializedMessage);
 
       ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
     }

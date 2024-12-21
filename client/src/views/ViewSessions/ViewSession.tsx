@@ -111,8 +111,8 @@ export const ViewSession: FC = () => {
   );
 
   const onDrop = useCallback(
-    (itemOnField: ItemWithPosition) => {
-      send(MessageType.PlayerPlacingItem, { itemOnField });
+    (itemWithPosition: ItemWithPosition) => {
+      send(MessageType.PlayerPlacingItem, { itemWithPosition });
     },
     [send],
   );

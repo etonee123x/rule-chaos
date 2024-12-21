@@ -5,7 +5,10 @@ namespace RuleChaos.Models
 {
   public class Item
   {
+    [JsonPropertyName("text")]
     public string Text { get; }
+
+    [JsonPropertyName("value")]
     public string Value { get; }
 
     [JsonConstructor]
@@ -27,31 +30,22 @@ namespace RuleChaos.Models
     }
   }
 
-  public class ItemDTO
+  public class ItemDTO(Item item)
   {
     [JsonPropertyName("text")]
-    public string Text { get; init; }
+    public string Text { get; init; } = item.Text;
 
     [JsonPropertyName("value")]
-    public string Value { get; init; }
-
-    public ItemDTO(Item item)
-    {
-      this.Text = item.Text;
-      this.Value = item.Value;
-    }
+    public string Value { get; init; } = item.Value;
   }
 
-  public class Position
+  public class Position(byte row, byte col)
   {
-    public byte Row { get; }
-    public byte Col { get; }
+    [JsonPropertyName("row")]
+    public byte Row { get; } = row;
 
-    public Position(byte row, byte col)
-    {
-      this.Row = row;
-      this.Col = col;
-    }
+    [JsonPropertyName("col")]
+    public byte Col { get; } = col;
 
     public PositionDTO ToDTO()
     {
@@ -59,30 +53,20 @@ namespace RuleChaos.Models
     }
   }
 
-  public class PositionDTO
+  public class PositionDTO(Position position)
   {
     [JsonPropertyName("row")]
-    public byte Row { get; init; }
+    public byte Row { get; init; } = position.Row;
 
     [JsonPropertyName("col")]
-    public byte Col { get; init; }
-
-    public PositionDTO(Position position)
-    {
-      this.Row = position.Row;
-      this.Col = position.Col;
-    }
+    public byte Col { get; init; } = position.Col;
   }
 
-  public class ItemWithPosition : Item
+  public class ItemWithPosition(string value, string text, Position position)
+    : Item(value, text)
   {
-    public Position Position { get; }
-
-    public ItemWithPosition(string value, string text, Position position)
-      : base(value, text)
-    {
-      this.Position = position;
-    }
+    [JsonPropertyName("position")]
+    public Position Position { get; } = position;
 
     public new ItemWithPositionDTO ToDTO()
     {
@@ -90,16 +74,11 @@ namespace RuleChaos.Models
     }
   }
 
-  public class ItemWithPositionDTO : ItemDTO
+  public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
+    : ItemDTO(itemWithPosition)
   {
     [JsonPropertyName("position")]
-    public PositionDTO Position { get; init; }
-
-    public ItemWithPositionDTO(ItemWithPosition itemWithPosition)
-      : base(itemWithPosition)
-    {
-      this.Position = itemWithPosition.Position.ToDTO();
-    }
+    public PositionDTO Position { get; init; } = itemWithPosition.Position.ToDTO();
   }
 
   public class ItemGenerator

@@ -49,7 +49,7 @@ export interface MessageItemsInHandUpdate extends Message<MessageType.ItemsInHan
 }
 
 export interface MessagePlayerPlacingItem extends Message<MessageType.PlayerPlacingItem> {
-  itemOnField: ItemWithPosition;
+  itemWithPosition: ItemWithPosition;
 }
 
 interface WithPlayer {
