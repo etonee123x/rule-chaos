@@ -1,4 +1,5 @@
 import type { Player } from '@/helpers/player';
+import type { WithId } from '@/types';
 
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
@@ -44,8 +45,7 @@ export interface MessageHistory extends Message<MessageType.History> {
 }
 
 export interface MessageItemsInHandUpdate extends Message<MessageType.ItemsInHandUpdate> {
-  itemsCurrent: Array<Item>;
-  itemsPrevious: Array<Item>;
+  itemsInHand: Array<Item>;
 }
 
 export interface MessagePlayerPlacingItem extends Message<MessageType.PlayerPlacingItem> {
@@ -60,33 +60,26 @@ interface WithPlayers {
   players: Array<Player>;
 }
 
-export interface HistoryRecord {
-  id: string;
+export interface HistoryRecord extends WithId {
   message: string;
   timestamp: string;
 }
 
 interface WithPlayerAndPlayers extends WithPlayer, WithPlayers {}
 
-interface WithTextAndValue {
-  text: string;
-  value: string;
-}
-
 export interface Position {
   col: number;
   row: number;
 }
 
-interface WithPosition {
+export interface Item extends WithId {
+  text: string;
+  value: string;
+}
+
+export interface ItemWithPosition extends Item {
   position: Position;
 }
-
-export interface Item extends WithTextAndValue {
-  category: unknown;
-}
-
-export interface ItemWithPosition extends Item, WithPosition {}
 
 export interface SessionState {
   players: Array<Player>;

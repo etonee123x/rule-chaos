@@ -2,14 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageItemsInHandUpdate(ItemDTO[] itemsPrevious, ItemDTO[] itemsCurrent)
+  public class MessageItemsInHandUpdate(List<Item> itemsInHand)
     : MessageFromServer
   {
-    [JsonPropertyName("itemsPrevious")]
-    public ItemDTO[] ItemsPrevious { get; } = itemsPrevious;
-
-    [JsonPropertyName("itemsCurrent")]
-    public ItemDTO[] ItemsCurrent { get; } = itemsCurrent;
+    [JsonPropertyName("itemsInHand")]
+    public ItemDTO[] ItemsInHand { get; } = itemsInHand.Select((itemInHand) => itemInHand.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
     public override string Type
@@ -17,9 +14,9 @@ namespace RuleChaos.Models.Messages
       get => MessageType.ItemsInHandUpdate;
     }
 
-    public override HistoryRecord HistoryRecord
+    public override HistoryRecord? HistoryRecord
     {
-      get => new HistoryRecord("Изменены предметы.");
+      get => null;
     }
   }
 }

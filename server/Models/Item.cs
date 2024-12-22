@@ -11,6 +11,9 @@ namespace RuleChaos.Models
     [JsonPropertyName("value")]
     public string Value { get; }
 
+    [JsonPropertyName("id")]
+    public Guid Id { get; } = Guid.NewGuid();
+
     [JsonConstructor]
     public Item(string value, string text)
     {
@@ -22,6 +25,21 @@ namespace RuleChaos.Models
     {
       this.Value = item.Value;
       this.Text = item.Text;
+    }
+
+    public override bool Equals(object? obj)
+    {
+      if (obj is Item other)
+      {
+        return this.Id == other.Id;
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode()
+    {
+      return this.Id.GetHashCode();
     }
 
     public ItemDTO ToDTO()

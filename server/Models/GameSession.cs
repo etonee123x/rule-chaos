@@ -2,7 +2,6 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using RuleChaos.Models.Messages;
 
 namespace RuleChaos.Models
@@ -34,22 +33,11 @@ namespace RuleChaos.Models
 
     public List<Player> Players { get; } = [];
     public List<ItemWithPosition> ItemsOnField { get; } = [];
+    public List<Item> ItemsInHand { get; private set; } = [];
 
     private DateTime lastActivity = DateTime.UtcNow;
 
     private ItemGenerator? ItemGenerator { get; set; }
-
-    private Item[] itemsInHand = [];
-
-    internal Item[] ItemsInHand
-    {
-      get => this.itemsInHand;
-      set
-      {
-        this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.itemsInHand.Select((item) => item.ToDTO()).ToArray(), value.Select((item) => item.ToDTO()).ToArray()));
-        this.itemsInHand = value;
-      }
-    }
 
     private HistoryRecord[] history = [];
 
@@ -155,9 +143,19 @@ namespace RuleChaos.Models
         return;
       }
 
-      this.ItemsOnField.Add(itemWithPosition);
+      var itemInHand = this.FindItemInHand(itemWithPosition);
 
-      this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(this.ItemsOnField.ToArray()));
+      if (itemInHand is null)
+      {
+        // Нет такого предмета
+        return;
+      }
+
+      this.ItemsOnField.Add(itemWithPosition);
+      this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(this.ItemsOnField));
+
+      this.ItemsInHand.Remove(itemInHand);
+      this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
     }
@@ -181,7 +179,9 @@ namespace RuleChaos.Models
         throw new Exception("Has no item generator");
       }
 
-      this.ItemsInHand = new Item[this.Players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
+      this.ItemsInHand = new Item[this.Players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToList();
+      this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
+
       this.MakeFirstOrNextPlayerActive();
     }
 
@@ -251,6 +251,11 @@ namespace RuleChaos.Models
     private bool IsPositionOccupied(Position position)
     {
       return this.ItemsOnField.Any((itemOnField) => itemOnField.Position.Equals(position));
+    }
+
+    private Item? FindItemInHand(Item item)
+    {
+      return this.ItemsInHand.Find((itemInHand) => itemInHand.Equals(item));
     }
 
     private void Log(params object[] args)

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageItemsOnFieldUpdate(ItemWithPosition[] itemsOnField)
+  public class MessageItemsOnFieldUpdate(List<ItemWithPosition> itemsOnField)
     : MessageFromServer
   {
     [JsonPropertyName("itemsOnField")]

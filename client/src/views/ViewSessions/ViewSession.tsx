@@ -79,7 +79,7 @@ export const ViewSession: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.ItemsInHandUpdate)) {
-        setItemsInHand(message.itemsCurrent);
+        setItemsInHand(message.itemsInHand);
 
         return;
       }
