@@ -47,6 +47,21 @@ namespace RuleChaos.Models
     [JsonPropertyName("col")]
     public byte Col { get; } = col;
 
+    public override bool Equals(object? obj)
+    {
+      if (obj is Position other)
+      {
+        return this.Row == other.Row && this.Col == other.Col;
+      }
+
+      return false;
+    }
+
+    public override int GetHashCode()
+    {
+      return HashCode.Combine(this.Row, this.Col);
+    }
+
     public PositionDTO ToDTO()
     {
       return new PositionDTO(this);

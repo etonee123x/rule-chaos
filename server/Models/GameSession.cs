@@ -22,12 +22,9 @@ namespace RuleChaos.Models
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
 
-    public bool HasEnoughPlayers { get => this.players.Count == GameSession.PlayersNumber; }
+    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
-    public PlayerDTO[] PlayersDTOs { get => [.. this.players.ConvertAll((player) => player.ToDTO())]; }
-
-    // this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(value));
-    public ItemWithPosition[] ItemsOnField { get; set; } = [];
+    public PlayerDTO[] PlayersDTOs { get => this.Players.ConvertAll((player) => player.ToDTO()).ToArray(); }
 
     internal Player? ActivePlayer { get; set; }
 
@@ -35,7 +32,8 @@ namespace RuleChaos.Models
     private static readonly byte ItemsPerPlayer = 8;
     private static readonly byte HistoryRecordsCount = 50;
 
-    private readonly List<Player> players = [];
+    public List<Player> Players { get; } = [];
+    public List<ItemWithPosition> ItemsOnField { get; } = [];
 
     private DateTime lastActivity = DateTime.UtcNow;
 
@@ -67,7 +65,7 @@ namespace RuleChaos.Models
       }
     }
 
-    private bool IsRoundActive { get => this.ActivePlayer != null; }
+    private bool IsRoundActive { get => this.ActivePlayer is not null; }
 
     public GameSessionListingDTO ToListingDTO()
     {
@@ -110,7 +108,7 @@ namespace RuleChaos.Models
         }
 
         this.RemovePlayer(player);
-        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.players));
+        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.Players));
       });
     }
 
@@ -118,22 +116,22 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.ActivePlayer == null)
+        if (this.ActivePlayer is null)
         {
-          this.ActivePlayer = this.players[0];
+          this.ActivePlayer = this.Players[0];
           this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
 
           return;
         }
 
-        var index = this.players.IndexOf(this.ActivePlayer);
+        var index = this.Players.IndexOf(this.ActivePlayer);
 
         if (index == -1)
         {
           throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
         }
 
-        this.ActivePlayer = this.players[(index + 1) % this.players.Count];
+        this.ActivePlayer = this.Players[(index + 1) % this.Players.Count];
 
         this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
       }
@@ -145,10 +143,23 @@ namespace RuleChaos.Models
 
     public void PlaceItem(Player player, ItemWithPosition itemWithPosition)
     {
-      if (player != this.ActivePlayer)
+      if (!this.IsThisPlayerActive(player))
       {
+        // Ходит не в свой ход
         return;
       }
+
+      if (this.IsPositionOccupied(itemWithPosition.Position))
+      {
+        // На этой позиции уже что то есть
+        return;
+      }
+
+      this.ItemsOnField.Add(itemWithPosition);
+
+      this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(this.ItemsOnField.ToArray()));
+
+      this.MakeFirstOrNextPlayerActive();
     }
 
     public void UpdateActivity()
@@ -165,22 +176,22 @@ namespace RuleChaos.Models
     {
       this.SendMessageToPlayers(new MessageRoundWasStarted());
 
-      if (this.ItemGenerator == null)
+      if (this.ItemGenerator is null)
       {
         throw new Exception("Has no item generator");
       }
 
-      this.ItemsInHand = new Item[this.players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
+      this.ItemsInHand = new Item[this.Players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToArray();
       this.MakeFirstOrNextPlayerActive();
     }
 
     private void SendMessageToPlayers(MessageFromServer message)
     {
-      this.players.ForEach((player) => player.SendMessage(message));
+      this.Players.ForEach((player) => player.SendMessage(message));
 
       var maybeHistoryRecord = message.HistoryRecord;
 
-      if (maybeHistoryRecord == null)
+      if (maybeHistoryRecord is null)
       {
         return;
       }
@@ -192,7 +203,7 @@ namespace RuleChaos.Models
     {
       var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("type").GetString();
 
-      if (type == null || !MessageFromClient.MessageTypeToMessage.TryGetValue(type, out var messageType))
+      if (type is null || !MessageFromClient.MessageTypeToMessage.TryGetValue(type, out var messageType))
       {
         return;
       }
@@ -204,13 +215,13 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.players.Count >= GameSession.PlayersNumber)
+        if (this.Players.Count >= GameSession.PlayersNumber)
         {
-          throw new Exception($"{this.players.Count} игроков из ${GameSession.PlayersNumber}");
+          throw new Exception($"{this.Players.Count} игроков из ${GameSession.PlayersNumber}");
         }
 
-        this.players.Add(player);
-        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.players));
+        this.Players.Add(player);
+        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.Players));
 
         this.Log($"Игрок {player} подключился");
       }
@@ -227,9 +238,19 @@ namespace RuleChaos.Models
         this.ActivePlayer = null;
       }
 
-      this.players.Remove(player);
+      this.Players.Remove(player);
 
       this.Log($"Игрок {player} отключился");
+    }
+
+    private bool IsThisPlayerActive(Player player)
+    {
+      return player == this.ActivePlayer;
+    }
+
+    private bool IsPositionOccupied(Position position)
+    {
+      return this.ItemsOnField.Any((itemOnField) => itemOnField.Position.Equals(position));
     }
 
     private void Log(params object[] args)

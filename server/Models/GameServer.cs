@@ -18,7 +18,7 @@ namespace RuleChaos.Models
     {
       var maybeGameSession = this.gameSessions.Find((gameSession) => gameSession.Id == sessionId);
 
-      if (maybeGameSession == null)
+      if (maybeGameSession is null)
       {
         context.Response.StatusCode = StatusCodes.Status404NotFound;
         await context.Response.WriteAsync("Session not found");
