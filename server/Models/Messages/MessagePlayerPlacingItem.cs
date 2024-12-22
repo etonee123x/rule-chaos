@@ -16,6 +16,7 @@ namespace RuleChaos.Models.Messages
 
     public override void Handle(GameSession gameSession, Player player)
     {
+      Console.WriteLine(this.ItemWithPosition);
       gameSession.PlaceItem(player, this.ItemWithPosition);
     }
   }

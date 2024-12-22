@@ -1,10 +1,11 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import { useSession } from '@/contexts/sessionContext';
-import type { Item, ItemWithPosition } from '@/helpers/message';
+import type { Item as IItem, ItemWithPosition } from '@/helpers/message';
 import { pick } from '@/utils/pick';
 import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
+import { Item } from './Item';
 
 interface PropsTheField extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrop'> {
   onDrop: (itemOnField: ItemWithPosition) => void | Promise<void>;
@@ -26,7 +27,7 @@ const indexToRowCol = (index: number) => ({
 const Cell: FC<PropsCell> = (props) => {
   const { itemsOnField } = useSession();
 
-  const [, dropRef] = useDrop<Item>(() => ({
+  const [, dropRef] = useDrop<IItem>(() => ({
     accept: ITEM,
     drop: (item) => props.onDrop({ ...item, position: pick(props, ['col', 'row']) }),
     collect: (monitor) => ({
@@ -39,15 +40,21 @@ const Cell: FC<PropsCell> = (props) => {
     [itemsOnField, props.col, props.row],
   );
 
+  const FallBack = () => (
+    <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
+      {props.row + 1}:{props.col + 1}
+    </div>
+  );
+
   return (
     <div
       ref={dropRef}
-      className={classNames(['relative', (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200'])}
+      className={classNames([
+        'aspect-square relative flex items-center justify-center',
+        (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200',
+      ])}
     >
-      <pre>{JSON.stringify(maybeItem)}</pre>
-      <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
-        {props.row + 1}:{props.col + 1}
-      </div>
+      {maybeItem ? <Item className="size-11/12" item={maybeItem} /> : <FallBack />}
     </div>
   );
 };

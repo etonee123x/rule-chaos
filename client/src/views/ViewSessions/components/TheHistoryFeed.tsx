@@ -17,10 +17,10 @@ export const TheHistoryFeed: FC<Props> = (props) => {
       {history.length === 0 ? (
         <div>Нету истории...</div>
       ) : (
-        <ul>
+        <ul className="*:mb-1 last:*:mb-0">
           {history.map((historyRecord) => (
             <li key={historyRecord.id}>
-              <span className="w-16 inline-block">
+              <span className="w-16 inline-block text-gray-500">
                 {
                   //
                   new Date(historyRecord.timestamp).toLocaleTimeString('en-US', {

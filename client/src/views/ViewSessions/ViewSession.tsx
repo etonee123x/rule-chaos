@@ -84,6 +84,12 @@ export const ViewSession: FC = () => {
         return;
       }
 
+      if (doesMessageHasType(message, MessageType.ItemsOnFieldUpdate)) {
+        setItemsOnField(message.itemsOnField);
+
+        return;
+      }
+
       if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
         setPlayers(message.players);
 

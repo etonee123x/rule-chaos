@@ -1,33 +1,9 @@
-import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import { useSession } from '@/contexts/sessionContext';
-import type { Item } from '@/helpers/message';
 import classNames from 'classnames';
 import { useCallback, type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
-import { useDrag } from 'react-dnd';
+import { Item } from './Item';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
-
-const ComponentItem: FC<{ item: Item }> = (props) => {
-  const [{ isDragging }, dragRef] = useDrag(() => ({
-    type: ITEM,
-    item: props.item,
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  }));
-
-  return (
-    <div
-      className={classNames([
-        'border size-full flex justify-center items-center cursor-pointer select-none border-gray-400',
-        isDragging && 'opacity-0',
-      ])}
-      ref={dragRef}
-    >
-      {props.item.text}
-    </div>
-  );
-};
 
 export const TheHand: FC<Props> = (props) => {
   const { itemsInHand } = useSession();
@@ -48,7 +24,7 @@ export const TheHand: FC<Props> = (props) => {
         <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
           {itemsInHand.map((item, index) => (
             <li className="shrink-0 aspect-square" key={index}>
-              <ComponentItem item={item} />
+              <Item item={item} isDraggable />
             </li>
           ))}
         </ul>

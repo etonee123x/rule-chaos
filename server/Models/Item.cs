@@ -12,7 +12,7 @@ namespace RuleChaos.Models
     public string Value { get; }
 
     [JsonPropertyName("id")]
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     [JsonConstructor]
     public Item(string value, string text)
@@ -98,11 +98,17 @@ namespace RuleChaos.Models
     public byte Col { get; init; } = position.Col;
   }
 
-  public class ItemWithPosition(string value, string text, Position position)
-    : Item(value, text)
+  public class ItemWithPosition : Item
   {
     [JsonPropertyName("position")]
-    public Position Position { get; } = position;
+    public Position Position { get; }
+
+    public ItemWithPosition(string value, string text, Position position, Guid id)
+      : base(value, text)
+    {
+      this.Id = id;
+      this.Position = position;
+    }
 
     public new ItemWithPositionDTO ToDTO()
     {
