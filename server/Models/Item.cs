@@ -50,6 +50,9 @@ namespace RuleChaos.Models
 
   public class ItemDTO(Item item)
   {
+    [JsonPropertyName("id")]
+    public Guid Id { get; init; } = item.Id;
+
     [JsonPropertyName("text")]
     public string Text { get; init; } = item.Text;
 

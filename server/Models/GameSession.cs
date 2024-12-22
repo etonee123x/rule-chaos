@@ -134,12 +134,14 @@ namespace RuleChaos.Models
       if (!this.IsThisPlayerActive(player))
       {
         // Ходит не в свой ход
+        Console.WriteLine("Ходит не в свой ход");
         return;
       }
 
       if (this.IsPositionOccupied(itemWithPosition.Position))
       {
         // На этой позиции уже что то есть
+        Console.WriteLine("На этой позиции уже что то есть");
         return;
       }
 
@@ -148,6 +150,7 @@ namespace RuleChaos.Models
       if (itemInHand is null)
       {
         // Нет такого предмета
+        Console.WriteLine("Нет такого предмета");
         return;
       }
 
@@ -180,6 +183,7 @@ namespace RuleChaos.Models
       }
 
       this.ItemsInHand = new Item[this.Players.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToList();
+      this.ItemsInHand.ForEach((itemInHand) => Console.WriteLine(itemInHand.Id));
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
@@ -208,6 +212,7 @@ namespace RuleChaos.Models
         return;
       }
 
+      Console.WriteLine(serializedMessage);
       ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
     }
 
@@ -255,7 +260,12 @@ namespace RuleChaos.Models
 
     private Item? FindItemInHand(Item item)
     {
-      return this.ItemsInHand.Find((itemInHand) => itemInHand.Equals(item));
+      Console.WriteLine($"Ищем ID {item.Id}");
+      return this.ItemsInHand.Find((itemInHand) =>
+      {
+        Console.WriteLine(itemInHand.Id);
+        return itemInHand.Equals(item);
+      });
     }
 
     private void Log(params object[] args)
