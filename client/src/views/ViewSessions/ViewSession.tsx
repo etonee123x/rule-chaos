@@ -8,7 +8,7 @@ import {
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
 import { doesMessageHasType } from '@/helpers/message';
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ThePlayersList } from './components/ThePlayersList';
 import { isNil } from '@/utils/isNil';
@@ -35,6 +35,8 @@ export const ViewSession: FC = () => {
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
 
+  const refHistory = useRef<HTMLDivElement>(null);
+
   const session: SessionState = useMemo(
     () => ({
       player,
@@ -48,6 +50,14 @@ export const ViewSession: FC = () => {
   );
 
   useEffect(() => {
+    if (!refHistory.current) {
+      return;
+    }
+
+    refHistory.current.scrollTop = refHistory.current.scrollHeight;
+  }, [history]);
+
+  useEffect(() => {
     if (isNil(id)) {
       return close;
     }
@@ -58,6 +68,8 @@ export const ViewSession: FC = () => {
   }, [id, open, close]);
 
   useEffect(() => addEventListener('close', () => navigate(SESSIONS())));
+
+  useEffect(() => {}, [history]);
 
   useEffect(() =>
     addEventListener('message', (message) => {
@@ -130,7 +142,7 @@ export const ViewSession: FC = () => {
           <div className="flex mb-5 gap-8 h-5/6">
             <TheField onDrop={onDrop} />
             <ThePlayersList className="w-1/6 overflow-y-auto" />
-            <TheHistoryFeed className="flex-1 overflow-y-auto" />
+            <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
           <TheHand className="mt-auto h-1/6" />
         </SessionProvider>

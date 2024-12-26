@@ -10,23 +10,27 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Item: FC<Props> = (props) => {
-  const [{ isDragging, canDrag }, dragRef] = useDrag(() => ({
-    type: ITEM,
-    item: props.item,
-    canDrag: Boolean(props.isDraggable),
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-      canDrag: monitor.canDrag(),
+  const isDraggable = Boolean(props.isDraggable);
+
+  const [{ isDragging }, dragRef] = useDrag(
+    () => ({
+      type: ITEM,
+      item: props.item,
+      canDrag: isDraggable,
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
     }),
-  }));
+    [isDraggable],
+  );
 
   return (
     <div
       className={classNames([
-        'border size-full flex justify-center items-center select-none border-gray-400',
+        'border flex justify-center items-center select-none border-gray-400',
         props.className,
         isDragging && 'opacity-0',
-        canDrag && 'cursor-pointer',
+        isDraggable && 'cursor-pointer',
       ])}
       ref={dragRef}
     >

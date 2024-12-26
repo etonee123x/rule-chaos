@@ -2,11 +2,13 @@ import { useSession } from '@/contexts/sessionContext';
 import classNames from 'classnames';
 import { useCallback, type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
 import { Item } from './Item';
+import { useIsActivePlayer } from '@/hooks/useIsActivePlayer';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const TheHand: FC<Props> = (props) => {
   const { itemsInHand } = useSession();
+  const isActivePlayer = useIsActivePlayer();
 
   const onWheel: WheelEventHandler<HTMLUListElement> = useCallback((event) => {
     if (!event.deltaY) {
@@ -24,7 +26,7 @@ export const TheHand: FC<Props> = (props) => {
         <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
           {itemsInHand.map((item, index) => (
             <li className="shrink-0 aspect-square" key={index}>
-              <Item item={item} isDraggable />
+              <Item className="size-full" item={item} isDraggable={isActivePlayer} />
             </li>
           ))}
         </ul>
