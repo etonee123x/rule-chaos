@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
 import { Item } from './Item';
+import { arePositionsEqual } from '@/helpers/position';
 
 interface PropsTheField extends Omit<HTMLAttributes<HTMLDivElement>, 'onDrop'> {
   onDrop: (itemOnField: ItemWithPosition) => void | Promise<void>;
@@ -27,18 +28,29 @@ const indexToRowCol = (index: number) => ({
 const Cell: FC<PropsCell> = (props) => {
   const { itemsOnField } = useSession();
 
-  const [, dropRef] = useDrop<IItem>(() => ({
-    accept: ITEM,
-    drop: (item) => props.onDrop({ ...item, position: pick(props, ['col', 'row']) }),
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  }));
+  const position = useMemo(() => pick(props, ['col', 'row']), [props]);
 
   const maybeItem = useMemo(
-    () => itemsOnField.find((item) => item.position.col === props.col && item.position.row === props.row),
-    [itemsOnField, props.col, props.row],
+    () => itemsOnField.find((itemOnField) => arePositionsEqual(itemOnField.position, position)),
+    [itemsOnField, position],
   );
+
+  const cellHasItem = useMemo(() => Boolean(maybeItem), [maybeItem]);
+
+  const [{ canDrop, isOver }, dropRef] = useDrop(
+    () => ({
+      accept: ITEM,
+      drop: (item: IItem) => props.onDrop({ ...item, position }),
+      canDrop: () => !cellHasItem,
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
+    }),
+    [cellHasItem],
+  );
+
+  const cantDropHere = useMemo(() => !canDrop && isOver, [canDrop, isOver]);
 
   const FallBack = () => (
     <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
@@ -46,15 +58,25 @@ const Cell: FC<PropsCell> = (props) => {
     </div>
   );
 
+  const className = useMemo(() => {
+    let bgClass = cantDropHere ? 'bg-red-400' : undefined;
+
+    bgClass ??= (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200';
+
+    return classNames([
+      'aspect-square relative flex items-center justify-center',
+      bgClass,
+      cantDropHere && 'cursor-not-allowed',
+    ]);
+  }, [cantDropHere, props]);
+
   return (
-    <div
-      ref={dropRef}
-      className={classNames([
-        'aspect-square relative flex items-center justify-center',
-        (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200',
-      ])}
-    >
-      {maybeItem ? <Item className="size-11/12" item={maybeItem} /> : <FallBack />}
+    <div ref={dropRef} className={className}>
+      {maybeItem ? (
+        <Item className={classNames(['size-11/12', cantDropHere && 'animate-shake-protesting'])} item={maybeItem} />
+      ) : (
+        <FallBack />
+      )}
     </div>
   );
 };

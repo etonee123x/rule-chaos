@@ -27,11 +27,15 @@ export const TheHand: FC<Props> = (props) => {
           <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
             {itemsInHand.map((item, index) => (
               <li className="shrink-0 aspect-square" key={index}>
-                <Item className="size-full" item={item} isDraggable={isActivePlayer} />
+                <Item
+                  title={isActivePlayer ? '' : 'Ход другого игрока'}
+                  className={classNames(['size-full', !isActivePlayer && 'cursor-not-allowed'])}
+                  item={item}
+                  isDraggable={isActivePlayer}
+                />
               </li>
             ))}
           </ul>
-          {!isActivePlayer && <div className="absolute inset-0 bg-gray-500/80 text-2xl">Ход другого игрока...</div>}
         </>
       )}
     </div>

@@ -23,7 +23,7 @@ export const BaseCheckbox: FC<Props> = (props) => {
   const value = props.value ?? 'true';
 
   return (
-    <div className={classNames(['group/checkbox', UI.CHECKBOX.default])} onClick={onClick}>
+    <div className={classNames(['group/checkbox', UI.CHECKBOX._name])} onClick={onClick}>
       <BaseIcon
         className="group-has-[input:focus]/checkbox:outline group-has-[input:focus]/checkbox:outline-2 group-has-[input:focus]/checkbox:outline-black rounded-xs"
         path={iconPath}

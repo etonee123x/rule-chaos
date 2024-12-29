@@ -20,6 +20,18 @@ export default {
       spacing: {
         '5.5': '22px',
       },
+      keyframes: {
+        'shake-protesting': {
+          '10%': { transform: 'translateX(0)' },
+          '14%': { transform: 'translateX(-5%)' },
+          '18%': { transform: 'translateX(5%)' },
+          '22%': { transform: 'translateX(-5%)' },
+          '26%': { transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        'shake-protesting': 'shake-protesting 2s ease-in-out infinite',
+      },
     },
     borderRadius: {
       0: '0',

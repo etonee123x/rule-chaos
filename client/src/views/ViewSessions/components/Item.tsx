@@ -1,5 +1,6 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import type { Item as IItem } from '@/helpers/message';
+import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
 import type { FC, HTMLAttributes } from 'react';
 import { useDrag } from 'react-dnd';
@@ -27,11 +28,12 @@ export const Item: FC<Props> = (props) => {
   return (
     <div
       className={classNames([
-        'border flex justify-center items-center select-none border-gray-400',
+        UI.ITEM._name,
         props.className,
-        isDragging && 'opacity-0',
-        isDraggable && 'cursor-pointer',
+        isDragging && UI.ITEM.DRAGGING,
+        isDraggable && UI.ITEM.DRAGGABLE,
       ])}
+      title={props.title}
       ref={dragRef}
     >
       {props.item.text}

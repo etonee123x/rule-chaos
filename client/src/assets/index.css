@@ -89,6 +89,18 @@
       @apply hidden;
     }
   }
+
+  .item {
+    @apply border flex justify-center items-center select-none border-gray-400;
+
+    &.item_dragging {
+      @apply opacity-0;
+    }
+
+    &.item_draggable {
+      @apply cursor-grab;
+    }
+  }
 }
 
 @tailwind components;

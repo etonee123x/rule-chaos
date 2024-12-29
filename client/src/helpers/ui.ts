@@ -8,11 +8,15 @@ export const UI = Object.freeze({
   }),
   ELEMENT_TITLE: 'element-title',
   CHECKBOX: Object.freeze({
-    default: 'checkbox',
+    _name: 'checkbox',
     SIZE: Object.freeze({
       SM: 'checkbox_size_sm',
       XS: 'checkbox_size_xs',
     }),
   }),
-  NO_SCROLLBAR: 'no-scrollbar',
+  ITEM: Object.freeze({
+    _name: 'item',
+    DRAGGING: 'item_dragging',
+    DRAGGABLE: 'item_draggable',
+  }),
 });
