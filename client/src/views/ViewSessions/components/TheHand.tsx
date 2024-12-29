@@ -19,17 +19,20 @@ export const TheHand: FC<Props> = (props) => {
   }, []);
 
   return (
-    <div className={classNames([props.className, 'bg-gray-200 p-2 flex items-center'])}>
+    <div className={classNames([props.className, 'bg-gray-200 p-2 flex items-center relative'])}>
       {itemsInHand.length === 0 ? (
         <span className="text-2xl mx-auto">Нету предметов!</span>
       ) : (
-        <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
-          {itemsInHand.map((item, index) => (
-            <li className="shrink-0 aspect-square" key={index}>
-              <Item className="size-full" item={item} isDraggable={isActivePlayer} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="pb-2 flex gap-2 overflow-x-scroll size-full" onWheel={onWheel}>
+            {itemsInHand.map((item, index) => (
+              <li className="shrink-0 aspect-square" key={index}>
+                <Item className="size-full" item={item} isDraggable={isActivePlayer} />
+              </li>
+            ))}
+          </ul>
+          {!isActivePlayer && <div className="absolute inset-0 bg-gray-500/80 text-2xl">Ход другого игрока...</div>}
+        </>
       )}
     </div>
   );
