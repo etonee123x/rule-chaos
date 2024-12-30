@@ -196,7 +196,6 @@ namespace RuleChaos.Models
       }
 
       this.ItemsInHand = new Item[this.PlayersInRound.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToList();
-      this.ItemsInHand.ForEach((itemInHand) => Console.WriteLine(itemInHand.Id));
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
@@ -211,7 +210,6 @@ namespace RuleChaos.Models
         return;
       }
 
-      Console.WriteLine(serializedMessage);
       ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
     }
 
@@ -259,10 +257,8 @@ namespace RuleChaos.Models
 
     private Item? FindItemInHand(Item item)
     {
-      Console.WriteLine($"Ищем ID {item.Id}");
       return this.ItemsInHand.Find((itemInHand) =>
       {
-        Console.WriteLine(itemInHand.Id);
         return itemInHand.Equals(item);
       });
     }

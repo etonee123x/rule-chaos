@@ -21,6 +21,7 @@ namespace RuleChaos.Models.Messages
     public static readonly Dictionary<string, Type> MessageTypeToMessage = new Dictionary<string, Type>()
     {
       { MessageType.PlayerPlacingItem, typeof(MessagePlayerPlacingItem) },
+      { MessageType.PlayerWantsToStartRound, typeof(MessagePlayerWantsToStartRound) },
     };
   }
 

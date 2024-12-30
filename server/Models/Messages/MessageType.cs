@@ -12,6 +12,7 @@ namespace RuleChaos.Models.Messages
     public const string History = "History";
     public const string PlayerPlacingItem = "PlayerPlacingItem";
     public const string Notification = "Notification";
+    public const string PlayerWantsToStartRound = "PlayerWantsToStartRound";
     public const string VotingInitiated = "VotingInitiated";
     public const string VotingUpdate = "VotingUpdate";
     public const string VotingEnd = "VotingEnd";

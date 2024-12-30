@@ -82,7 +82,7 @@ const Cell: FC<PropsCell> = (props) => {
 };
 
 export const TheField: FC<PropsTheField> = (props) => (
-  <div className={classNames([props.className, 'aspect-square'])}>
+  <div className={classNames(props.className)}>
     <div className="size-full grid grid-cols-8 border-8 border-gray-400">
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => {
         const { row, col } = indexToRowCol(index);

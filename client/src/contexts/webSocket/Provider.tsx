@@ -77,11 +77,8 @@ export const WebSocketProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => close, [close]);
 
-  const send = useCallback<WebSocketContext['send']>((type, message) => {
-    const messageSerialized = JSON.stringify({
-      ...message,
-      type,
-    });
+  const send = useCallback<WebSocketContext['send']>((message) => {
+    const messageSerialized = JSON.stringify(message);
 
     socketRef.current?.send(messageSerialized);
   }, []);

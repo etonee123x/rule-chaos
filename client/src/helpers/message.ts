@@ -5,6 +5,10 @@ export interface Message<TType extends MessageType = MessageType> {
   type: TType;
 }
 
+export class Message<TType extends MessageType = MessageType> implements Message<TType> {
+  constructor(public type: TType) {}
+}
+
 export enum MessageType {
   PlayerJoinedSession = 'PlayerJoinedSession',
   PlayerLeftSession = 'PlayerLeftSession',
@@ -16,6 +20,7 @@ export enum MessageType {
   History = 'History',
 
   PlayerPlacingItem = 'PlayerPlacingItem',
+  PlayerWantsToStartRound = 'PlayerWantsToStartRound',
 }
 
 export interface MessageTypeToMessage {
@@ -28,6 +33,7 @@ export interface MessageTypeToMessage {
   [MessageType.History]: MessageHistory;
   [MessageType.PlayerPlacingItem]: MessagePlayerPlacingItem;
   [MessageType.ItemsOnFieldUpdate]: MessageItemsOnFieldUpdate;
+  [MessageType.PlayerWantsToStartRound]: MessagePlayerWantsToStartRound;
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession>, WithPlayerAndPlayers {}
@@ -54,8 +60,16 @@ export interface MessageItemsOnFieldUpdate extends Message<MessageType.ItemsOnFi
   itemsOnField: Array<ItemWithPosition>;
 }
 
-export interface MessagePlayerPlacingItem extends Message<MessageType.PlayerPlacingItem> {
-  itemWithPosition: ItemWithPosition;
+export class MessagePlayerPlacingItem extends Message {
+  constructor(public itemWithPosition: ItemWithPosition) {
+    super(MessageType.PlayerPlacingItem);
+  }
+}
+
+export class MessagePlayerWantsToStartRound extends Message<MessageType.PlayerWantsToStartRound> {
+  constructor() {
+    super(MessageType.PlayerWantsToStartRound);
+  }
 }
 
 interface WithPlayer {

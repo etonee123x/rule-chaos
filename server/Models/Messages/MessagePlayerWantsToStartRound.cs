@@ -8,7 +8,7 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.PlayerPlacingItem;
+      get => MessageType.PlayerWantsToStartRound;
     }
 
     public override void Handle(GameSession gameSession, Player player)

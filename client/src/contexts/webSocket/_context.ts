@@ -1,4 +1,4 @@
-import type { Message, MessageType, MessageTypeToMessage } from '@/helpers/message';
+import type { Message } from '@/helpers/message';
 import type { Session } from '@/api/sessions';
 import { createContext } from 'react';
 
@@ -19,7 +19,7 @@ export interface WebSocketContext {
   open: (sessionId: Session['id']) => void;
   close: () => void;
   addEventListener: <Type extends WebSocketEventType>(type: Type, handler: Handler<Type>) => () => void;
-  send: <T extends MessageType>(type: T, message: Omit<MessageTypeToMessage[T], 'type'>) => void;
+  send(message: Message): void;
 }
 
 export const WebSocketContext = createContext<WebSocketContext | null>(null);

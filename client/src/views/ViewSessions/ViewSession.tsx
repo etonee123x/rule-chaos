@@ -1,4 +1,6 @@
 import {
+  MessagePlayerPlacingItem,
+  MessagePlayerWantsToStartRound,
   MessageType,
   type HistoryRecord,
   type Item,
@@ -20,6 +22,7 @@ import type { Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { SessionProvider } from '@/contexts/sessionContext';
+import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -133,17 +136,27 @@ export const ViewSession: FC = () => {
 
   const onDrop = useCallback(
     (itemWithPosition: ItemWithPosition) => {
-      send(MessageType.PlayerPlacingItem, { itemWithPosition });
+      send(new MessagePlayerPlacingItem(itemWithPosition));
     },
     [send],
   );
+
+  const onClickButtonStartRound = useCallback(() => {
+    send(new MessagePlayerWantsToStartRound());
+  }, [send]);
 
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
       <DndProvider backend={HTML5Backend}>
         <SessionProvider session={session}>
           <div className="flex mb-5 gap-8 h-5/6">
-            <TheField onDrop={onDrop} />
+            <div className="aspect-square">
+              {isRoundActive ? ( //
+                <TheField onDrop={onDrop} />
+              ) : (
+                <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} />
+              )}
+            </div>
             <ThePlayersList className="w-1/6 overflow-y-auto" />
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
