@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageSessionInitialization(Player player, GameSession gameSession)
+  public class MessageSessionInitiation(Player player, GameSession gameSession)
     : MessageFromServer
   {
     [JsonPropertyName("player")]
@@ -14,7 +14,7 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.SessionInitialization;
+      get => MessageType.SessionInitiation;
     }
 
     [JsonIgnore]

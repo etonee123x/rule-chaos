@@ -1,5 +1,6 @@
 import type { Player } from '@/helpers/player';
 import type { WithId } from '@/types';
+import type { Voting, VotingActive, VotingEnded } from '@/helpers/voting';
 
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
@@ -14,13 +15,17 @@ export enum MessageType {
   PlayerLeftSession = 'PlayerLeftSession',
   RoundWasStarted = 'RoundWasStarted',
   NewActivePlayer = 'NewActivePlayer',
-  SessionInitialization = 'SessionInitialization',
+  SessionInitiation = 'SessionInitiation',
   ItemsInHandUpdate = 'ItemsInHandUpdate',
   ItemsOnFieldUpdate = 'ItemsOnFieldUpdate',
-  History = 'History',
+  HistoryUpdate = 'HistoryUpdate',
 
   PlayerPlacingItem = 'PlayerPlacingItem',
   PlayerWantsToStartRound = 'PlayerWantsToStartRound',
+
+  VotingInitiation = 'VotingInitiation',
+  VotingUpdate = 'VotingUpdate',
+  VotingEnd = 'VotingEnd',
 }
 
 export interface MessageTypeToMessage {
@@ -28,12 +33,16 @@ export interface MessageTypeToMessage {
   [MessageType.RoundWasStarted]: MessageRoundWasStarted;
   [MessageType.PlayerJoinedSession]: MessagePlayerJoinedSession;
   [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
-  [MessageType.SessionInitialization]: MessageSessionInitialization;
+  [MessageType.SessionInitiation]: MessageSessionInitiation;
   [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
-  [MessageType.History]: MessageHistory;
-  [MessageType.PlayerPlacingItem]: MessagePlayerPlacingItem;
   [MessageType.ItemsOnFieldUpdate]: MessageItemsOnFieldUpdate;
+  [MessageType.HistoryUpdate]: MessageHistoryUpdate;
+  [MessageType.PlayerPlacingItem]: MessagePlayerPlacingItem;
   [MessageType.PlayerWantsToStartRound]: MessagePlayerWantsToStartRound;
+
+  [MessageType.VotingInitiation]: MessageVotingInitiation;
+  [MessageType.VotingUpdate]: MessageVotingUpdate;
+  [MessageType.VotingEnd]: MessageVotingEnd;
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession>, WithPlayerAndPlayers {}
@@ -44,11 +53,11 @@ export interface MessageNewActivePlayer extends Message<MessageType.NewActivePla
 
 export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {}
 
-export interface MessageSessionInitialization extends Message<MessageType.SessionInitialization>, WithPlayer {
+export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation>, WithPlayer {
   sessionState: SessionState;
 }
 
-export interface MessageHistory extends Message<MessageType.History> {
+export interface MessageHistoryUpdate extends Message<MessageType.HistoryUpdate> {
   history: Array<HistoryRecord>;
 }
 
@@ -70,6 +79,18 @@ export class MessagePlayerWantsToStartRound extends Message<MessageType.PlayerWa
   constructor() {
     super(MessageType.PlayerWantsToStartRound);
   }
+}
+
+export interface MessageVotingInitiation extends Message<MessageType.VotingInitiation> {
+  activeVoting: VotingActive;
+}
+
+export interface MessageVotingUpdate extends Message<MessageType.VotingUpdate> {
+  activeVoting: VotingActive;
+}
+
+export interface MessageVotingEnd extends Message<MessageType.VotingEnd> {
+  activeVoting: VotingEnded;
 }
 
 interface WithPlayer {
@@ -109,6 +130,7 @@ export interface SessionState {
   itemsOnField: Array<ItemWithPosition>;
   history: Array<HistoryRecord>;
   isRoundActive: boolean;
+  activeVoting: Voting | null;
 }
 
 export const doesMessageHasType = <Type extends MessageType>(

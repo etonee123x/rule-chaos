@@ -39,7 +39,7 @@ namespace RuleChaos.Models
       this.WebSocket = webSocket;
 
       // тут пытаемся отправить клиенту игрока и состояние сессии
-      this.SendMessage(new MessageSessionInitialization(this, gameSession));
+      this.SendMessage(new MessageSessionInitiation(this, gameSession));
     }
 
     public Task SendMessage(Message message)

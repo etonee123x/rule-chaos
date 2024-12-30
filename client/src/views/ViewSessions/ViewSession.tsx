@@ -23,6 +23,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { SessionProvider } from '@/contexts/sessionContext';
 import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
+import type { Voting as IVoting } from '@/helpers/voting';
+import { Voting } from '@/components/Voting';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -38,6 +40,7 @@ export const ViewSession: FC = () => {
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
   const [isRoundActive, setIsRoundActive] = useState(false);
+  const [activeVoting, setActiveVoting] = useState<IVoting | null>(null);
 
   const refHistory = useRef<HTMLDivElement>(null);
 
@@ -50,8 +53,9 @@ export const ViewSession: FC = () => {
       history,
       activePlayer,
       isRoundActive,
+      activeVoting,
     }),
-    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive],
+    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive, activeVoting],
   );
 
   useEffect(() => {
@@ -78,7 +82,7 @@ export const ViewSession: FC = () => {
 
   useEffect(() =>
     addEventListener('message', (message) => {
-      if (doesMessageHasType(message, MessageType.SessionInitialization)) {
+      if (doesMessageHasType(message, MessageType.SessionInitiation)) {
         setPlayer(message.player);
         setPlayers(message.sessionState.players);
         setHistory(message.sessionState.history);
@@ -86,6 +90,7 @@ export const ViewSession: FC = () => {
         setItemsInHand(message.sessionState.itemsInHand);
         setItemsOnField(message.sessionState.itemsOnField);
         setIsRoundActive(message.sessionState.isRoundActive);
+        setActiveVoting(message.sessionState.activeVoting);
 
         return;
       }
@@ -124,8 +129,17 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.History)) {
+      if (doesMessageHasType(message, MessageType.HistoryUpdate)) {
         setHistory(message.history);
+
+        return;
+      }
+
+      if (
+        doesMessageHasType(message, MessageType.VotingInitiation) ||
+        doesMessageHasType(message, MessageType.VotingUpdate)
+      ) {
+        setActiveVoting(message.activeVoting);
 
         return;
       }
@@ -161,6 +175,7 @@ export const ViewSession: FC = () => {
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
           <TheHand className="mt-auto h-1/6" />
+          {activeVoting && <Voting />}
         </SessionProvider>
       </DndProvider>
     </BasePage>

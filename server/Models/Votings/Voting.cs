@@ -19,7 +19,10 @@ namespace RuleChaos.Models.Votings
     public string? Result { get; private set; }
 
     public abstract string Title { get; }
-    public virtual TimeSpan Timeout { get; init; } = TimeSpan.FromSeconds(30);
+    public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
+
+    public long StartedAt { get; init; }
+    public long EndAt { get; init; }
 
     protected GameSession GameSession { get; }
 
@@ -57,6 +60,9 @@ namespace RuleChaos.Models.Votings
 
       this.GameSession.ActiveVoting = this;
 
+      this.StartedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+      this.EndAt = this.StartedAt + (long)this.Duration.TotalMilliseconds;
+
       this.timer = new Timer(
         _ =>
           {
@@ -64,10 +70,10 @@ namespace RuleChaos.Models.Votings
             this.timer?.Dispose();
           },
         null,
-        this.Timeout,
-        System.Threading.Timeout.InfiniteTimeSpan);
+        this.Duration,
+        Timeout.InfiniteTimeSpan);
 
-      this.GameSession.SendMessageToPlayers(new MessageVotingInitiated(this));
+      this.GameSession.SendMessageToPlayers(new MessageVotingInitiation(this));
       this.Vote(player, VoteValue.Positive);
     }
 
@@ -149,8 +155,11 @@ namespace RuleChaos.Models.Votings
     [JsonPropertyName("votesNumberNegative")]
     public byte VotesNumberNegative { get; } = (byte)voting.PlayersVotedNegativeIds.Count;
 
-    [JsonPropertyName("totalTimeout")]
-    public uint TotalTimeout { get; } = (uint)voting.Timeout.TotalMilliseconds;
+    [JsonPropertyName("startedAt")]
+    public long StartedAt { get; } = voting.StartedAt;
+
+    [JsonPropertyName("endAt")]
+    public long EndAt { get; } = voting.EndAt;
 
     [JsonPropertyName("result")]
     public string? Result { get; } = voting.Result;

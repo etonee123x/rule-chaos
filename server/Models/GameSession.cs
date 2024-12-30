@@ -55,7 +55,7 @@ namespace RuleChaos.Models
       {
         var historyLast = value.Length >= GameSession.HistoryRecordsCount ? value[^GameSession.HistoryRecordsCount..] : value;
 
-        this.SendMessageToPlayers(new MessageHistory(historyLast));
+        this.SendMessageToPlayers(new MessageHistoryUpdate(historyLast));
         this.history = historyLast;
       }
     }
@@ -297,5 +297,8 @@ namespace RuleChaos.Models
 
     [JsonPropertyName("isRoundActive")]
     public bool IsRoundActive { get; } = gameSession.IsRoundActive;
+
+    [JsonPropertyName("activeVoting")]
+    public VotingDTO? ActiveVoting { get; } = gameSession.ActiveVoting?.ToDTO();
   }
 }

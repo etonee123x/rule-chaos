@@ -3,7 +3,7 @@ using RuleChaos.Models.Votings;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageVotingUpdate(Voting voting)
+  public class MessageVotingInitiation(Voting voting)
     : MessageFromServer
   {
     [JsonPropertyName("activeVoting")]
@@ -12,13 +12,13 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.VotingUpdate;
+      get => MessageType.VotingInitiation;
     }
 
     [JsonIgnore]
-    public override HistoryRecord? HistoryRecord
+    public override HistoryRecord HistoryRecord
     {
-      get => null;
+      get => new HistoryRecord($"Запущено голосование {HistoryRecord.Accent(voting.Title)}");
     }
   }
 }

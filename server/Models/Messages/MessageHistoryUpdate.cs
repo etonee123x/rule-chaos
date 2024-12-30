@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageHistory(HistoryRecord[] history)
+  public class MessageHistoryUpdate(HistoryRecord[] history)
     : MessageFromServer
   {
     [JsonPropertyName("history")]
@@ -11,7 +11,7 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public override string Type
     {
-      get => MessageType.History;
+      get => MessageType.HistoryUpdate;
     }
 
     [JsonIgnore]
