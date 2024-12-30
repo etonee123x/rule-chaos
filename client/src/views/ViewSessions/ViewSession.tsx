@@ -34,6 +34,7 @@ export const ViewSession: FC = () => {
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
+  const [isRoundActive, setIsRoundActive] = useState(false);
 
   const refHistory = useRef<HTMLDivElement>(null);
 
@@ -45,8 +46,9 @@ export const ViewSession: FC = () => {
       itemsOnField,
       history,
       activePlayer,
+      isRoundActive,
     }),
-    [player, players, itemsInHand, history, activePlayer, itemsOnField],
+    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive],
   );
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export const ViewSession: FC = () => {
         setActivePlayer(message.sessionState.activePlayer);
         setItemsInHand(message.sessionState.itemsInHand);
         setItemsOnField(message.sessionState.itemsOnField);
+        setIsRoundActive(message.sessionState.isRoundActive);
 
         return;
       }

@@ -94,6 +94,7 @@ export interface SessionState {
   itemsInHand: Array<Item>;
   itemsOnField: Array<ItemWithPosition>;
   history: Array<HistoryRecord>;
+  isRoundActive: boolean;
 }
 
 export const doesMessageHasType = <Type extends MessageType>(

@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerPlacingItem(ItemWithPosition itemWithPosition)
+  public class MessagePlayerVotes(string value)
     : MessageFromClient
   {
-    [JsonPropertyName("itemWithPosition")]
-    public ItemWithPosition ItemWithPosition { get; } = itemWithPosition;
+    [JsonPropertyName("value")]
+    public string Value { get; } = value;
 
     [JsonPropertyName("type")]
     public override string Type
@@ -16,7 +16,7 @@ namespace RuleChaos.Models.Messages
 
     public override void Handle(GameSession gameSession, Player player)
     {
-      gameSession.PlaceItem(player, this.ItemWithPosition);
+      gameSession.ActiveVoting?.Vote(player, this.Value);
     }
   }
 }
