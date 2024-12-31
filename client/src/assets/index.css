@@ -85,14 +85,9 @@
     }
   }
 
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      @apply hidden;
-    }
-  }
+  /* .dialog {
+    @apply rounded-lg bg-white shadow-[4px_6px_40px_0px_#00000033] m-0 absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max;
+  } */
 
   .item {
     @apply border flex justify-center items-center select-none border-gray-400;
