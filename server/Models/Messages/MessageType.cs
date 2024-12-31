@@ -16,5 +16,6 @@ namespace RuleChaos.Models.Messages
     public const string VotingInitiation = "VotingInitiation";
     public const string VotingUpdate = "VotingUpdate";
     public const string VotingEnd = "VotingEnd";
+    public const string PlayerVotes = "PlayerVotes";
   }
 }

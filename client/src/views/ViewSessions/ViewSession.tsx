@@ -1,5 +1,6 @@
 import {
   MessagePlayerPlacingItem,
+  MessagePlayerVotes,
   MessagePlayerWantsToStartRound,
   MessageType,
   type HistoryRecord,
@@ -23,7 +24,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { SessionProvider } from '@/contexts/sessionContext';
 import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
-import type { Voting as IVoting } from '@/helpers/voting';
+import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
 
 export const ViewSession: FC = () => {
@@ -153,15 +154,14 @@ export const ViewSession: FC = () => {
   );
 
   const onDrop = useCallback(
-    (itemWithPosition: ItemWithPosition) => {
-      send(new MessagePlayerPlacingItem(itemWithPosition));
-    },
+    (itemWithPosition: ItemWithPosition) => send(new MessagePlayerPlacingItem(itemWithPosition)),
     [send],
   );
 
-  const onClickButtonStartRound = useCallback(() => {
-    send(new MessagePlayerWantsToStartRound());
-  }, [send]);
+  const onClickButtonStartRound = useCallback(() => send(new MessagePlayerWantsToStartRound()), [send]);
+
+  const onVotePositive = useCallback(() => send(new MessagePlayerVotes(VotingValue.Positive)), [send]);
+  const onVoteNegative = useCallback(() => send(new MessagePlayerVotes(VotingValue.Negative)), [send]);
 
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
@@ -179,7 +179,7 @@ export const ViewSession: FC = () => {
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
           <TheHand className="mt-auto h-1/6" />
-          <Voting />
+          <Voting onVotePositive={onVotePositive} onVoteNegative={onVoteNegative} />
         </SessionProvider>
       </DndProvider>
     </BasePage>

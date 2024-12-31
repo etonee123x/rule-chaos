@@ -5,8 +5,8 @@ export enum VotingValue {
 
 interface VotingBase {
   title: string;
-  votesNumberPositive: number;
-  votesNumberNegative: number;
+  playersVotedPositiveIds: Array<string>;
+  playersVotedNegativeIds: Array<string>;
   startedAt: number;
   endAt: number;
 }

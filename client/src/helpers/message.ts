@@ -1,6 +1,6 @@
 import type { Player } from '@/helpers/player';
 import type { WithId } from '@/types';
-import type { Voting, VotingActive, VotingEnded } from '@/helpers/voting';
+import type { Voting, VotingActive, VotingEnded, VotingValue } from '@/helpers/voting';
 
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
@@ -22,6 +22,7 @@ export enum MessageType {
 
   PlayerPlacingItem = 'PlayerPlacingItem',
   PlayerWantsToStartRound = 'PlayerWantsToStartRound',
+  PlayerVotes = 'PlayerVotes',
 
   VotingInitiation = 'VotingInitiation',
   VotingUpdate = 'VotingUpdate',
@@ -39,6 +40,7 @@ export interface MessageTypeToMessage {
   [MessageType.HistoryUpdate]: MessageHistoryUpdate;
   [MessageType.PlayerPlacingItem]: MessagePlayerPlacingItem;
   [MessageType.PlayerWantsToStartRound]: MessagePlayerWantsToStartRound;
+  [MessageType.PlayerVotes]: MessagePlayerVotes;
 
   [MessageType.VotingInitiation]: MessageVotingInitiation;
   [MessageType.VotingUpdate]: MessageVotingUpdate;
@@ -78,6 +80,12 @@ export class MessagePlayerPlacingItem extends Message {
 export class MessagePlayerWantsToStartRound extends Message<MessageType.PlayerWantsToStartRound> {
   constructor() {
     super(MessageType.PlayerWantsToStartRound);
+  }
+}
+
+export class MessagePlayerVotes extends Message<MessageType.PlayerVotes> {
+  constructor(public value: VotingValue) {
+    super(MessageType.PlayerVotes);
   }
 }
 

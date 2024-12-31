@@ -2,15 +2,17 @@ import { BaseIcon } from '@/components/ui/BaseIcon';
 import { BaseWidget } from '@/components/ui/BaseWidget';
 import { useSession } from '@/contexts/sessionContext';
 import { mdiBallotOutline } from '@mdi/js';
-import { useCallback, useEffect, useState, type FC } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 import { BaseDialog } from '@/components/ui/BaseDialog';
 import classNames from 'classnames';
 import { BaseButton, type Props as PropsButton } from './ui/BaseButton';
 import type { Voting as IVoting } from '@/helpers/voting';
+import type { FunctionCallback } from '@/types';
 
 interface VotingVariant {
   text: string;
-  votesNumber: number | undefined;
+  votesNumber: number;
+  shouldRenderButton: boolean;
   propsButton: PropsButton;
 }
 
@@ -18,12 +20,34 @@ const VotingVariant: FC<{ votingVariant: VotingVariant }> = (props) => (
   <div className="flex-1">
     <div className="mb-2 font-semibold">{props.votingVariant.text}</div>
     <div className="mb-8 text-8xl">{props.votingVariant.votesNumber}</div>
-    <BaseButton {...props.votingVariant.propsButton} className="w-full justify-center"></BaseButton>
+    {props.votingVariant.shouldRenderButton && (
+      <BaseButton {...props.votingVariant.propsButton} className="w-full justify-center" />
+    )}
   </div>
 );
 
-export const Voting: FC = () => {
-  const { activeVoting } = useSession();
+interface Props {
+  onVotePositive: FunctionCallback;
+  onVoteNegative: FunctionCallback;
+}
+
+export const Voting: FC<Props> = (props) => {
+  const { activeVoting, player } = useSession();
+
+  const playerVotedPositive = useMemo(
+    () => Boolean(player && activeVoting?.playersVotedPositiveIds.includes(player.id)),
+    [player, activeVoting],
+  );
+
+  const playerVotedNegative = useMemo(
+    () => Boolean(player && activeVoting?.playersVotedNegativeIds.includes(player.id)),
+    [player, activeVoting],
+  );
+
+  const playerVoted = useMemo(
+    () => playerVotedPositive || playerVotedNegative,
+    [playerVotedPositive, playerVotedNegative],
+  );
 
   const [isDialogOpen, setIsDialogOpen] = useState(Boolean(activeVoting));
 
@@ -33,25 +57,29 @@ export const Voting: FC = () => {
   const getVotingVariantPositive = useCallback<(activeVoting: IVoting) => VotingVariant>(
     (activeVoting) => ({
       text: 'ЗА',
-      votesNumber: activeVoting.votesNumberPositive,
+      votesNumber: activeVoting.playersVotedPositiveIds.length,
+      shouldRenderButton: !playerVotedNegative,
       propsButton: {
-        onClick: () => {},
+        disabled: playerVoted,
+        onClick: props.onVotePositive,
         children: 'За!',
       },
     }),
-    [],
+    [props, playerVoted, playerVotedNegative],
   );
 
   const getVotingVariantNegative = useCallback<(activeVoting: IVoting) => VotingVariant>(
     (activeVoting) => ({
       text: 'ПРОТИВ',
-      votesNumber: activeVoting.votesNumberNegative,
+      votesNumber: activeVoting.playersVotedNegativeIds.length,
+      shouldRenderButton: !playerVotedPositive,
       propsButton: {
-        onClick: () => {},
+        disabled: playerVoted,
+        onClick: props.onVoteNegative,
         children: 'Против!',
       },
     }),
-    [],
+    [props, playerVoted, playerVotedPositive],
   );
 
   useEffect(() => setIsDialogOpen(Boolean(activeVoting)), [activeVoting]);

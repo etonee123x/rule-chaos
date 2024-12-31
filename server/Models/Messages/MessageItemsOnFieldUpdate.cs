@@ -16,7 +16,7 @@ namespace RuleChaos.Models.Messages
 
     public override HistoryRecord HistoryRecord
     {
-      get => new HistoryRecord("Предмет выставлен на поле");
+      get => new HistoryRecord("Предмет выставлен на поле.");
     }
   }
 }

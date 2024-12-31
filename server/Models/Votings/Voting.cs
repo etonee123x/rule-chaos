@@ -149,19 +149,17 @@ namespace RuleChaos.Models.Votings
     [JsonPropertyName("title")]
     public string Title { get; } = voting.Title;
 
-    [JsonPropertyName("votesNumberPositive")]
-    public byte VotesNumberPositive { get; } = (byte)voting.PlayersVotedPositiveIds.Count;
+    [JsonPropertyName("playersVotedPositiveIds")]
+    public Guid[] PlayersVotedPositiveIds { get; } = voting.PlayersVotedPositiveIds.ToArray();
 
-    [JsonPropertyName("votesNumberNegative")]
-    public byte VotesNumberNegative { get; } = (byte)voting.PlayersVotedNegativeIds.Count;
+    [JsonPropertyName("playersVotedNegativeIds")]
+    public Guid[] PlayersVotedNegativeIds { get; } = voting.PlayersVotedNegativeIds.ToArray();
 
     [JsonPropertyName("startedAt")]
     public long StartedAt { get; } = voting.StartedAt;
 
     [JsonPropertyName("endAt")]
     public long EndAt { get; } = voting.EndAt;
-
-    [JsonPropertyName("result")]
     public string? Result { get; } = voting.Result;
   }
 }

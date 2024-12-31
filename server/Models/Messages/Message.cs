@@ -22,6 +22,7 @@ namespace RuleChaos.Models.Messages
     {
       { MessageType.PlayerPlacingItem, typeof(MessagePlayerPlacingItem) },
       { MessageType.PlayerWantsToStartRound, typeof(MessagePlayerWantsToStartRound) },
+      { MessageType.PlayerVotes, typeof(MessagePlayerVotes) },
     };
   }
 
