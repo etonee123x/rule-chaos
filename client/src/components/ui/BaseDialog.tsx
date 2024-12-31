@@ -1,7 +1,7 @@
 import type { FunctionCallback } from '@/types';
 import { isNotNil } from '@/utils/isNotNil';
-import { useMutationObserver } from '@reactuses/core';
-import { forwardRef, useImperativeHandle, useRef, useState, type HTMLAttributes, type PropsWithChildren } from 'react';
+import { useClickOutside } from '@reactuses/core';
+import { useEffect, useRef, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Props
@@ -12,20 +12,16 @@ interface Props
       onOpen: FunctionCallback;
       onClose: FunctionCallback;
       onBeforeClose: () => boolean | Promise<boolean>;
-    }> {}
-
-export interface BaseDialog {
-  open: FunctionCallback;
-  close: FunctionCallback;
-  isOpened: boolean;
+    }> {
+  open: boolean;
 }
 
-export const BaseDialog = forwardRef<BaseDialog, Props>((props, ref) => {
+export const BaseDialog: FC<Props> = (props) => {
   const refDialog = useRef<HTMLDialogElement>(null);
-  const [isOpened, setIsOpened] = useState(false);
+  const refContent = useRef<HTMLDivElement>(null);
 
   const close = async () => {
-    if (!isOpened) {
+    if (!props.open) {
       return;
     }
 
@@ -39,43 +35,31 @@ export const BaseDialog = forwardRef<BaseDialog, Props>((props, ref) => {
 
   const onClose = close;
   const onCancel = close;
-  const onClickWrapper = close;
 
-  useImperativeHandle(ref, () => ({
-    open: () => {
-      if (isOpened) {
-        return;
-      }
+  useEffect(() => {
+    if (!refDialog.current) {
+      return;
+    }
 
-      refDialog.current?.showModal();
-      props.onOpen?.();
-    },
-    close,
-    isOpened,
-  }));
+    if (props.open && !refDialog.current.open) {
+      return refDialog.current.showModal();
+    }
 
-  useMutationObserver(
-    () => setIsOpened(refDialog.current?.hasAttribute('open') ?? false), //
-    refDialog,
-    {
-      attributes: true,
-      attributeFilter: ['open'],
-    },
-  );
+    if (!props.open && refDialog.current.open) {
+      return refDialog.current.close();
+    }
+  }, [props]);
+
+  useClickOutside(refContent, close);
 
   return createPortal(
-    <div>
-      <dialog className="peer max-h-160 overflow-y-auto" ref={refDialog} onClose={onClose} onCancel={onCancel}>
-        <div>
-          {isNotNil(props.title) && <div>{props.title}</div>}
+    <dialog className="peer overflow-y-auto dialog" ref={refDialog} onClose={onClose} onCancel={onCancel}>
+      <div ref={refContent} className="p-4">
+        {isNotNil(props.title) && <div className="text-xl mb-4">{props.title}</div>}
 
-          <div>{props.children}</div>
-        </div>
-      </dialog>
-      <div className="inset-0 z-[-1] fixed hidden peer-open:block" onClick={onClickWrapper} />
-    </div>,
+        <div>{props.children}</div>
+      </div>
+    </dialog>,
     document.body,
   );
-});
-
-BaseDialog.displayName = 'BaseDialog';
+};

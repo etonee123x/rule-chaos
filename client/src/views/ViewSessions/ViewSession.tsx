@@ -78,8 +78,6 @@ export const ViewSession: FC = () => {
 
   useEffect(() => addEventListener('close', () => navigate(SESSIONS())));
 
-  useEffect(() => {}, [history]);
-
   useEffect(() =>
     addEventListener('message', (message) => {
       if (doesMessageHasType(message, MessageType.SessionInitiation)) {
@@ -144,6 +142,12 @@ export const ViewSession: FC = () => {
         return;
       }
 
+      if (doesMessageHasType(message, MessageType.VotingEnd)) {
+        setActiveVoting(null);
+
+        return;
+      }
+
       console.warn(message);
     }),
   );
@@ -175,7 +179,7 @@ export const ViewSession: FC = () => {
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
           <TheHand className="mt-auto h-1/6" />
-          {activeVoting && <Voting />}
+          <Voting />
         </SessionProvider>
       </DndProvider>
     </BasePage>

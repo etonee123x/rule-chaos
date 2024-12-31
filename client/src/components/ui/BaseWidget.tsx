@@ -1,30 +1,83 @@
 import type { FunctionCallback } from '@/types';
-import { useDraggable } from '@reactuses/core';
-import { useRef, type FC, type PropsWithChildren } from 'react';
+import { useDraggable, useElementBounding, useWindowSize } from '@reactuses/core';
+import classNames from 'classnames';
+import { useEffect, useMemo, useRef, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';
 
-export interface Props extends PropsWithChildren {
+export interface Props extends HTMLAttributes<HTMLDivElement>, PropsWithChildren {
   onClick: FunctionCallback;
 }
+
+const MARGIN = 8;
 
 export const BaseWidget: FC<Props> = (props) => {
   const refRoot = useRef<HTMLDivElement>(null);
 
-  const [x, y] = useDraggable(refRoot);
+  const [x, y, , setPosition] = useDraggable(refRoot, {
+    exact: true,
+    initialValue: { x: MARGIN, y: MARGIN },
+  });
+
+  const { width: windowInnerWidth, height: windowInnerHeight } = useWindowSize();
+  const { width: elementWidth, height: elementHeight } = useElementBounding(refRoot);
+
+  const screenBounds = useMemo(
+    () => ({
+      top: MARGIN,
+      right: windowInnerWidth - MARGIN,
+      bottom: windowInnerHeight - MARGIN,
+      left: MARGIN,
+    }),
+    [windowInnerWidth, windowInnerHeight],
+  );
+
+  const isOutOfBound = useMemo(
+    () => ({
+      top: y < screenBounds.top,
+      right: x + elementWidth > screenBounds.right,
+      bottom: y + elementHeight > screenBounds.bottom,
+      left: x < screenBounds.left,
+    }),
+    [y, x, elementWidth, elementHeight, screenBounds],
+  );
+
+  useEffect(() => {
+    let _x: number | undefined, _y: number | undefined;
+
+    if (isOutOfBound.top) {
+      // console.log('top');
+      _y ??= screenBounds.top;
+    }
+
+    if (isOutOfBound.right) {
+      // console.log('right');
+      _x ??= screenBounds.right - elementWidth;
+    }
+
+    if (isOutOfBound.bottom) {
+      // console.log('bottom');
+      _y ??= screenBounds.bottom - elementHeight;
+    }
+
+    if (isOutOfBound.left) {
+      // console.log('left');
+      _x ??= screenBounds.left;
+    }
+
+    _x ??= x;
+    _y ??= y;
+
+    setPosition({ x: _x, y: _y });
+  }, [x, y, isOutOfBound, screenBounds, elementWidth, elementHeight, setPosition]);
 
   const onClickButton = props.onClick;
 
   return (
     <div
-      style={{
-        position: 'fixed',
-        cursor: 'move',
-        zIndex: 10,
-        touchAction: 'none',
-        padding: 10,
-        border: 'solid 1px',
-        left: x,
-        top: y,
-      }}
+      style={{ left: x, top: y }}
+      className={classNames([
+        'fixed backdrop-blur-sm z-50 p-2 cursor-move touch-none border border-gray-300 flex justify-center items-center rounded text-4xl',
+        props.className,
+      ])}
       ref={refRoot}
     >
       <button onClick={onClickButton}>{props.children}</button>

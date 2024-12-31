@@ -13,6 +13,10 @@
     @apply text-neutral-900;
   }
 
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   a {
     @apply hover:text-primary-600;
   }
@@ -85,9 +89,9 @@
     }
   }
 
-  /* .dialog {
-    @apply rounded-lg bg-white shadow-[4px_6px_40px_0px_#00000033] m-0 absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-max;
-  } */
+  .dialog {
+    @apply rounded bg-white m-0 absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
 
   .item {
     @apply border flex justify-center items-center select-none border-gray-400;

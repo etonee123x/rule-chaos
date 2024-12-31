@@ -19,7 +19,7 @@ namespace RuleChaos.Models.Votings
     public string? Result { get; private set; }
 
     public abstract string Title { get; }
-    public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
+    public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(3000);
 
     public long StartedAt { get; init; }
     public long EndAt { get; init; }
