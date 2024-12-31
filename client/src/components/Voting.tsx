@@ -2,29 +2,11 @@ import { BaseIcon } from '@/components/ui/BaseIcon';
 import { BaseWidget } from '@/components/ui/BaseWidget';
 import { useSession } from '@/contexts/sessionContext';
 import { mdiBallotOutline } from '@mdi/js';
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import { useEffect, useMemo, useState, type FC } from 'react';
 import { BaseDialog } from '@/components/ui/BaseDialog';
 import classNames from 'classnames';
-import { BaseButton, type Props as PropsButton } from './ui/BaseButton';
-import type { Voting as IVoting } from '@/helpers/voting';
+import { BaseButton } from './ui/BaseButton';
 import type { FunctionCallback } from '@/types';
-
-interface VotingVariant {
-  text: string;
-  votesNumber: number;
-  shouldRenderButton: boolean;
-  propsButton: PropsButton;
-}
-
-const VotingVariant: FC<{ votingVariant: VotingVariant }> = (props) => (
-  <div className="flex-1">
-    <div className="mb-2 font-semibold">{props.votingVariant.text}</div>
-    <div className="mb-8 text-8xl">{props.votingVariant.votesNumber}</div>
-    {props.votingVariant.shouldRenderButton && (
-      <BaseButton {...props.votingVariant.propsButton} className="w-full justify-center" />
-    )}
-  </div>
-);
 
 interface Props {
   onVotePositive: FunctionCallback;
@@ -54,35 +36,30 @@ export const Voting: FC<Props> = (props) => {
   const onClickWidget = () => setIsDialogOpen(true);
   const onCloseDialog = () => setIsDialogOpen(false);
 
-  const getVotingVariantPositive = useCallback<(activeVoting: IVoting) => VotingVariant>(
-    (activeVoting) => ({
+  useEffect(() => setIsDialogOpen(Boolean(activeVoting)), [activeVoting]);
+
+  const votingVariants = [
+    {
+      id: 0,
       text: 'ЗА',
-      votesNumber: activeVoting.playersVotedPositiveIds.length,
+      votesNumber: activeVoting?.playersVotedPositiveIds.length ?? 0,
       shouldRenderButton: !playerVotedNegative,
       propsButton: {
-        disabled: playerVoted,
         onClick: props.onVotePositive,
         children: 'За!',
       },
-    }),
-    [props, playerVoted, playerVotedNegative],
-  );
-
-  const getVotingVariantNegative = useCallback<(activeVoting: IVoting) => VotingVariant>(
-    (activeVoting) => ({
+    },
+    {
+      id: 1,
       text: 'ПРОТИВ',
-      votesNumber: activeVoting.playersVotedNegativeIds.length,
+      votesNumber: activeVoting?.playersVotedNegativeIds.length ?? 0,
       shouldRenderButton: !playerVotedPositive,
       propsButton: {
-        disabled: playerVoted,
         onClick: props.onVoteNegative,
         children: 'Против!',
       },
-    }),
-    [props, playerVoted, playerVotedPositive],
-  );
-
-  useEffect(() => setIsDialogOpen(Boolean(activeVoting)), [activeVoting]);
+    },
+  ];
 
   return (
     <>
@@ -92,8 +69,14 @@ export const Voting: FC<Props> = (props) => {
       {activeVoting && (
         <BaseDialog open={isDialogOpen} onClose={onCloseDialog} title={['Голосование', activeVoting.title].join(' ')}>
           <div className="flex gap-4">
-            <VotingVariant votingVariant={getVotingVariantPositive(activeVoting)} />
-            <VotingVariant votingVariant={getVotingVariantNegative(activeVoting)} />
+            {votingVariants.map((votingVariant) => (
+              <div className="flex-1" key={votingVariant.id}>
+                <div className="mb-2 font-semibold">{votingVariant.text}</div>
+                <div className="mb-8 text-8xl">{votingVariant.votesNumber}</div>
+                {!playerVoted && <BaseButton {...votingVariant.propsButton} className="w-full justify-center" />}
+              </div>
+            ))}
+            {playerVoted && <div>Ты уже проголосовал!</div>}
           </div>
         </BaseDialog>
       )}
