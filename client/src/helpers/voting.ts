@@ -3,6 +3,11 @@ export enum VotingValue {
   Negative = 'Negative',
 }
 
+export const VOTING_VALUE_TO_TEXT = Object.freeze({
+  [VotingValue.Positive]: 'За',
+  [VotingValue.Negative]: 'Против',
+});
+
 interface VotingBase {
   title: string;
   playersVotedPositiveIds: Array<string>;

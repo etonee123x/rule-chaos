@@ -7,6 +7,7 @@ import { BaseDialog } from '@/components/ui/BaseDialog';
 import classNames from 'classnames';
 import { BaseButton } from './ui/BaseButton';
 import type { FunctionCallback } from '@/types';
+import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
 
 interface Props {
   onVotePositive: FunctionCallback;
@@ -41,22 +42,22 @@ export const Voting: FC<Props> = (props) => {
   const votingVariants = [
     {
       id: 0,
-      text: 'ЗА',
+      text: VOTING_VALUE_TO_TEXT[VotingValue.Positive],
       votesNumber: activeVoting?.playersVotedPositiveIds.length ?? 0,
       shouldRenderButton: !playerVotedNegative,
       propsButton: {
         onClick: props.onVotePositive,
-        children: 'За!',
+        children: `${VOTING_VALUE_TO_TEXT[VotingValue.Positive]}!`,
       },
     },
     {
       id: 1,
-      text: 'ПРОТИВ',
+      text: VOTING_VALUE_TO_TEXT[VotingValue.Negative],
       votesNumber: activeVoting?.playersVotedNegativeIds.length ?? 0,
       shouldRenderButton: !playerVotedPositive,
       propsButton: {
         onClick: props.onVoteNegative,
-        children: 'Против!',
+        children: `${VOTING_VALUE_TO_TEXT[VotingValue.Negative]}!`,
       },
     },
   ];
@@ -72,12 +73,25 @@ export const Voting: FC<Props> = (props) => {
             {votingVariants.map((votingVariant) => (
               <div className="flex-1" key={votingVariant.id}>
                 <div className="mb-2 font-semibold">{votingVariant.text}</div>
-                <div className="mb-8 text-8xl">{votingVariant.votesNumber}</div>
-                {!playerVoted && <BaseButton {...votingVariant.propsButton} className="w-full justify-center" />}
+                <div className="text-8xl">{votingVariant.votesNumber}</div>
+                {!playerVoted && <BaseButton {...votingVariant.propsButton} className="w-full mt-8 justify-center" />}
               </div>
             ))}
-            {playerVoted && <div>Ты уже проголосовал!</div>}
           </div>
+          {playerVoted && (
+            <div className="mt-4">
+              <span>Ты уже проголосовал! </span>(
+              <span className="text-primary-500 font-semibold">
+                {
+                  //
+                  playerVotedPositive
+                    ? VOTING_VALUE_TO_TEXT[VotingValue.Positive]
+                    : VOTING_VALUE_TO_TEXT[VotingValue.Negative]
+                }
+              </span>
+              )
+            </div>
+          )}
         </BaseDialog>
       )}
     </>
