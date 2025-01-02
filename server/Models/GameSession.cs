@@ -22,7 +22,7 @@ namespace RuleChaos.Models
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
 
-    public bool HasEnoughPlayers { get => this.PlayersInSession.Count == GameSession.PlayersNumber; }
+    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
     internal Player? ActivePlayer { get; private set; }
 
@@ -30,8 +30,11 @@ namespace RuleChaos.Models
     private static readonly byte ItemsPerPlayer = 8;
     private static readonly byte HistoryRecordsCount = 50;
 
-    public List<Player> PlayersInSession { get; } = [];
-    public List<Player> PlayersInRound { get; private set; } = [];
+    public List<Player> Players { get; } = [];
+    public List<Player> PlayersInRound
+    {
+      get => this.Players.Where(player => player.IsInRound).ToList();
+    }
 
     public List<ItemWithPosition> ItemsOnField { get; } = [];
     public List<Item> ItemsInHand { get; private set; } = [];
@@ -88,7 +91,7 @@ namespace RuleChaos.Models
         }
 
         this.RemovePlayer(player);
-        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.PlayersInSession));
+        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.Players));
       });
     }
 
@@ -161,7 +164,7 @@ namespace RuleChaos.Models
 
     public void SendMessageToPlayers(MessageFromServer message)
     {
-      this.PlayersInSession.ForEach((player) => player.SendMessage(message));
+      this.Players.ForEach((player) => player.SendMessage(message));
 
       var maybeHistoryRecord = message.HistoryRecord;
 
@@ -175,7 +178,17 @@ namespace RuleChaos.Models
 
     public void StartRound(List<Guid> playersIds)
     {
-      this.PlayersInRound = this.PlayersInSession.Where((playerInSession) => playersIds.Contains(playerInSession.Id)).ToList();
+      playersIds.ForEach(playerId =>
+      {
+        var maybePlayer = this.Players.Find(player => player.Id.Equals(playerId));
+
+        if (maybePlayer is null)
+        {
+          return;
+        }
+
+        maybePlayer.IsInRound = true;
+      });
 
       this.IsRoundActive = true;
       this.SendMessageToPlayers(new MessageRoundWasStarted(this.PlayersInRound));
@@ -207,13 +220,13 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.PlayersInSession.Count >= GameSession.PlayersNumber)
+        if (this.Players.Count >= GameSession.PlayersNumber)
         {
-          throw new Exception($"{this.PlayersInSession.Count} игроков из ${GameSession.PlayersNumber}");
+          throw new Exception($"{this.Players.Count} игроков из ${GameSession.PlayersNumber}");
         }
 
-        this.PlayersInSession.Add(player);
-        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.PlayersInSession));
+        this.Players.Add(player);
+        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.Players));
 
         this.Log($"Игрок {player} подключился");
       }
@@ -230,7 +243,7 @@ namespace RuleChaos.Models
         this.ActivePlayer = null;
       }
 
-      this.PlayersInSession.Remove(player);
+      this.Players.Remove(player);
 
       this.Log($"Игрок {player} отключился");
     }
@@ -252,17 +265,14 @@ namespace RuleChaos.Models
     [JsonPropertyName("id")]
     public Guid Id { get; } = gameSession.Id;
 
-    [JsonPropertyName("playersInSession")]
-    public PlayerDTO[] PlayersInSession { get; } = gameSession.PlayersInSession.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = gameSession.Players.Select((player) => player.ToDTO()).ToArray();
   }
 
   public class GameSessionDTO(GameSession gameSession)
   {
-    [JsonPropertyName("playersInSession")]
-    public PlayerDTO[] PlayersInSession { get; } = gameSession.PlayersInSession.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
-
-    [JsonPropertyName("playersInRound")]
-    public PlayerDTO[] PlayersInRound { get; } = gameSession.PlayersInRound.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = gameSession.Players.Select((player) => player.ToDTO()).ToArray();
 
     [JsonPropertyName("activePlayer")]
     public PlayerDTO? ActivePlayer { get; } = gameSession.ActivePlayer?.ToDTO();

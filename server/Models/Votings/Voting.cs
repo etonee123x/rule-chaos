@@ -53,7 +53,7 @@ namespace RuleChaos.Models.Votings
         return;
       }
 
-      this.PotentialMaximumVotesNumber = (byte)this.GameSession.PlayersInSession.Count;
+      this.PotentialMaximumVotesNumber = (byte)this.GameSession.Players.Count;
 
       this.GameSession.ActiveVoting = this;
 

@@ -32,6 +32,7 @@ namespace RuleChaos.Models
     public WebSocket WebSocket { get; }
     public Guid Id { get; } = Guid.NewGuid();
     public string Name { get; }
+    public bool IsInRound { get; set; }
 
     public Player(WebSocket webSocket, GameSession gameSession)
     {
@@ -60,5 +61,8 @@ namespace RuleChaos.Models
 
     [JsonPropertyName("name")]
     public string Name { get; } = player.Name;
+
+    [JsonPropertyName("isInRound")]
+    public bool IsInRound { get; } = player.IsInRound;
   }
 }

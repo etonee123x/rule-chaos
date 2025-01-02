@@ -48,12 +48,12 @@ export interface MessageTypeToMessage {
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession> {
-  playersInSession: Array<Player>;
+  players: Array<Player>;
   player: Player;
 }
 
 export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJoinedSession> {
-  playersInSession: Array<Player>;
+  players: Array<Player>;
   player: Player;
 }
 
@@ -62,7 +62,7 @@ export interface MessageNewActivePlayer extends Message<MessageType.NewActivePla
 }
 
 export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {
-  playersInRound: Array<Player>;
+  players: Array<Player>;
 }
 
 export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation> {
@@ -132,8 +132,7 @@ export interface ItemWithPosition extends Item {
 }
 
 export interface SessionState {
-  playersInSession: Array<Player>;
-  playersInRound: Array<Player>;
+  players: Array<Player>;
   player: Player | null;
   activePlayer: Player | null;
   itemsInHand: Array<Item>;

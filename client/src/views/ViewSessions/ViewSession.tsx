@@ -34,8 +34,7 @@ export const ViewSession: FC = () => {
 
   const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
 
-  const [playersInRound, setPlayersInRound] = useState<Array<Player>>([]);
-  const [playersInSession, setPlayersInSession] = useState<Array<Player>>([]);
+  const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
@@ -49,8 +48,7 @@ export const ViewSession: FC = () => {
   const session: SessionState = useMemo(
     () => ({
       player,
-      playersInRound,
-      playersInSession,
+      players,
       itemsInHand,
       itemsOnField,
       history,
@@ -58,17 +56,7 @@ export const ViewSession: FC = () => {
       isRoundActive,
       activeVoting,
     }),
-    [
-      player,
-      playersInRound,
-      playersInSession,
-      itemsInHand,
-      history,
-      activePlayer,
-      itemsOnField,
-      isRoundActive,
-      activeVoting,
-    ],
+    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive, activeVoting],
   );
 
   useEffect(() => {
@@ -95,8 +83,7 @@ export const ViewSession: FC = () => {
     addEventListener('message', (message) => {
       if (doesMessageHasType(message, MessageType.SessionInitiation)) {
         setPlayer(message.player);
-        setPlayersInRound(message.sessionState.playersInRound);
-        setPlayersInSession(message.sessionState.playersInSession);
+        setPlayers(message.sessionState.players);
         setHistory(message.sessionState.history);
         setActivePlayer(message.sessionState.activePlayer);
         setItemsInHand(message.sessionState.itemsInHand);
@@ -108,13 +95,13 @@ export const ViewSession: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
-        setPlayersInSession(message.playersInSession);
+        setPlayers(message.players);
 
         return;
       }
 
       if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
-        setPlayersInSession(message.playersInSession);
+        setPlayers(message.players);
 
         return;
       }
@@ -132,7 +119,7 @@ export const ViewSession: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.RoundWasStarted)) {
-        setPlayersInRound(message.playersInRound);
+        setPlayers(message.players);
         setIsRoundActive(true);
 
         return;

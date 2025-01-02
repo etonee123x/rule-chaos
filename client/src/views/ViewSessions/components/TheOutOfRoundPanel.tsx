@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const TheOutOfRoundPanel: FC<Props> = (props) => {
-  const { playersInSession } = useSession();
+  const { players } = useSession();
 
   const [, copy] = useClipboard();
 
@@ -23,7 +23,7 @@ export const TheOutOfRoundPanel: FC<Props> = (props) => {
 
   return (
     <div>
-      {playersInSession.length > 1 ? (
+      {players.length > 1 ? (
         <BaseButton onClick={props.onClickButtonStartRound}>Начать раунд</BaseButton>
       ) : (
         <div>

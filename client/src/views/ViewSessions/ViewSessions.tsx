@@ -51,7 +51,7 @@ export const ViewSessions: FC = () => {
             {sessions.map((session) => (
               <li className="mb-2 last:mb-0 rounded bg-slate-100" key={session.id}>
                 <Link className="flex items-center p-4" to={SESSION(session.id)}>
-                  <div>Игроков: {session.playersInSession.length}</div>
+                  <div>Игроков: {session.players.length}</div>
                   <BaseIcon className="ms-auto" path={mdiChevronRight}></BaseIcon>
                 </Link>
               </li>

@@ -2,11 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageRoundWasStarted(List<Player> playersInRound)
+  public class MessageRoundWasStarted(List<Player> players)
     : MessageFromServer
   {
-    [JsonPropertyName("playersInRound")]
-    public PlayerDTO[] PlayersInRound { get; } = playersInRound.Select((playerInRound) => playerInRound.ToDTO()).ToArray();
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = players.Select((playerInRound) => playerInRound.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
     public override string Type
