@@ -47,15 +47,26 @@ export interface MessageTypeToMessage {
   [MessageType.VotingEnd]: MessageVotingEnd;
 }
 
-export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession>, WithPlayerAndPlayers {}
+export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession> {
+  playersInSession: Array<Player>;
+  player: Player;
+}
 
-export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJoinedSession>, WithPlayerAndPlayers {}
+export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJoinedSession> {
+  playersInSession: Array<Player>;
+  player: Player;
+}
 
-export interface MessageNewActivePlayer extends Message<MessageType.NewActivePlayer>, WithPlayer {}
+export interface MessageNewActivePlayer extends Message<MessageType.NewActivePlayer> {
+  player: Player;
+}
 
-export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {}
+export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {
+  playersInRound: Array<Player>;
+}
 
-export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation>, WithPlayer {
+export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation> {
+  player: Player;
   sessionState: SessionState;
 }
 
@@ -101,20 +112,10 @@ export interface MessageVotingEnd extends Message<MessageType.VotingEnd> {
   activeVoting: VotingEnded;
 }
 
-interface WithPlayer {
-  player: Player;
-}
-
-interface WithPlayers {
-  players: Array<Player>;
-}
-
 export interface HistoryRecord extends WithId {
   message: string;
   timestamp: string;
 }
-
-interface WithPlayerAndPlayers extends WithPlayer, WithPlayers {}
 
 export interface Position {
   col: number;
@@ -131,7 +132,8 @@ export interface ItemWithPosition extends Item {
 }
 
 export interface SessionState {
-  players: Array<Player>;
+  playersInSession: Array<Player>;
+  playersInRound: Array<Player>;
   player: Player | null;
   activePlayer: Player | null;
   itemsInHand: Array<Item>;

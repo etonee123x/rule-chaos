@@ -34,7 +34,8 @@ export const ViewSession: FC = () => {
 
   const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
 
-  const [players, setPlayers] = useState<Array<Player>>([]);
+  const [playersInRound, setPlayersInRound] = useState<Array<Player>>([]);
+  const [playersInSession, setPlayersInSession] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
@@ -48,7 +49,8 @@ export const ViewSession: FC = () => {
   const session: SessionState = useMemo(
     () => ({
       player,
-      players,
+      playersInRound,
+      playersInSession,
       itemsInHand,
       itemsOnField,
       history,
@@ -56,7 +58,17 @@ export const ViewSession: FC = () => {
       isRoundActive,
       activeVoting,
     }),
-    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive, activeVoting],
+    [
+      player,
+      playersInRound,
+      playersInSession,
+      itemsInHand,
+      history,
+      activePlayer,
+      itemsOnField,
+      isRoundActive,
+      activeVoting,
+    ],
   );
 
   useEffect(() => {
@@ -83,7 +95,8 @@ export const ViewSession: FC = () => {
     addEventListener('message', (message) => {
       if (doesMessageHasType(message, MessageType.SessionInitiation)) {
         setPlayer(message.player);
-        setPlayers(message.sessionState.players);
+        setPlayersInRound(message.sessionState.playersInRound);
+        setPlayersInSession(message.sessionState.playersInSession);
         setHistory(message.sessionState.history);
         setActivePlayer(message.sessionState.activePlayer);
         setItemsInHand(message.sessionState.itemsInHand);
@@ -95,7 +108,13 @@ export const ViewSession: FC = () => {
       }
 
       if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
-        setPlayers(message.players);
+        setPlayersInSession(message.playersInSession);
+
+        return;
+      }
+
+      if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
+        setPlayersInSession(message.playersInSession);
 
         return;
       }
@@ -112,13 +131,10 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
-        setPlayers(message.players);
-
-        return;
-      }
-
       if (doesMessageHasType(message, MessageType.RoundWasStarted)) {
+        setPlayersInRound(message.playersInRound);
+        setIsRoundActive(true);
+
         return;
       }
 

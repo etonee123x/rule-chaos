@@ -24,11 +24,9 @@ namespace RuleChaos.Models
 
     public bool HasEnoughPlayers { get => this.PlayersInSession.Count == GameSession.PlayersNumber; }
 
-    public PlayerDTO[] PlayersDTOs { get => this.PlayersInSession.ConvertAll((player) => player.ToDTO()).ToArray(); }
+    internal Player? ActivePlayer { get; private set; }
 
-    internal Player? ActivePlayer { get; set; }
-
-    private static readonly byte PlayersNumber = 2;
+    private static readonly byte PlayersNumber = 4;
     private static readonly byte ItemsPerPlayer = 8;
     private static readonly byte HistoryRecordsCount = 50;
 
@@ -179,7 +177,8 @@ namespace RuleChaos.Models
     {
       this.PlayersInRound = this.PlayersInSession.Where((playerInSession) => playersIds.Contains(playerInSession.Id)).ToList();
 
-      this.SendMessageToPlayers(new MessageRoundWasStarted());
+      this.IsRoundActive = true;
+      this.SendMessageToPlayers(new MessageRoundWasStarted(this.PlayersInRound));
 
       if (this.ItemGenerator is null)
       {
@@ -253,14 +252,17 @@ namespace RuleChaos.Models
     [JsonPropertyName("id")]
     public Guid Id { get; } = gameSession.Id;
 
-    [JsonPropertyName("players")]
-    public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
+    [JsonPropertyName("playersInSession")]
+    public PlayerDTO[] PlayersInSession { get; } = gameSession.PlayersInSession.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
   }
 
   public class GameSessionDTO(GameSession gameSession)
   {
-    [JsonPropertyName("players")]
-    public PlayerDTO[] Players { get; } = gameSession.PlayersDTOs;
+    [JsonPropertyName("playersInSession")]
+    public PlayerDTO[] PlayersInSession { get; } = gameSession.PlayersInSession.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
+
+    [JsonPropertyName("playersInRound")]
+    public PlayerDTO[] PlayersInRound { get; } = gameSession.PlayersInRound.Select((playerInSession) => playerInSession.ToDTO()).ToArray();
 
     [JsonPropertyName("activePlayer")]
     public PlayerDTO? ActivePlayer { get; } = gameSession.ActivePlayer?.ToDTO();
