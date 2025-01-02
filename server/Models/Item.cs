@@ -37,15 +37,9 @@ namespace RuleChaos.Models
       return false;
     }
 
-    public override int GetHashCode()
-    {
-      return this.Id.GetHashCode();
-    }
+    public override int GetHashCode() => this.Id.GetHashCode();
 
-    public ItemDTO ToDTO()
-    {
-      return new ItemDTO(this);
-    }
+    public ItemDTO ToDTO() => new ItemDTO(this);
   }
 
   public class ItemDTO(Item item)
@@ -78,15 +72,9 @@ namespace RuleChaos.Models
       return false;
     }
 
-    public override int GetHashCode()
-    {
-      return HashCode.Combine(this.Row, this.Col);
-    }
+    public override int GetHashCode() => HashCode.Combine(this.Row, this.Col);
 
-    public PositionDTO ToDTO()
-    {
-      return new PositionDTO(this);
-    }
+    public PositionDTO ToDTO() => new PositionDTO(this);
   }
 
   public class PositionDTO(Position position)
@@ -110,10 +98,7 @@ namespace RuleChaos.Models
       this.Position = position;
     }
 
-    public new ItemWithPositionDTO ToDTO()
-    {
-      return new ItemWithPositionDTO(this);
-    }
+    public new ItemWithPositionDTO ToDTO() => new ItemWithPositionDTO(this);
   }
 
   public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
@@ -141,9 +126,6 @@ namespace RuleChaos.Models
       this.items = items;
     }
 
-    public Item Next()
-    {
-      return this.items[new Random().Next(this.items.Length)];
-    }
+    public Item Next() => this.items[new Random().Next(this.items.Length)];
   }
 }

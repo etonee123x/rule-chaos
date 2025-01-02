@@ -8,10 +8,7 @@ namespace RuleChaos.Models.Messages
     [JsonPropertyName("type")]
     public abstract string Type { get; }
 
-    public override string ToString()
-    {
-      return JsonSerializer.Serialize(this, this.GetType());
-    }
+    public override string ToString() => JsonSerializer.Serialize(this, this.GetType());
   }
 
   public abstract class MessageFromClient : Message

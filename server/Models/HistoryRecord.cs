@@ -10,15 +10,9 @@ namespace RuleChaos.Models
 
     public Guid Id { get; } = Guid.NewGuid();
 
-    public static string Accent(object value)
-    {
-      return $"{{{value}}}";
-    }
+    public static string Accent(object value) => $"{{{value}}}";
 
-    public HistoryRecordDTO ToDTO()
-    {
-      return new HistoryRecordDTO(this);
-    }
+    public HistoryRecordDTO ToDTO() => new HistoryRecordDTO(this);
   }
 
   public class HistoryRecordDTO(HistoryRecord historyRecord)

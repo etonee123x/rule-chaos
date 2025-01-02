@@ -42,20 +42,15 @@ namespace RuleChaos.Models
       this.SendMessage(new MessageSessionInitiation(this, gameSession));
     }
 
-    public Task SendMessage(Message message)
-    {
-      return this.WebSocket.SendAsync(Encoding.ASCII.GetBytes(message.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
-    }
+    public Task SendMessage(Message message) => this.WebSocket.SendAsync(
+      Encoding.ASCII.GetBytes(message.ToString()),
+      WebSocketMessageType.Text,
+      true,
+      CancellationToken.None);
 
-    public PlayerDTO ToDTO()
-    {
-      return new PlayerDTO(this);
-    }
+    public PlayerDTO ToDTO() => new PlayerDTO(this);
 
-    public override string ToString()
-    {
-      return this.Name;
-    }
+    public override string ToString() => this.Name;
   }
 
   public class PlayerDTO(Player player)

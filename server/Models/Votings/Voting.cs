@@ -26,21 +26,18 @@ namespace RuleChaos.Models.Votings
 
     protected GameSession GameSession { get; }
 
-    private bool HasMoreThanHalfVotesOfOneType
+    protected virtual bool ShouldEndAsPositive
+    {
+      get => this.PlayersVotedPositiveIds.Count > this.PlayersVotedNegativeIds.Count;
+    }
+
+    protected virtual bool ShouldEndVotingRightNow
     {
       get
       {
         var half = this.PotentialMaximumVotesNumber / 2;
 
         return this.PlayersVotedPositiveIds.Count > half || this.PlayersVotedNegativeIds.Count > half;
-      }
-    }
-
-    private bool HasMorePositive
-    {
-      get
-      {
-        return this.PlayersVotedPositiveIds.Count > this.PlayersVotedNegativeIds.Count;
       }
     }
 
@@ -66,7 +63,7 @@ namespace RuleChaos.Models.Votings
       this.timer = new Timer(
         _ =>
           {
-            this.End(this.HasMorePositive);
+            this.End(this.ShouldEndAsPositive);
             this.timer?.Dispose();
           },
         null,
@@ -105,18 +102,15 @@ namespace RuleChaos.Models.Votings
 
       this.GameSession.SendMessageToPlayers(new MessageVotingUpdate(this));
 
-      this.Check();
+      if (this.ShouldEndVotingRightNow)
+      {
+        this.End(this.ShouldEndAsPositive);
+      }
     }
 
-    public bool PlayerHasVoted(Player player)
-    {
-      return this.VotedPlayersIds.Contains(player.Id);
-    }
+    public bool PlayerHasVoted(Player player) => this.VotedPlayersIds.Contains(player.Id);
 
-    public VotingDTO ToDTO()
-    {
-      return new VotingDTO(this);
-    }
+    public VotingDTO ToDTO() => new VotingDTO(this);
 
     public void End(bool isPositive)
     {
@@ -129,16 +123,6 @@ namespace RuleChaos.Models.Votings
       {
         this.OnPositive();
       }
-    }
-
-    protected virtual void Check()
-    {
-      if (!this.HasMoreThanHalfVotesOfOneType)
-      {
-        return;
-      }
-
-      this.End(this.HasMorePositive);
     }
 
     protected abstract void OnPositive();

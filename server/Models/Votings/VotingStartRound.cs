@@ -12,14 +12,14 @@ namespace RuleChaos.Models.Votings
     {
     }
 
-    protected override void Check()
+    protected override bool ShouldEndAsPositive
     {
-      if (this.VotedPlayersIds.Count < this.PotentialMaximumVotesNumber)
-      {
-        return;
-      }
+      get => this.PlayersVotedPositiveIds.Count > 1;
+    }
 
-      this.End(true);
+    protected override bool ShouldEndVotingRightNow
+    {
+      get => this.VotedPlayersIds.Count == this.PotentialMaximumVotesNumber;
     }
 
     protected override void OnPositive()

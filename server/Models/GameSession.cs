@@ -60,15 +60,9 @@ namespace RuleChaos.Models
       }
     }
 
-    public GameSessionListingDTO ToListingDTO()
-    {
-      return new GameSessionListingDTO(this);
-    }
+    public GameSessionListingDTO ToListingDTO() => new GameSessionListingDTO(this);
 
-    public GameSessionDTO ToDTO()
-    {
-      return new GameSessionDTO(this);
-    }
+    public GameSessionDTO ToDTO() => new GameSessionDTO(this);
 
     public Task HandlePlayer(Player player)
     {
@@ -165,10 +159,7 @@ namespace RuleChaos.Models
       this.lastActivity = DateTime.UtcNow;
     }
 
-    public bool IsInactive(TimeSpan timeSpan)
-    {
-      return DateTime.UtcNow - this.lastActivity > timeSpan;
-    }
+    public bool IsInactive(TimeSpan timeSpan) => DateTime.UtcNow - this.lastActivity > timeSpan;
 
     public void SendMessageToPlayers(MessageFromServer message)
     {
@@ -245,23 +236,11 @@ namespace RuleChaos.Models
       this.Log($"Игрок {player} отключился");
     }
 
-    private bool IsThisPlayerActive(Player player)
-    {
-      return player == this.ActivePlayer;
-    }
+    private bool IsThisPlayerActive(Player player) => player == this.ActivePlayer;
 
-    private bool IsPositionOccupied(Position position)
-    {
-      return this.ItemsOnField.Any((itemOnField) => itemOnField.Position.Equals(position));
-    }
+    private bool IsPositionOccupied(Position position) => this.ItemsOnField.Any((itemOnField) => itemOnField.Position.Equals(position));
 
-    private Item? FindItemInHand(Item item)
-    {
-      return this.ItemsInHand.Find((itemInHand) =>
-      {
-        return itemInHand.Equals(item);
-      });
-    }
+    private Item? FindItemInHand(Item item) => this.ItemsInHand.Find((itemInHand) => itemInHand.Equals(item));
 
     private void Log(params object[] args)
     {
