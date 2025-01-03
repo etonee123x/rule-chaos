@@ -8,6 +8,8 @@ import classNames from 'classnames';
 import { BaseButton } from './ui/BaseButton';
 import type { FunctionCallback } from '@/types';
 import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
+import { useCountdown } from '@/hooks/useCountDown';
+import { isNotNil } from '@/utils/isNotNil';
 
 interface Props {
   onVotePositive: FunctionCallback;
@@ -62,6 +64,8 @@ export const Voting: FC<Props> = (props) => {
     },
   ];
 
+  const { startToDate, timeRemain } = useCountdown();
+
   return (
     <>
       <BaseWidget className={classNames(isDialogOpen && 'hidden')} onClick={onClickWidget}>
@@ -91,6 +95,9 @@ export const Voting: FC<Props> = (props) => {
               </span>
               )
             </div>
+          )}
+          {isNotNil(timeRemain) && (
+            <div>{['Голосование заканчивается', ...(timeRemain > 3000 ? [`через ${timeRemain}`] : [])].join(' ')}</div>
           )}
         </BaseDialog>
       )}
