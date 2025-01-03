@@ -6,14 +6,23 @@ import { useMemo, type FC, type HTMLAttributes } from 'react';
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const ThePlayersList: FC<Props> = (props) => {
-  const { playersInSession, playersInRound, player, activePlayer } = useSession();
+  const { players, player, activePlayer } = useSession();
 
-  const playersInWaitingRoom = useMemo(
+  const playersTypeToPlayers = useMemo(
     () =>
-      playersInSession.filter(
-        (playerInSession) => !playersInRound.some((playerInRound) => arePlayersEqual(playerInRound, playerInSession)),
+      players.reduce<{ inRound: Array<Player>; inWaitingRoom: Array<Player> }>(
+        (acc, player) => {
+          if (player.isInRound) {
+            acc.inRound.push(player);
+          } else {
+            acc.inWaitingRoom.push(player);
+          }
+
+          return acc;
+        },
+        { inRound: [], inWaitingRoom: [] },
       ),
-    [playersInRound, playersInSession],
+    [players],
   );
 
   const Players: FC<{ players: Array<Player>; sectionText: string }> = (props) => (
@@ -41,9 +50,13 @@ export const ThePlayersList: FC<Props> = (props) => {
 
   return (
     <div className={props.className}>
-      <div className="sticky top-0 bg-white pb-2 text-xl">Игроки ({playersInSession.length}):</div>
-      {playersInRound.length > 0 && <Players players={playersInRound} sectionText="В игре" />}
-      {playersInWaitingRoom.length > 0 && <Players players={playersInWaitingRoom} sectionText="Ожидание" />}
+      <div className="sticky top-0 bg-white pb-2 text-xl">Игроки ({players.length}):</div>
+      {playersTypeToPlayers.inRound.length > 0 && (
+        <Players players={playersTypeToPlayers.inRound} sectionText="В игре" />
+      )}
+      {playersTypeToPlayers.inWaitingRoom.length > 0 && (
+        <Players players={playersTypeToPlayers.inWaitingRoom} sectionText="Ожидание" />
+      )}
     </div>
   );
 };
