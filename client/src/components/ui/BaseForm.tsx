@@ -9,7 +9,6 @@ import {
 
 import type { FunctionCallback } from '@/types';
 import { invoke } from '@/utils/invoke';
-import { omit } from '@/utils/omit';
 
 interface Props
   extends HTMLAttributes<HTMLFormElement>,
@@ -20,34 +19,36 @@ export interface BaseForm {
   form: HTMLFormElement | null;
 }
 
-export const BaseForm = forwardRef<BaseForm, Props>((props, ref) => {
-  const refForm = useRef<HTMLFormElement>(null);
+export const BaseForm = forwardRef<BaseForm, Props>(
+  ({ validations, className, children, onSubmit: _onSubmit, onInvalid: _onInvalid }, ref) => {
+    const refForm = useRef<HTMLFormElement>(null);
 
-  useImperativeHandle(ref, () => ({
-    form: refForm.current,
-  }));
+    useImperativeHandle(ref, () => ({
+      form: refForm.current,
+    }));
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+    const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+      event.preventDefault();
 
-    if (props.validations) {
-      Object.values(props.validations).forEach(invoke());
-    }
+      if (validations) {
+        Object.values(validations).forEach(invoke());
+      }
 
-    return props.onSubmit?.(event);
-  };
+      return _onSubmit?.(event);
+    };
 
-  const onInvalid: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+    const onInvalid: FormEventHandler<HTMLFormElement> = (event) => {
+      event.preventDefault();
 
-    return props.onInvalid?.(event);
-  };
+      return _onInvalid?.(event);
+    };
 
-  return (
-    <form {...omit(props, ['validations'])} ref={refForm} noValidate onInvalid={onInvalid} onSubmit={onSubmit}>
-      {props.children}
-    </form>
-  );
-});
+    return (
+      <form {...{ className, onInvalid, onSubmit }} ref={refForm} noValidate>
+        {children}
+      </form>
+    );
+  },
+);
 
 BaseForm.displayName = 'BaseForm';

@@ -3,6 +3,6 @@ import type { FC, HTMLAttributes, PropsWithChildren } from 'react';
 
 interface Props extends HTMLAttributes<HTMLDivElement>, PropsWithChildren {}
 
-export const BasePage: FC<Props> = (props) => (
-  <div className={classNames(['py-6', props.className])}>{props.children}</div>
+export const BasePage: FC<Props> = ({ className, children }) => (
+  <div className={classNames(['py-6', className])}>{children}</div>
 );

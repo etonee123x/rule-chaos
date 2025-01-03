@@ -8,15 +8,16 @@ import classNames from 'classnames';
 import { BaseButton } from './ui/BaseButton';
 import type { FunctionCallback } from '@/types';
 import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
-import { useCountdown } from '@/hooks/useCountDown';
+import { useCountdown } from '@/hooks/useCountdown';
 import { isNotNil } from '@/utils/isNotNil';
+import { BaseProgressBar } from './ui/BaseProgressBar';
 
 interface Props {
-  onVotePositive: FunctionCallback;
-  onVoteNegative: FunctionCallback;
+  onClickVotePositive: FunctionCallback;
+  onClickVoteNegative: FunctionCallback;
 }
 
-export const Voting: FC<Props> = (props) => {
+export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) => {
   const { activeVoting, player } = useSession();
 
   const playerVotedPositive = useMemo(
@@ -48,7 +49,7 @@ export const Voting: FC<Props> = (props) => {
       votesNumber: activeVoting?.playersVotedPositiveIds.length ?? 0,
       shouldRenderButton: !playerVotedNegative,
       propsButton: {
-        onClick: props.onVotePositive,
+        onClick: onClickVotePositive,
         children: `${VOTING_VALUE_TO_TEXT[VotingValue.Positive]}!`,
       },
     },
@@ -58,18 +59,33 @@ export const Voting: FC<Props> = (props) => {
       votesNumber: activeVoting?.playersVotedNegativeIds.length ?? 0,
       shouldRenderButton: !playerVotedPositive,
       propsButton: {
-        onClick: props.onVoteNegative,
+        onClick: onClickVoteNegative,
         children: `${VOTING_VALUE_TO_TEXT[VotingValue.Negative]}!`,
       },
     },
   ];
 
-  const { startToDate, timeRemain } = useCountdown();
+  const { startTo, stop, timeRemain, timeEnd, partPassed } = useCountdown();
+
+  useEffect(() => {
+    if (!activeVoting) {
+      return stop();
+    }
+
+    if (activeVoting.endAt === timeEnd) {
+      return;
+    }
+
+    startTo(activeVoting.endAt, { timeStart: activeVoting.startedAt });
+  }, [activeVoting, timeEnd, stop, startTo]);
 
   return (
     <>
       <BaseWidget className={classNames(isDialogOpen && 'hidden')} onClick={onClickWidget}>
         <BaseIcon path={mdiBallotOutline} />
+        {isNotNil(partPassed) && (
+          <BaseProgressBar className="h-1 absolute bottom-0 start-0 pointer-events-none" value={partPassed} />
+        )}
       </BaseWidget>
       {activeVoting && (
         <BaseDialog open={isDialogOpen} onClose={onCloseDialog} title={['Голосование', activeVoting.title].join(' ')}>
@@ -96,8 +112,15 @@ export const Voting: FC<Props> = (props) => {
               )
             </div>
           )}
-          {isNotNil(timeRemain) && (
-            <div>{['Голосование заканчивается', ...(timeRemain > 3000 ? [`через ${timeRemain}`] : [])].join(' ')}</div>
+          {isNotNil(timeRemain) && isNotNil(partPassed) && (
+            <>
+              <div className="mt-8 text-gray-500 text-sm text-end">
+                {['Заканчивается', ...(timeRemain > 3000 ? [`через ${(timeRemain / 1000).toFixed(1)}c`] : [])].join(
+                  ' ',
+                )}
+              </div>
+              <BaseProgressBar className="absolute bottom-0 start-0" value={partPassed} />
+            </>
           )}
         </BaseDialog>
       )}

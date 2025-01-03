@@ -2,7 +2,12 @@ import type { FunctionCallback } from '@/types';
 import { clamp } from '@/utils/clamp';
 import { isNil } from '@/utils/isNil';
 import { useInterval } from '@reactuses/core';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+
+interface StartOptions {
+  callback?: FunctionCallback;
+  timeStart?: number;
+}
 
 export const useCountdown = () => {
   const [timeEnd, setTimeEnd] = useState<number | null>(null);
@@ -21,17 +26,34 @@ export const useCountdown = () => {
     [timeStart, timeEnd, timeNow],
   );
 
-  const startTo = (time: number, _callback: FunctionCallback | null = null) => {
-    setTimeStart(timeNow);
-    setTimeEnd(time);
-    setCallback(_callback);
-  };
+  const startBase = useCallback(
+    (options: StartOptions = {}) => {
+      setTimeStart(options.timeStart ?? timeNow);
+      setCallback(options.callback ?? null);
+    },
+    [timeNow],
+  );
 
-  const startBy = (time: number, _callback: FunctionCallback | null = null) => {
-    setTimeStart(timeNow);
-    setTimeEnd(timeNow + time);
-    setCallback(_callback);
-  };
+  const startTo = useCallback(
+    (time: number, options: StartOptions = {}) => {
+      startBase(options);
+      setTimeEnd(time);
+    },
+    [startBase],
+  );
+
+  const startBy = useCallback(
+    (time: number, options: StartOptions = {}) => {
+      startBase(options);
+      setTimeEnd(timeNow + time);
+    },
+    [timeNow, startBase],
+  );
+
+  const stop = useCallback(() => {
+    setTimeEnd(null);
+    setTimeStart(null);
+  }, []);
 
   useInterval(() => {
     setTimeNow(Date.now);
@@ -40,15 +62,16 @@ export const useCountdown = () => {
       return;
     }
 
-    setTimeEnd(null);
-    setTimeStart(null);
     callback?.();
-  }, 1000);
+  }, 100);
 
   return {
     startTo,
     startBy,
 
+    stop,
+
+    timeEnd,
     timeRemain,
 
     partPassed,

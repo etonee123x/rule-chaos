@@ -93,6 +93,14 @@
     @apply rounded bg-white m-0 absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
   }
 
+  .progress-bar {
+    @apply bg-gray-300 w-full h-2;
+  }
+
+  .widget {
+    @apply fixed backdrop-blur-sm z-50 p-2 cursor-move touch-none border border-gray-300 flex justify-center items-center rounded text-4xl overflow-hidden;
+  }
+
   .item {
     @apply border flex justify-center items-center select-none border-gray-400;
 

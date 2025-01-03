@@ -1,7 +1,6 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import { useSession } from '@/contexts/sessionContext';
 import type { Item as IItem, ItemWithPosition } from '@/helpers/message';
-import { pick } from '@/utils/pick';
 import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
@@ -25,10 +24,10 @@ const indexToRowCol = (index: number) => ({
   col: index % SIZE,
 });
 
-const Cell: FC<PropsCell> = (props) => {
+const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
   const { itemsOnField } = useSession();
 
-  const position = useMemo(() => pick(props, ['col', 'row']), [props]);
+  const position = useMemo(() => ({ col, row }), [col, row]);
 
   const maybeItem = useMemo(
     () => itemsOnField.find((itemOnField) => arePositionsEqual(itemOnField.position, position)),
@@ -40,7 +39,7 @@ const Cell: FC<PropsCell> = (props) => {
   const [{ canDrop, isOver }, dropRef] = useDrop(
     () => ({
       accept: ITEM,
-      drop: (item: IItem) => props.onDrop({ ...item, position }),
+      drop: (item: IItem) => onDrop({ ...item, position }),
       canDrop: () => !cellHasItem,
       collect: (monitor) => ({
         isOver: monitor.isOver(),
@@ -54,21 +53,21 @@ const Cell: FC<PropsCell> = (props) => {
 
   const FallBack = () => (
     <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
-      {props.row + 1}:{props.col + 1}
+      {row + 1}:{col + 1}
     </div>
   );
 
   const className = useMemo(() => {
     let bgClass = cantDropHere ? 'bg-red-400' : undefined;
 
-    bgClass ??= (props.row + props.col) % 2 ? 'bg-primary-300' : 'bg-gray-200';
+    bgClass ??= (row + col) % 2 ? 'bg-primary-300' : 'bg-gray-200';
 
     return classNames([
       'aspect-square relative flex items-center justify-center',
       bgClass,
       cantDropHere && 'cursor-not-allowed',
     ]);
-  }, [cantDropHere, props]);
+  }, [cantDropHere, row, col]);
 
   return (
     <div ref={dropRef} className={className}>
@@ -81,13 +80,13 @@ const Cell: FC<PropsCell> = (props) => {
   );
 };
 
-export const TheField: FC<PropsTheField> = (props) => (
-  <div className={classNames(props.className)}>
+export const TheField: FC<PropsTheField> = ({ className, onDrop }) => (
+  <div className={classNames(className)}>
     <div className="size-full grid grid-cols-8 border-8 border-gray-400">
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => {
         const { row, col } = indexToRowCol(index);
 
-        return <Cell row={row} col={col} key={index} onDrop={props.onDrop} />;
+        return <Cell row={row} col={col} key={index} onDrop={onDrop} />;
       })}
     </div>
   </div>

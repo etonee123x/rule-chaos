@@ -5,7 +5,7 @@ import { useMemo, type FC, type HTMLAttributes } from 'react';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
-export const ThePlayersList: FC<Props> = (props) => {
+export const ThePlayersList: FC<Props> = ({ className }) => {
   const { players, player, activePlayer } = useSession();
 
   const playersTypeToPlayers = useMemo(
@@ -25,14 +25,14 @@ export const ThePlayersList: FC<Props> = (props) => {
     [players],
   );
 
-  const Players: FC<{ players: Array<Player>; sectionText: string }> = (props) => (
+  const Players: FC<{ players: Array<Player>; sectionText: string }> = ({ sectionText, players }) => (
     <div className="bg-gray-100 p-2 rounded mb-4 last:mb-0">
       <div className="text-gray-500">
-        {props.sectionText} ({props.players.length})
+        {sectionText} ({players.length})
       </div>
       <hr className="my-1" />
       <ul className="list-inside">
-        {props.players.map((_player) => (
+        {players.map((_player) => (
           <li
             key={_player.id}
             className={classNames([
@@ -49,7 +49,7 @@ export const ThePlayersList: FC<Props> = (props) => {
   );
 
   return (
-    <div className={props.className}>
+    <div className={className}>
       <div className="sticky top-0 bg-white pb-2 text-xl">Игроки ({players.length}):</div>
       {playersTypeToPlayers.inRound.length > 0 && (
         <Players players={playersTypeToPlayers.inRound} sectionText="В игре" />

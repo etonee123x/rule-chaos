@@ -6,7 +6,7 @@ interface Props {
   hasNoFooter?: boolean;
 }
 
-export const Default: FC<Props> = (props) => {
+export const Default: FC<Props> = ({ hasNoFooter }) => {
   const { HOME, RULES, SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
   const NAV_LINKS = [
     {
@@ -54,7 +54,7 @@ export const Default: FC<Props> = (props) => {
       <main className="mx-auto flex-1 container flex flex-col">
         <Outlet />
       </main>
-      {!props.hasNoFooter && (
+      {!hasNoFooter && (
         <footer className="mt-auto">
           <hr />
           <div className="py-2 mx-auto container">footer</div>

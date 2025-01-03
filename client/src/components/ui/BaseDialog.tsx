@@ -1,7 +1,7 @@
 import type { FunctionCallback } from '@/types';
 import { isNotNil } from '@/utils/isNotNil';
 import { useClickOutside } from '@reactuses/core';
-import { useEffect, useRef, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';
+import { useEffect, useRef, type CSSProperties, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';
 import { createPortal } from 'react-dom';
 
 interface Props
@@ -16,21 +16,23 @@ interface Props
   open: boolean;
 }
 
-export const BaseDialog: FC<Props> = (props) => {
+const STYLE = Object.freeze({ '--dialog-content--padding': '16px' }) as CSSProperties;
+
+export const BaseDialog: FC<Props> = ({ open, title, children, onBeforeClose, onClose: _onClose }) => {
   const refDialog = useRef<HTMLDialogElement>(null);
   const refContent = useRef<HTMLDivElement>(null);
 
   const close = async () => {
-    if (!props.open) {
+    if (!open) {
       return;
     }
 
-    if (props.onBeforeClose && (await props.onBeforeClose()) === false) {
+    if (onBeforeClose && (await onBeforeClose()) === false) {
       return;
     }
 
     refDialog.current?.close();
-    props.onClose?.();
+    _onClose?.();
   };
 
   const onClose = close;
@@ -41,23 +43,23 @@ export const BaseDialog: FC<Props> = (props) => {
       return;
     }
 
-    if (props.open && !refDialog.current.open) {
+    if (open && !refDialog.current.open) {
       return refDialog.current.showModal();
     }
 
-    if (!props.open && refDialog.current.open) {
+    if (!open && refDialog.current.open) {
       return refDialog.current.close();
     }
-  }, [props]);
+  }, [open]);
 
   useClickOutside(refContent, close);
 
   return createPortal(
     <dialog className="peer overflow-y-auto dialog" ref={refDialog} onClose={onClose} onCancel={onCancel}>
-      <div ref={refContent} className="p-4">
-        {isNotNil(props.title) && <div className="text-xl mb-4">{props.title}</div>}
+      <div ref={refContent} style={STYLE} className="p-4">
+        {isNotNil(title) && <div className="text-xl mb-4">{title}</div>}
 
-        <div>{props.children}</div>
+        <div>{children}</div>
       </div>
     </dialog>,
     document.body,

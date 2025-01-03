@@ -1,26 +1,25 @@
 import classNames from 'classnames';
 import { useRef, type FC, type InputHTMLAttributes, type PropsWithChildren } from 'react';
 import { BaseIcon } from './BaseIcon';
-import { pick } from '@/utils/pick';
 import { UI } from '@/helpers/ui';
 import { mdiCheckboxBlank, mdiCheckboxMarked } from '@mdi/js';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement>, PropsWithChildren {}
 
-export const BaseCheckbox: FC<Props> = (props) => {
+export const BaseCheckbox: FC<Props> = ({ disabled, readOnly, checked, value: _value, children, name, onChange }) => {
   const input = useRef<HTMLInputElement>(null);
 
   const onClick = () => {
-    if (props.disabled || props.readOnly) {
+    if (disabled || readOnly) {
       return;
     }
 
     input.current?.click();
   };
 
-  const iconPath = props.checked ? mdiCheckboxMarked : mdiCheckboxBlank;
+  const iconPath = checked ? mdiCheckboxMarked : mdiCheckboxBlank;
 
-  const value = props.value ?? 'true';
+  const value = _value ?? 'true';
 
   return (
     <div className={classNames(['group/checkbox', UI.CHECKBOX._name])} onClick={onClick}>
@@ -31,11 +30,11 @@ export const BaseCheckbox: FC<Props> = (props) => {
       <input
         type="checkbox"
         className="sr-only"
-        {...pick(props, ['disabled', 'readOnly', 'name', 'onChange', 'checked'])}
+        {...{ disabled, readOnly, name, onChange, checked }}
         value={value}
         ref={input}
       />
-      {props.children && <label className="text-initial cursor-inherit">{props.children}</label>}
+      {children && <label className="text-initial cursor-inherit">{children}</label>}
     </div>
   );
 };

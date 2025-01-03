@@ -9,7 +9,7 @@ export interface Props extends HTMLAttributes<HTMLDivElement>, PropsWithChildren
 
 const MARGIN = 8;
 
-export const BaseWidget: FC<Props> = (props) => {
+export const BaseWidget: FC<Props> = ({ className, children, onClick }) => {
   const refRoot = useRef<HTMLDivElement>(null);
 
   const [x, y, , setPosition] = useDraggable(refRoot, {
@@ -69,18 +69,11 @@ export const BaseWidget: FC<Props> = (props) => {
     setPosition({ x: _x, y: _y });
   }, [x, y, isOutOfBound, screenBounds, elementWidth, elementHeight, setPosition]);
 
-  const onClickButton = props.onClick;
+  const onClickButton = onClick;
 
   return (
-    <div
-      style={{ left: x, top: y }}
-      className={classNames([
-        'fixed backdrop-blur-sm z-50 p-2 cursor-move touch-none border border-gray-300 flex justify-center items-center rounded text-4xl',
-        props.className,
-      ])}
-      ref={refRoot}
-    >
-      <button onClick={onClickButton}>{props.children}</button>
+    <div style={{ left: x, top: y }} className={classNames(['widget', className])} ref={refRoot}>
+      <button onClick={onClickButton}>{children}</button>
     </div>
   );
 };

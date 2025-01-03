@@ -10,13 +10,13 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   isDraggable?: boolean;
 }
 
-export const Item: FC<Props> = (props) => {
-  const isDraggable = Boolean(props.isDraggable);
+export const Item: FC<Props> = ({ isDraggable: _isDraggable, item, className, title }) => {
+  const isDraggable = Boolean(_isDraggable);
 
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
       type: ITEM,
-      item: props.item,
+      item,
       canDrag: isDraggable,
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
@@ -29,14 +29,14 @@ export const Item: FC<Props> = (props) => {
     <div
       className={classNames([
         UI.ITEM._name,
-        props.className,
+        className,
         isDragging && UI.ITEM.DRAGGING,
         isDraggable && UI.ITEM.DRAGGABLE,
       ])}
-      title={props.title}
+      title={title}
       ref={dragRef}
     >
-      {props.item.text}
+      {item.text}
     </div>
   );
 };

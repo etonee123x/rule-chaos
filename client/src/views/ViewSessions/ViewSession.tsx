@@ -163,8 +163,8 @@ export const ViewSession: FC = () => {
 
   const onClickButtonStartRound = useCallback(() => send(new MessagePlayerWantsToStartRound()), [send]);
 
-  const onVotePositive = useCallback(() => send(new MessagePlayerVotes(VotingValue.Positive)), [send]);
-  const onVoteNegative = useCallback(() => send(new MessagePlayerVotes(VotingValue.Negative)), [send]);
+  const onClickVotePositive = useCallback(() => send(new MessagePlayerVotes(VotingValue.Positive)), [send]);
+  const onClickVoteNegative = useCallback(() => send(new MessagePlayerVotes(VotingValue.Negative)), [send]);
 
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
@@ -182,7 +182,7 @@ export const ViewSession: FC = () => {
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
           <TheHand className="mt-auto h-1/6" />
-          <Voting onVotePositive={onVotePositive} onVoteNegative={onVoteNegative} />
+          <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
         </SessionProvider>
       </DndProvider>
     </BasePage>

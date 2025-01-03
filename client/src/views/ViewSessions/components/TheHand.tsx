@@ -6,7 +6,7 @@ import { useIsActivePlayer } from '@/hooks/useIsActivePlayer';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
-export const TheHand: FC<Props> = (props) => {
+export const TheHand: FC<Props> = ({ className }) => {
   const { itemsInHand } = useSession();
   const isActivePlayer = useIsActivePlayer();
 
@@ -19,7 +19,7 @@ export const TheHand: FC<Props> = (props) => {
   }, []);
 
   return (
-    <div className={classNames([props.className, 'bg-gray-200 p-2 flex items-center relative'])}>
+    <div className={classNames([className, 'bg-gray-200 p-2 flex items-center relative'])}>
       {itemsInHand.length === 0 ? (
         <span className="text-2xl mx-auto">Нету предметов!</span>
       ) : (

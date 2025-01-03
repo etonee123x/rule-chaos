@@ -8,11 +8,11 @@ interface Props extends HTMLAttributes<HTMLDivElement> {}
 const historyRecordMessageToHTML = (historyRecordMessage: HistoryRecord['message']) =>
   `<span>${historyRecordMessage.replace(/{([^}]+)}/g, (...[, content]) => `<span class="text-primary-500">${content}</span>`)}</span>`;
 
-export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>((props, ref) => {
+export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>(({ className }, ref) => {
   const { history } = useSession();
 
   return (
-    <div ref={ref} className={classNames(props.className)}>
+    <div ref={ref} className={classNames(className)}>
       <div className="sticky top-0 bg-white pb-2 text-xl">История:</div>
       {history.length === 0 ? (
         <div>Нету истории...</div>

@@ -13,29 +13,36 @@ export interface Props
       componentBottom: ReactNode;
     }> {}
 
-export const TextInputWrapper: FC<Props> = (props) => {
-  const componentBottom = props.componentBottom ?? props.message;
+export const TextInputWrapper: FC<Props> = ({
+  componentBottom: _componentBottom,
+  message,
+  validationMessage,
+  label,
+  labelFor,
+  children,
+}) => {
+  const componentBottom = _componentBottom ?? message;
 
-  const hasError = Boolean(props.validationMessage?.length);
+  const hasError = Boolean(validationMessage?.length);
 
   return (
     <div>
       <div className={classNames(['relative', hasError ? 'text-red-500' : 'text-primary-400'])}>
-        {props.label && (
+        {label && (
           <label
             className={classNames([
               UI.ELEMENT_TITLE,
               'absolute z-10 -top-3 start-2 p-px before:bg-white before:w-[calc(100%+2px)] before:-start-px before:top-2 before:z-[-1] before:h-2 before:absolute',
             ])}
-            htmlFor={props.labelFor}
+            htmlFor={labelFor}
           >
-            {props.label}
+            {label}
           </label>
         )}
-        {props.children}
+        {children}
         {hasError && (
           <div className="z-10 text-xs p-px absolute top-5.5 start-2 before:bg-white before:w-[calc(100%+2px)] before:-start-px before:top-1 before:z-[-1] before:h-2 before:absolute">
-            {props.validationMessage}
+            {validationMessage}
           </div>
         )}
       </div>

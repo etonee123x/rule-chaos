@@ -5,6 +5,6 @@ interface Props extends PropsWithChildren {
   session: SessionContext;
 }
 
-export const SessionProvider: FC<Props> = (props) => (
-  <SessionContext.Provider value={props.session}>{props.children}</SessionContext.Provider>
+export const SessionProvider: FC<Props> = ({ session, children }) => (
+  <SessionContext.Provider value={session}>{children}</SessionContext.Provider>
 );

@@ -3,7 +3,6 @@ import type { ButtonHTMLAttributes, FC } from 'react';
 import { BaseIcon, type Props as PropsIcon } from './BaseIcon';
 
 import { UI } from '@/helpers/ui';
-import { pick } from '@/utils/pick';
 import classNames from 'classnames';
 
 export interface Props
@@ -13,10 +12,18 @@ export interface Props
       propsIconAppend: PropsIcon;
     }> {}
 
-export const BaseButton: FC<Props> = (props) => (
-  <button className={classNames([UI.BUTTON._name, props.className])} {...pick(props, ['disabled', 'type', 'onClick'])}>
-    {props.propsIconPrepend && <BaseIcon {...props.propsIconPrepend} />}
-    {props.children}
-    {props.propsIconAppend && <BaseIcon {...props.propsIconAppend} />}
+export const BaseButton: FC<Props> = ({
+  className,
+  propsIconPrepend,
+  propsIconAppend,
+  disabled,
+  type,
+  children,
+  onClick,
+}) => (
+  <button className={classNames([UI.BUTTON._name, className])} {...{ disabled, type, onClick }}>
+    {propsIconPrepend && <BaseIcon {...propsIconPrepend} />}
+    {children}
+    {propsIconAppend && <BaseIcon {...propsIconAppend} />}
   </button>
 );

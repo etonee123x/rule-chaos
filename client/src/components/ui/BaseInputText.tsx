@@ -4,7 +4,6 @@ import {
   type Props as PropsTextInputWrapper,
 } from '@/components/ui/_TextLikeInputElements/TextInputWrapper';
 import { TextInputBase, type Props as PropsTextInputBase } from '@/components/ui/_TextLikeInputElements/TextInputBase';
-import { pick } from '@/utils/pick';
 
 export interface Props
   extends PropsTextInputWrapper,
@@ -16,40 +15,54 @@ export interface Props
 
 export interface BaseInputText extends TextInputBase {}
 
-export const BaseInputText = forwardRef<BaseInputText, Props>((props, ref) => {
-  const _id = useId();
-  const id = props.id ?? _id;
-  const isDisabled = props.disabled || props.isLoading;
-
-  const refTextInputBase = useRef<TextInputBase>(null);
-
-  const [validationMessage, setValidationMessage] = useState('');
-
-  useImperativeHandle(ref, () => ({
-    setCustomValidity: (error) => {
-      refTextInputBase.current?.setCustomValidity(error);
-      setValidationMessage(error);
+export const BaseInputText = forwardRef<BaseInputText, Props>(
+  (
+    {
+      id: _id,
+      disabled,
+      isLoading,
+      label,
+      message,
+      componentBottom,
+      // TODO переименовать
+      childrenEnd,
+      required,
+      readonly,
+      value,
+      onChange,
+      onInput,
+      pattern,
     },
-    validity: refTextInputBase.current?.validity,
-    input: refTextInputBase.current?.input ?? null,
-  }));
+    ref,
+  ) => {
+    const __id = useId();
+    const id = _id ?? __id;
+    const isDisabled = disabled || isLoading;
 
-  return (
-    <TextInputWrapper
-      {...pick(props, ['label', 'message', 'componentBottom'])}
-      {...{ validationMessage }}
-      labelFor={id}
-    >
-      <TextInputBase
-        ref={refTextInputBase}
-        id={id}
-        disabled={isDisabled}
-        {...pick(props, ['required', 'readonly', 'value', 'onChange', 'onInput', 'pattern'])}
-      >
-        {props.childrenEnd}
-      </TextInputBase>
-    </TextInputWrapper>
-  );
-});
+    const refTextInputBase = useRef<TextInputBase>(null);
+
+    const [validationMessage, setValidationMessage] = useState('');
+
+    useImperativeHandle(ref, () => ({
+      setCustomValidity: (error) => {
+        refTextInputBase.current?.setCustomValidity(error);
+        setValidationMessage(error);
+      },
+      validity: refTextInputBase.current?.validity,
+      input: refTextInputBase.current?.input ?? null,
+    }));
+
+    return (
+      <TextInputWrapper {...{ validationMessage, label, message, componentBottom }} labelFor={id}>
+        <TextInputBase
+          ref={refTextInputBase}
+          {...{ id, required, readonly, value, onChange, onInput, pattern, disabled: isDisabled }}
+        >
+          {childrenEnd}
+        </TextInputBase>
+      </TextInputWrapper>
+    );
+  },
+);
 
 BaseInputText.displayName = 'BaseInputText';
