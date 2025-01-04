@@ -1,3 +1,5 @@
+import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+
 export enum VotingValue {
   Positive = 'Positive',
   Negative = 'Negative',
@@ -12,8 +14,7 @@ interface VotingBase {
   title: string;
   playersVotedPositiveIds: Array<string>;
   playersVotedNegativeIds: Array<string>;
-  startedAt: number;
-  endAt: number;
+  absoluteTimerLimits: AbsoluteTimerLimits;
 }
 
 export interface VotingActive extends VotingBase {

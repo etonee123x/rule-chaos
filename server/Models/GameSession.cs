@@ -9,9 +9,10 @@ namespace RuleChaos.Models
 {
   public class GameSession
   {
-    public GameSession(bool isPrivate)
+    public GameSession(bool isPrivate, TimeSpan? turnDuration)
     {
       this.IsPrivate = isPrivate;
+      this.TurnDuration = turnDuration;
 
       Task.Run(async () =>
       {
@@ -21,10 +22,12 @@ namespace RuleChaos.Models
 
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
+    public TimeSpan? TurnDuration { get; init; }
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
     internal Player? ActivePlayer { get; private set; }
+    internal AbsoluteTimerLimits? ActivePlayerAbsoluteTimerLimits { get; private set; }
 
     private static readonly byte PlayersNumber = 4;
     private static readonly byte ItemsPerPlayer = 8;
@@ -97,13 +100,23 @@ namespace RuleChaos.Models
 
     public void MakeFirstOrNextPlayerActive()
     {
+      void MakePlayerActiveAndSendMessage(Player player)
+      {
+        this.ActivePlayer = player;
+
+        if (this.TurnDuration is not null)
+        {
+          this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
+        }
+
+        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer, this.ActivePlayerAbsoluteTimerLimits));
+      }
+
       try
       {
         if (this.ActivePlayer is null)
         {
-          this.ActivePlayer = this.PlayersInRound[0];
-          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
-
+          MakePlayerActiveAndSendMessage(this.PlayersInRound[0]);
           return;
         }
 
@@ -114,9 +127,7 @@ namespace RuleChaos.Models
           throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
         }
 
-        this.ActivePlayer = this.PlayersInRound[(index + 1) % this.PlayersInRound.Count];
-
-        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer));
+        MakePlayerActiveAndSendMessage(this.PlayersInRound[(index + 1) % this.PlayersInRound.Count]);
       }
       catch (Exception exception)
       {
@@ -291,5 +302,8 @@ namespace RuleChaos.Models
 
     [JsonPropertyName("activeVoting")]
     public VotingDTO? ActiveVoting { get; } = gameSession.ActiveVoting?.ToDTO();
+
+    [JsonPropertyName("activePlayerAbsoluteTimerLimits")]
+    public AbsoluteTimerLimitsDTO? ActivePlayerAbsoluteTimerLimits { get; } = gameSession.ActivePlayerAbsoluteTimerLimits?.ToDTO();
   }
 }

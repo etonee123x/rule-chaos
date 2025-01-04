@@ -13,7 +13,14 @@ namespace RuleChaos.Models.Messages
 
     public override void Handle(GameSession gameSession, Player player)
     {
-      var _ = new VotingStartRound(player, gameSession);
+      try
+      {
+        var _ = new VotingStartRound(player, gameSession);
+      }
+      catch (Exception exception)
+      {
+        player.SendMessage(new MessageNotification(exception.Message));
+      }
     }
   }
 }

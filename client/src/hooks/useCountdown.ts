@@ -12,7 +12,7 @@ interface StartOptions {
 export const useCountdown = () => {
   const [timeEnd, setTimeEnd] = useState<number | null>(null);
   const [timeStart, setTimeStart] = useState<number | null>(null);
-  const [timeNow, setTimeNow] = useState<number>(Date.now);
+  const [timeNow, setTimeNow] = useState(Date.now());
 
   const [callback, setCallback] = useState<FunctionCallback | null>(null);
 
@@ -26,13 +26,10 @@ export const useCountdown = () => {
     [timeStart, timeEnd, timeNow],
   );
 
-  const startBase = useCallback(
-    (options: StartOptions = {}) => {
-      setTimeStart(options.timeStart ?? timeNow);
-      setCallback(options.callback ?? null);
-    },
-    [timeNow],
-  );
+  const startBase = useCallback((options: StartOptions) => {
+    setTimeStart(options.timeStart ?? Date.now());
+    setCallback(options.callback ?? null);
+  }, []);
 
   const startTo = useCallback(
     (time: number, options: StartOptions = {}) => {
@@ -45,9 +42,9 @@ export const useCountdown = () => {
   const startBy = useCallback(
     (time: number, options: StartOptions = {}) => {
       startBase(options);
-      setTimeEnd(timeNow + time);
+      setTimeEnd(Date.now() + time);
     },
-    [timeNow, startBase],
+    [startBase],
   );
 
   const stop = useCallback(() => {
@@ -56,7 +53,7 @@ export const useCountdown = () => {
   }, []);
 
   useInterval(() => {
-    setTimeNow(Date.now);
+    setTimeNow(Date.now());
 
     if (isNil(timeEnd) || timeNow < timeEnd) {
       return;
@@ -72,6 +69,7 @@ export const useCountdown = () => {
     stop,
 
     timeEnd,
+    timeStart,
     timeRemain,
 
     partPassed,

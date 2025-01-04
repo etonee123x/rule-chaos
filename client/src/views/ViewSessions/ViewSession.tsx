@@ -26,6 +26,7 @@ import { SessionProvider } from '@/contexts/sessionContext';
 import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
+import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -34,6 +35,9 @@ export const ViewSession: FC = () => {
 
   const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
 
+  const [activePlayerAbsoluteTimerLimits, setActivePlayerAbsoluteTimerLimits] = useState<AbsoluteTimerLimits | null>(
+    null,
+  );
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
@@ -55,8 +59,19 @@ export const ViewSession: FC = () => {
       activePlayer,
       isRoundActive,
       activeVoting,
+      activePlayerAbsoluteTimerLimits,
     }),
-    [player, players, itemsInHand, history, activePlayer, itemsOnField, isRoundActive, activeVoting],
+    [
+      player,
+      players,
+      itemsInHand,
+      history,
+      activePlayer,
+      itemsOnField,
+      isRoundActive,
+      activeVoting,
+      activePlayerAbsoluteTimerLimits,
+    ],
   );
 
   useEffect(() => {
@@ -90,6 +105,7 @@ export const ViewSession: FC = () => {
         setItemsOnField(message.sessionState.itemsOnField);
         setIsRoundActive(message.sessionState.isRoundActive);
         setActiveVoting(message.sessionState.activeVoting);
+        setActivePlayerAbsoluteTimerLimits(message.sessionState.activePlayerAbsoluteTimerLimits);
 
         return;
       }
@@ -127,6 +143,7 @@ export const ViewSession: FC = () => {
 
       if (doesMessageHasType(message, MessageType.NewActivePlayer)) {
         setActivePlayer(message.player);
+        setActivePlayerAbsoluteTimerLimits(message.activePlayerAbsoluteTimerLimits);
 
         return;
       }

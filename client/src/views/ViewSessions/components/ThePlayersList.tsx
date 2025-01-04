@@ -1,12 +1,16 @@
+import { BaseProgressBar } from '@/components/ui/BaseProgressBar';
 import { useSession } from '@/contexts/sessionContext';
 import { arePlayersEqual, type Player } from '@/helpers/player';
+import { useCountdown } from '@/hooks/useCountdown';
+import { isNil } from '@/utils/isNil';
+import { isNotNil } from '@/utils/isNotNil';
 import classNames from 'classnames';
-import { useMemo, type FC, type HTMLAttributes } from 'react';
+import { useEffect, useMemo, type FC, type HTMLAttributes } from 'react';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const ThePlayersList: FC<Props> = ({ className }) => {
-  const { players, player, activePlayer } = useSession();
+  const { players, player, activePlayer, activePlayerAbsoluteTimerLimits } = useSession();
 
   const playersTypeToPlayers = useMemo(
     () =>
@@ -25,6 +29,18 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
     [players],
   );
 
+  const isActivePlayer = (player: Player) => Boolean(activePlayer && arePlayersEqual(player, activePlayer));
+
+  const { partPassed, startTo, stop } = useCountdown();
+
+  useEffect(
+    () =>
+      isNil(activePlayerAbsoluteTimerLimits)
+        ? stop()
+        : startTo(activePlayerAbsoluteTimerLimits.endAt, { timeStart: activePlayerAbsoluteTimerLimits.startAt }),
+    [activePlayerAbsoluteTimerLimits, stop, startTo],
+  );
+
   const Players: FC<{ players: Array<Player>; sectionText: string }> = ({ sectionText, players }) => (
     <div className="bg-gray-100 p-2 rounded mb-4 last:mb-0">
       <div className="text-gray-500">
@@ -37,11 +53,14 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
             key={_player.id}
             className={classNames([
               'text-lg',
-              activePlayer && arePlayersEqual(_player, activePlayer) && 'list-[disclosure-closed]',
+              isActivePlayer(_player) && 'list-[disclosure-closed]',
               player && arePlayersEqual(player, _player) && 'font-semibold text-primary-500 marker:text-body-initial',
             ])}
           >
             {_player.name} {player && arePlayersEqual(player, _player) && '(you)'}
+            {isActivePlayer(_player) && isNotNil(partPassed) && (
+              <BaseProgressBar className="h-1" value={partPassed} isProgressInverted />
+            )}
           </li>
         ))}
       </ul>

@@ -72,11 +72,11 @@ export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) 
       return stop();
     }
 
-    if (activeVoting.endAt === timeEnd) {
+    if (activeVoting.absoluteTimerLimits.endAt === timeEnd) {
       return;
     }
 
-    startTo(activeVoting.endAt, { timeStart: activeVoting.startedAt });
+    startTo(activeVoting.absoluteTimerLimits.endAt, { timeStart: activeVoting.absoluteTimerLimits.startAt });
   }, [activeVoting, timeEnd, stop, startTo]);
 
   return (

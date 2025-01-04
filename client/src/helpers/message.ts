@@ -1,6 +1,7 @@
 import type { Player } from '@/helpers/player';
 import type { WithId } from '@/types';
 import type { Voting, VotingActive, VotingEnded, VotingValue } from '@/helpers/voting';
+import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
 
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
@@ -59,6 +60,7 @@ export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJo
 
 export interface MessageNewActivePlayer extends Message<MessageType.NewActivePlayer> {
   player: Player;
+  activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
 }
 
 export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {
@@ -132,14 +134,16 @@ export interface ItemWithPosition extends Item {
 }
 
 export interface SessionState {
-  players: Array<Player>;
+  // TODO: убрать бы плеера, т.к. это не сессия
   player: Player | null;
-  activePlayer: Player | null;
+  players: Array<Player>;
   itemsInHand: Array<Item>;
   itemsOnField: Array<ItemWithPosition>;
   history: Array<HistoryRecord>;
   isRoundActive: boolean;
   activeVoting: Voting | null;
+  activePlayer: Player | null;
+  activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
 }
 
 export const doesMessageHasType = <Type extends MessageType>(

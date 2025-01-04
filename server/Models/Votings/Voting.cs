@@ -19,9 +19,9 @@ namespace RuleChaos.Models.Votings
     public string? Result { get; private set; }
 
     public abstract string Title { get; }
-    public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(3000);
+    public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
 
-    public long StartedAt { get; init; }
+    public long StartAt { get; init; }
     public long EndAt { get; init; }
 
     protected GameSession GameSession { get; }
@@ -43,29 +43,25 @@ namespace RuleChaos.Models.Votings
 
     private readonly Timer? timer;
 
+    public AbsoluteTimerLimits AbsoluteTimerLimits { get; init; }
+
     public Voting(Player player, GameSession gameSession)
     {
       this.GameSession = gameSession;
 
       if (this.GameSession.ActiveVoting is not null)
       {
-        player.SendMessage(new MessageNotification("Уже есть активное голосование"));
-        return;
+        throw new Exception("Уже есть активное голосование");
       }
 
       this.PotentialMaximumVotesNumber = (byte)this.GameSession.Players.Count;
 
       this.GameSession.ActiveVoting = this;
 
-      this.StartedAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-      this.EndAt = this.StartedAt + (long)this.Duration.TotalMilliseconds;
+      this.AbsoluteTimerLimits = new AbsoluteTimerLimits(this.Duration);
 
       this.timer = new Timer(
-        _ =>
-          {
-            this.End(this.ShouldEndAsPositive);
-            this.timer?.Dispose();
-          },
+        _ => this.End(this.ShouldEndAsPositive),
         null,
         this.Duration,
         Timeout.InfiniteTimeSpan);
@@ -114,6 +110,7 @@ namespace RuleChaos.Models.Votings
 
     public void End(bool isPositive)
     {
+      this.timer?.Dispose();
       this.Result = isPositive ? VoteValue.Positive : VoteValue.Negative;
 
       this.GameSession.ActiveVoting = null;
@@ -139,11 +136,10 @@ namespace RuleChaos.Models.Votings
     [JsonPropertyName("playersVotedNegativeIds")]
     public Guid[] PlayersVotedNegativeIds { get; } = voting.PlayersVotedNegativeIds.ToArray();
 
-    [JsonPropertyName("startedAt")]
-    public long StartedAt { get; } = voting.StartedAt;
+    [JsonPropertyName("absoluteTimerLimits")]
+    public AbsoluteTimerLimitsDTO AbsoluteTimerLimits { get; } = voting.AbsoluteTimerLimits.ToDTO();
 
-    [JsonPropertyName("endAt")]
-    public long EndAt { get; } = voting.EndAt;
+    [JsonPropertyName("result")]
     public string? Result { get; } = voting.Result;
   }
 }
