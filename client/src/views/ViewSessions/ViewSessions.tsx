@@ -1,14 +1,13 @@
 import { useCallback, useEffect, type FC } from 'react';
-
 import { BasePage } from '@/components/BasePage';
 import { FormCreateSession, type Props as PropsFormCreateSession } from './components/FormCreateSession';
 import { useAsyncData } from '@/hooks/useAsyncData';
-import { getAll } from '@/api/sessions';
+import { getAll, type Session } from '@/api/sessions';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTimeoutFn } from '@reactuses/core';
 import { BaseButton } from '@/components/ui/BaseButton';
-import { mdiChevronRight, mdiRefresh } from '@mdi/js';
+import { mdiChevronRight, mdiRefresh, mdiAccountMultiple, mdiTimerOutline } from '@mdi/js';
 import { BaseIcon } from '@/components/ui/BaseIcon';
 
 export const ViewSessions: FC = () => {
@@ -36,6 +35,23 @@ export const ViewSessions: FC = () => {
     getAllSessions().finally(start);
   }, [cancel, getAllSessions, start]);
 
+  const sessionToMeta = useCallback(
+    (session: Session) => [
+      { id: 0, path: mdiAccountMultiple, value: session.players.length, title: 'Кол-во игроков' },
+      ...(session.turnDuration
+        ? [
+            {
+              id: 1,
+              path: mdiTimerOutline,
+              value: session.turnDuration,
+              title: 'Продолжительность хода',
+            },
+          ]
+        : []),
+    ],
+    [],
+  );
+
   return (
     <BasePage className="flex flex-col">
       <FormCreateSession className="mb-4" onPost={onPost} />
@@ -49,10 +65,17 @@ export const ViewSessions: FC = () => {
         ) : (
           <ol>
             {sessions.map((session) => (
-              <li className="mb-2 last:mb-0 rounded bg-slate-100" key={session.id}>
+              <li className="mb-2 last:mb-0 rounded bg-slate-100 text" key={session.id}>
                 <Link className="flex items-center p-4" to={SESSION(session.id)}>
-                  <div>Игроков: {session.players.length}</div>
-                  <BaseIcon className="ms-auto" path={mdiChevronRight}></BaseIcon>
+                  <div className="text-gray-500 flex gap-4">
+                    {sessionToMeta(session).map((sessionMeta) => (
+                      <div className="flex flex-col gap-1 items-center" key={sessionMeta.id} title={sessionMeta.title}>
+                        <BaseIcon path={sessionMeta.path} />
+                        {sessionMeta.value}
+                      </div>
+                    ))}
+                  </div>
+                  <BaseIcon className="ms-auto text-2xl" path={mdiChevronRight} />
                 </Link>
               </li>
             ))}

@@ -16,14 +16,14 @@ app.MapGet("/sessions", (context) => context.Response.WriteAsJsonAsync(gameServe
 
 app.MapPost("/sessions", async (context) =>
 {
-  var isPrivate = bool.TryParse(context.Request.Form["isPrivate"], out bool result) && result;
+  var isPrivate = bool.TryParse(context.Request.Form["isPrivate"], out bool isPrivateResult) && isPrivateResult;
 
-  TimeSpan? turnDuration = TimeSpan.FromMilliseconds(60_000);
-
-  if (long.TryParse(context.Request.Form["turnDuration"], out long resultTurnDuration))
-  {
-    turnDuration = TimeSpan.FromMilliseconds(resultTurnDuration);
-  }
+  TimeSpan? turnDuration =
+    bool.TryParse(context.Request.Form["hasTurnTimeLimit"], out bool hasTurnTimeLimitResult)
+    && hasTurnTimeLimitResult
+    && uint.TryParse(context.Request.Form["turnTimeLimit"], out uint turnTimeLimitResult)
+      ? TimeSpan.FromSeconds(turnTimeLimitResult)
+      : null;
 
   var gameSession = new GameSession(isPrivate, turnDuration);
   gameServer.AddSession(gameSession);

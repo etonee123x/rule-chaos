@@ -1,16 +1,20 @@
-import { forwardRef, useImperativeHandle, useRef, type InputHTMLAttributes, type PropsWithChildren } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  type InputHTMLAttributes,
+  type PropsWithChildren,
+} from 'react';
 
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
 
 export interface Props
-  extends Pick<
-      InputHTMLAttributes<HTMLInputElement>,
-      'value' | 'placeholder' | 'id' | 'disabled' | 'required' | 'pattern' | 'onFocus' | 'onBlur' | 'onInput'
-    >,
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>,
     Partial<{
-      readonly: InputHTMLAttributes<HTMLInputElement>['readOnly'];
       onChange: (value: string) => void;
+      value: InputHTMLAttributes<HTMLInputElement>['value'] | null;
     }>,
     PropsWithChildren {}
 
@@ -22,9 +26,29 @@ export interface TextInputBase {
 
 export const TextInputBase = forwardRef<TextInputBase, Props>(
   (
-    { id, value, placeholder, required, readonly, disabled, onFocus, onBlur, onInput, pattern, children, onChange },
+    {
+      id,
+      value,
+      placeholder,
+      required,
+      readOnly,
+      disabled,
+      onFocus,
+      onBlur,
+      onInput,
+      pattern,
+      children,
+      onChange,
+      name,
+      min,
+      max,
+      step,
+      type: _type,
+    },
     ref,
   ) => {
+    const type = useMemo(() => _type ?? 'text', [_type]);
+
     const refInput = useRef<HTMLInputElement>(null);
 
     useImperativeHandle(ref, () => ({
@@ -54,10 +78,10 @@ export const TextInputBase = forwardRef<TextInputBase, Props>(
         <input
           {...{
             size: 1,
-            type: 'text',
+            type,
             ref: refInput,
             id,
-            value,
+            value: value ?? undefined,
             placeholder,
             required,
             disabled,
@@ -65,7 +89,11 @@ export const TextInputBase = forwardRef<TextInputBase, Props>(
             onBlur,
             onInput,
             pattern,
-            readOnly: readonly,
+            readOnly,
+            name,
+            min,
+            max,
+            step,
             onChange: (e) => onChange?.(e.target.value),
           }}
         />

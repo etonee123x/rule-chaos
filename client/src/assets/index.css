@@ -35,6 +35,18 @@
     &[disabled] {
       @apply pointer-events-none bg-primary-200;
     }
+
+    &.button_theme_secondary {
+      @apply bg-gray-200 text-body-initial;
+
+      &:hover {
+        @apply bg-gray-300;
+      }
+
+      &[disabled] {
+        @apply bg-gray-100;
+      }
+    }
   }
 
   .icon {

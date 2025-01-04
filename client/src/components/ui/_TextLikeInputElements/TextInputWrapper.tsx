@@ -10,18 +10,18 @@ export interface Props
       validationMessage: HTMLInputElement['validationMessage'];
       message: string;
       label: string;
-      componentBottom: ReactNode;
+      childrenBottom: ReactNode;
     }> {}
 
 export const TextInputWrapper: FC<Props> = ({
-  componentBottom: _componentBottom,
+  childrenBottom: _childrenBottom,
   message,
   validationMessage,
   label,
   labelFor,
   children,
 }) => {
-  const componentBottom = _componentBottom ?? message;
+  const childrenBottom = _childrenBottom ?? message;
 
   const hasError = Boolean(validationMessage?.length);
 
@@ -46,7 +46,7 @@ export const TextInputWrapper: FC<Props> = ({
           </div>
         )}
       </div>
-      {componentBottom && <div className="h-5 mt-0.5 text-body-initial">{componentBottom}</div>}
+      {childrenBottom && <div className="h-5 mt-0.5 text-body-initial">{childrenBottom}</div>}
     </div>
   );
 };

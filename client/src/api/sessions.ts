@@ -4,6 +4,7 @@ import type { Player } from '@/helpers/player';
 export interface Session {
   id: string;
   players: Array<Player>;
+  turnDuration: null | string;
 }
 
 export const post = (formData: FormData) => client<Session>('/sessions', { method: 'POST', body: formData });

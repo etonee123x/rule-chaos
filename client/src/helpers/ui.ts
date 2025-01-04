@@ -2,6 +2,9 @@ export const UI = Object.freeze({
   CONTAINER: 'container',
   BUTTON: Object.freeze({
     _name: 'button',
+    THEME: Object.freeze({
+      SECONDARY: 'button_theme_secondary',
+    }),
   }),
   ICON: Object.freeze({
     _name: 'icon',

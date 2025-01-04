@@ -13,22 +13,26 @@ export interface Props
       childrenEnd: ReactNode;
     }> {}
 
-export interface BaseInputText extends TextInputBase {}
+export interface BaseInput extends TextInputBase {}
 
-export const BaseInputText = forwardRef<BaseInputText, Props>(
+export const BaseInput = forwardRef<BaseInput, Props>(
   (
     {
       id: _id,
+      type,
+      min,
+      max,
+      step,
       disabled,
       isLoading,
       label,
       message,
-      componentBottom,
-      // TODO переименовать
+      childrenBottom,
       childrenEnd,
       required,
-      readonly,
+      readOnly,
       value,
+      name,
       onChange,
       onInput,
       pattern,
@@ -53,10 +57,24 @@ export const BaseInputText = forwardRef<BaseInputText, Props>(
     }));
 
     return (
-      <TextInputWrapper {...{ validationMessage, label, message, componentBottom }} labelFor={id}>
+      <TextInputWrapper {...{ validationMessage, label, message, childrenBottom, labelFor: id }}>
         <TextInputBase
-          ref={refTextInputBase}
-          {...{ id, required, readonly, value, onChange, onInput, pattern, disabled: isDisabled }}
+          {...{
+            ref: refTextInputBase,
+            id,
+            required,
+            readOnly,
+            value,
+            onChange,
+            onInput,
+            pattern,
+            disabled: isDisabled,
+            name,
+            type,
+            min,
+            max,
+            step,
+          }}
         >
           {childrenEnd}
         </TextInputBase>
@@ -65,4 +83,4 @@ export const BaseInputText = forwardRef<BaseInputText, Props>(
   },
 );
 
-BaseInputText.displayName = 'BaseInputText';
+BaseInput.displayName = 'BaseInput';

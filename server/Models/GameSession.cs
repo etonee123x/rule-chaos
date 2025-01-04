@@ -278,6 +278,9 @@ namespace RuleChaos.Models
 
     [JsonPropertyName("players")]
     public PlayerDTO[] Players { get; } = gameSession.Players.Select((player) => player.ToDTO()).ToArray();
+
+    [JsonPropertyName("turnDuration")]
+    public TimeSpan? TurnDuration { get; } = gameSession.TurnDuration;
   }
 
   public class GameSessionDTO(GameSession gameSession)
