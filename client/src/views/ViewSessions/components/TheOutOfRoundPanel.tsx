@@ -3,7 +3,7 @@ import { BaseIcon } from '@/components/ui/BaseIcon';
 import { useSession } from '@/contexts/sessionContext';
 import type { FunctionCallback } from '@/types';
 import { mdiLinkVariant } from '@mdi/js';
-import { useClipboard } from '@reactuses/core';
+import { useClipboard } from '@/hooks/useClipboard';
 import { type FC, type MouseEventHandler } from 'react';
 
 interface Props {
@@ -17,8 +17,9 @@ export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound }) => {
 
   const onClickA: MouseEventHandler<HTMLAnchorElement> = (event) => {
     event.preventDefault();
+    const href = window.location.href;
 
-    copy(window.location.href);
+    copy(href);
   };
 
   return (

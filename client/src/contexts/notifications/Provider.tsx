@@ -25,11 +25,20 @@ export const NotificationsProvider: FC<Props> = ({ children }) => {
     },
     {
       success: (...[parameter]: Parameters<NotifyWithKnownType>) =>
-        notify({ ...parameter, type: NotificationType.Success }),
+        notify({
+          ...parameter,
+          type: NotificationType.Success,
+        }),
       info: (...[parameter]: Parameters<NotifyWithKnownType>) =>
-        notify({ ...parameter, type: NotificationType.Success }),
+        notify({
+          ...parameter,
+          type: NotificationType.Info,
+        }),
       error: (...[parameter]: Parameters<NotifyWithKnownType>) =>
-        notify({ ...parameter, type: NotificationType.Success }),
+        notify({
+          ...parameter,
+          type: NotificationType.Error,
+        }),
     },
   );
 

@@ -19,6 +19,7 @@ export default {
       },
       spacing: {
         '5.5': '22px',
+        120: '480px',
       },
       keyframes: {
         'shake-protesting': {
