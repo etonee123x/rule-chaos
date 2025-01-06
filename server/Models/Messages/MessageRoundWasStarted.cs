@@ -9,7 +9,8 @@ namespace RuleChaos.Models.Messages
     public PlayerDTO[] Players { get; } = players.Select((playerInRound) => playerInRound.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.RoundWasStarted;
     }

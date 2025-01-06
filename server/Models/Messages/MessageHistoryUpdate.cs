@@ -9,7 +9,8 @@ namespace RuleChaos.Models.Messages
     public HistoryRecordDTO[] History { get; } = history.Select((historyRecord) => historyRecord.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.HistoryUpdate;
     }

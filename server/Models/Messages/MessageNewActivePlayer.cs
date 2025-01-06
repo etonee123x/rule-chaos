@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using RuleChaos.Utilities;
 
 namespace RuleChaos.Models.Messages
 {
@@ -12,7 +13,8 @@ namespace RuleChaos.Models.Messages
     public AbsoluteTimerLimitsDTO? ActivePlayerAbsoluteTimerLimits { get; } = activePlayerAbsoluteTimerLimits?.ToDTO();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.NewActivePlayer;
     }

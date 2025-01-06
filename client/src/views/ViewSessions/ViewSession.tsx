@@ -27,6 +27,8 @@ import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
 import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+import { useNotifications } from '@/contexts/notifications';
+import { pick } from '@/utils/pick';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -48,6 +50,8 @@ export const ViewSession: FC = () => {
   const [activeVoting, setActiveVoting] = useState<IVoting | null>(null);
 
   const refHistory = useRef<HTMLDivElement>(null);
+
+  const { notify } = useNotifications();
 
   const session: SessionState = useMemo(
     () => ({
@@ -169,6 +173,15 @@ export const ViewSession: FC = () => {
         return;
       }
 
+      if (doesMessageHasType(message, MessageType.Notification)) {
+        notify({
+          type: message.notificationType,
+          ...pick(message, ['title', 'description']),
+        });
+
+        return;
+      }
+
       console.warn(message);
     }),
   );
@@ -198,7 +211,7 @@ export const ViewSession: FC = () => {
             <ThePlayersList className="w-1/6 overflow-y-auto" />
             <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
           </div>
-          <TheHand className="mt-auto h-1/6" />
+          {isRoundActive && <TheHand className="mt-auto h-1/6" />}
           <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
         </SessionProvider>
       </DndProvider>

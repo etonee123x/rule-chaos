@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import '@/assets/index.css';
 import 'modern-normalize/modern-normalize.css';
 import { WebSocketProvider } from '@/contexts/webSocket';
+import { NotificationsProvider } from '@/contexts/notifications';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router';
 
@@ -13,7 +14,9 @@ if (!maybeRoot) {
 }
 
 createRoot(maybeRoot).render(
-  <WebSocketProvider>
-    <RouterProvider router={router} />
-  </WebSocketProvider>,
+  <NotificationsProvider>
+    <WebSocketProvider>
+      <RouterProvider router={router} />
+    </WebSocketProvider>
+  </NotificationsProvider>,
 );

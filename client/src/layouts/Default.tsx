@@ -1,3 +1,4 @@
+import { TheNotifications } from '@/components/TheNotifications';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import type { FC } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
@@ -54,6 +55,7 @@ export const Default: FC<Props> = ({ hasNoFooter }) => {
       <main className="mx-auto flex-1 container flex flex-col">
         <Outlet />
       </main>
+      <TheNotifications />
       {!hasNoFooter && (
         <footer className="mt-auto">
           <hr />

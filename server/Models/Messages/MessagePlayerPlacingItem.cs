@@ -9,7 +9,8 @@ namespace RuleChaos.Models.Messages
     public ItemWithPosition ItemWithPosition { get; } = itemWithPosition;
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.PlayerPlacingItem;
     }

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace RuleChaos.Models
+namespace RuleChaos.Utilities
 {
   public class AbsoluteTimerLimits
   {

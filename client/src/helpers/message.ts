@@ -2,6 +2,7 @@ import type { Player } from '@/helpers/player';
 import type { WithId } from '@/types';
 import type { Voting, VotingActive, VotingEnded, VotingValue } from '@/helpers/voting';
 import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+import type { NotificationType } from '@/contexts/notifications/_context';
 
 export interface Message<TType extends MessageType = MessageType> {
   type: TType;
@@ -28,6 +29,8 @@ export enum MessageType {
   VotingInitiation = 'VotingInitiation',
   VotingUpdate = 'VotingUpdate',
   VotingEnd = 'VotingEnd',
+
+  Notification = 'Notification',
 }
 
 export interface MessageTypeToMessage {
@@ -46,6 +49,8 @@ export interface MessageTypeToMessage {
   [MessageType.VotingInitiation]: MessageVotingInitiation;
   [MessageType.VotingUpdate]: MessageVotingUpdate;
   [MessageType.VotingEnd]: MessageVotingEnd;
+
+  [MessageType.Notification]: MessageNotification;
 }
 
 export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession> {
@@ -112,6 +117,12 @@ export interface MessageVotingUpdate extends Message<MessageType.VotingUpdate> {
 
 export interface MessageVotingEnd extends Message<MessageType.VotingEnd> {
   activeVoting: VotingEnded;
+}
+
+export interface MessageNotification extends Message<MessageType.Notification> {
+  title: string;
+  notificationType: NotificationType;
+  description?: string;
 }
 
 export interface HistoryRecord extends WithId {

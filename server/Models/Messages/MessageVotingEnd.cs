@@ -10,7 +10,8 @@ namespace RuleChaos.Models.Messages
     public VotingDTO ActiveVoting { get; } = voting.ToDTO();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.VotingEnd;
     }
@@ -18,7 +19,7 @@ namespace RuleChaos.Models.Messages
     [JsonIgnore]
     public override HistoryRecord HistoryRecord
     {
-      get => new HistoryRecord($"Закончено голосование {HistoryRecord.Accent(voting.Title)}. Результат: {HistoryRecord.Accent(this.ActiveVoting.Result == VoteValue.Positive ? "Успешно" : "Неуспешно")}");
+      get => new HistoryRecord($"Закончено голосование {HistoryRecord.Accent(voting.Title)}. Результат: {HistoryRecord.Accent(voting.Result == VoteValue.Positive ? "Успешно" : "Неуспешно")}");
     }
   }
 }

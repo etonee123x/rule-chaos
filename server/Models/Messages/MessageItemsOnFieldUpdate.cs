@@ -9,7 +9,8 @@ namespace RuleChaos.Models.Messages
     public ItemWithPositionDTO[] ItemsOnField { get; } = itemsOnField.Select((itemOnField) => itemOnField.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.ItemsOnFieldUpdate;
     }

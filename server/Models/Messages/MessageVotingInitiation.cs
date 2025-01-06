@@ -10,7 +10,8 @@ namespace RuleChaos.Models.Messages
     public VotingDTO ActiveVoting { get; } = voting.ToDTO();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.VotingInitiation;
     }

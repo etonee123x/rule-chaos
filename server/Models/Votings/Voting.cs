@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using System.Threading;
 using RuleChaos.Models.Messages;
+using RuleChaos.Utilities;
 
 namespace RuleChaos.Models.Votings
 {
@@ -16,7 +17,7 @@ namespace RuleChaos.Models.Votings
       get => [.. this.PlayersVotedPositiveIds, .. this.PlayersVotedNegativeIds];
     }
 
-    public string? Result { get; private set; }
+    public VoteValue? Result { get; private set; }
 
     public abstract string Title { get; }
     public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
@@ -70,7 +71,7 @@ namespace RuleChaos.Models.Votings
       this.Vote(player, VoteValue.Positive);
     }
 
-    public void Vote(Player player, string voteValue)
+    public void Vote(Player player, VoteValue voteValue)
     {
       if (this.PlayerHasVoted(player))
       {
@@ -140,6 +141,7 @@ namespace RuleChaos.Models.Votings
     public AbsoluteTimerLimitsDTO AbsoluteTimerLimits { get; } = voting.AbsoluteTimerLimits.ToDTO();
 
     [JsonPropertyName("result")]
-    public string? Result { get; } = voting.Result;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public VoteValue? Result { get; } = voting.Result;
   }
 }

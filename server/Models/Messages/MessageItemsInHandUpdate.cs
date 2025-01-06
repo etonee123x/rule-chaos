@@ -9,7 +9,8 @@ namespace RuleChaos.Models.Messages
     public ItemDTO[] ItemsInHand { get; } = itemsInHand.Select((itemInHand) => itemInHand.ToDTO()).ToArray();
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.ItemsInHandUpdate;
     }

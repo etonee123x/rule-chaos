@@ -1,15 +1,18 @@
 using System.Text.Json.Serialization;
+using RuleChaos.Models.Votings;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayerVotes(string value)
+  public class MessagePlayerVotes(VoteValue value)
     : MessageFromClient
   {
     [JsonPropertyName("value")]
-    public string Value { get; } = value;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public VoteValue Value { get; } = value;
 
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.PlayerVotes;
     }

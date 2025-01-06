@@ -6,7 +6,7 @@ namespace RuleChaos.Models.Messages
   public abstract class Message
   {
     [JsonPropertyName("type")]
-    public abstract string Type { get; }
+    public abstract MessageType Type { get; }
 
     public override string ToString() => JsonSerializer.Serialize(this, this.GetType());
   }
@@ -15,7 +15,7 @@ namespace RuleChaos.Models.Messages
   {
     public abstract void Handle(GameSession gameSession, Player player);
 
-    public static readonly Dictionary<string, Type> MessageTypeToMessage = new Dictionary<string, Type>()
+    public static readonly Dictionary<MessageType, Type> MessageTypeToMessage = new Dictionary<MessageType, Type>()
     {
       { MessageType.PlayerPlacingItem, typeof(MessagePlayerPlacingItem) },
       { MessageType.PlayerWantsToStartRound, typeof(MessagePlayerWantsToStartRound) },

@@ -1,8 +1,8 @@
 namespace RuleChaos.Models.Votings
 {
-  public static class VoteValue
+  public enum VoteValue
   {
-    public const string Positive = "Positive";
-    public const string Negative = "Negative";
+    Positive,
+    Negative,
   }
 }

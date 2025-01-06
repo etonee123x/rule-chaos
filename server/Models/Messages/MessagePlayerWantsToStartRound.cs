@@ -6,7 +6,8 @@ namespace RuleChaos.Models.Messages
   public class MessagePlayerWantsToStartRound : MessageFromClient
   {
     [JsonPropertyName("type")]
-    public override string Type
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public override MessageType Type
     {
       get => MessageType.PlayerWantsToStartRound;
     }
@@ -15,11 +16,11 @@ namespace RuleChaos.Models.Messages
     {
       try
       {
-        var _ = new VotingStartRound(player, gameSession);
+        var voting = new VotingStartRound(player, gameSession);
       }
       catch (Exception exception)
       {
-        player.SendMessage(new MessageNotification(exception.Message));
+        player.SendMessage(new MessageNotification(exception.Message, NotificationType.Error));
       }
     }
   }

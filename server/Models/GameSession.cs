@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using RuleChaos.Models.Messages;
 using RuleChaos.Models.Votings;
+using RuleChaos.Utilities;
 
 namespace RuleChaos.Models
 {
@@ -217,14 +218,14 @@ namespace RuleChaos.Models
 
     private void HandlePlayerMessage(Player player, string serializedMessage)
     {
-      var type = JsonDocument.Parse(serializedMessage).RootElement.GetProperty("type").GetString();
-
-      if (type is null || !MessageFromClient.MessageTypeToMessage.TryGetValue(type, out var messageType))
+      if (!(Enum.TryParse(JsonDocument.Parse(serializedMessage).RootElement.GetProperty("type").GetString(), out MessageType messageType)
+        && Enum.IsDefined(messageType)
+        && MessageFromClient.MessageTypeToMessage.TryGetValue(messageType, out var message)))
       {
         return;
       }
 
-      ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, messageType))?.Handle(this, player);
+      ((MessageFromClient?)JsonSerializer.Deserialize(serializedMessage, message))?.Handle(this, player);
     }
 
     private void AddPlayer(Player player)
