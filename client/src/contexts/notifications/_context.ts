@@ -24,6 +24,7 @@ export interface NotificationsContext {
     error: NotifyWithKnownType;
     info: NotifyWithKnownType;
   } & Notify;
+  close: (notification: Notification) => void;
 }
 
 export const NotificationsContext = createContext<NotificationsContext | null>(null);
