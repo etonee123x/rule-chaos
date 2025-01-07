@@ -1,6 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json.Serialization;
+using RuleChaos.Models.DTOs;
 using RuleChaos.Models.Messages;
 using RuleChaos.Utilities;
 
@@ -45,17 +45,5 @@ namespace RuleChaos.Models
     public PlayerDTO ToDTO() => new PlayerDTO(this);
 
     public override string ToString() => this.Name;
-  }
-
-  public class PlayerDTO(Player player)
-  {
-    [JsonPropertyName("id")]
-    public Guid Id { get; } = player.Id;
-
-    [JsonPropertyName("name")]
-    public string Name { get; } = player.Name;
-
-    [JsonPropertyName("isInRound")]
-    public bool IsInRound { get; } = player.IsInRound;
   }
 }

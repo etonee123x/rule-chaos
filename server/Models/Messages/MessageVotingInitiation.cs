@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using RuleChaos.Models.Votings;
+using RuleChaos.Models.Votings.DTOs;
 
 namespace RuleChaos.Models.Messages
 {

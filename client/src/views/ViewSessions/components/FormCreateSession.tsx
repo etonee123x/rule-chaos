@@ -21,7 +21,7 @@ export const FormCreateSession: FC<Props> = ({ onPost, ...restProps }) => {
 
   const [isPrivate, setIsPrivate] = useState(false);
   const [hasTurnTimeLimit, setHasTurnTimeLimit] = useState(false);
-  const [turnTimeLimit, setTurnTimeLimit] = useState<number | null>(null);
+  const [turnTimeLimit, setTurnTimeLimit] = useState<number>(30);
 
   const { execute: postSession } = useAsyncData(post);
 

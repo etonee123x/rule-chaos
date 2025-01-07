@@ -1,3 +1,5 @@
+using RuleChaos.Models.DTOs;
+
 namespace RuleChaos.Models
 {
   public class GameServer

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RuleChaos.Models.DTOs;
 
 namespace RuleChaos.Models
 {
@@ -42,18 +43,6 @@ namespace RuleChaos.Models
     public ItemDTO ToDTO() => new ItemDTO(this);
   }
 
-  public class ItemDTO(Item item)
-  {
-    [JsonPropertyName("id")]
-    public Guid Id { get; init; } = item.Id;
-
-    [JsonPropertyName("text")]
-    public string Text { get; init; } = item.Text;
-
-    [JsonPropertyName("value")]
-    public string Value { get; init; } = item.Value;
-  }
-
   public class Position(byte row, byte col)
   {
     [JsonPropertyName("row")]
@@ -77,15 +66,6 @@ namespace RuleChaos.Models
     public PositionDTO ToDTO() => new PositionDTO(this);
   }
 
-  public class PositionDTO(Position position)
-  {
-    [JsonPropertyName("row")]
-    public byte Row { get; init; } = position.Row;
-
-    [JsonPropertyName("col")]
-    public byte Col { get; init; } = position.Col;
-  }
-
   public class ItemWithPosition : Item
   {
     [JsonPropertyName("position")]
@@ -99,13 +79,6 @@ namespace RuleChaos.Models
     }
 
     public new ItemWithPositionDTO ToDTO() => new ItemWithPositionDTO(this);
-  }
-
-  public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
-    : ItemDTO(itemWithPosition)
-  {
-    [JsonPropertyName("position")]
-    public PositionDTO Position { get; init; } = itemWithPosition.Position.ToDTO();
   }
 
   public class ItemGenerator

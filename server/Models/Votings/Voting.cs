@@ -1,14 +1,12 @@
-using System.Text.Json.Serialization;
-using System.Threading;
 using RuleChaos.Models.Messages;
+using RuleChaos.Models.Votings.DTOs;
 using RuleChaos.Utilities;
 
 namespace RuleChaos.Models.Votings
 {
   public abstract class Voting
   {
-    public byte PotentialMaximumVotesNumber { get; private set; }
-
+    public List<Guid> PlayersAllowedToVoteIds { get; }
     public List<Guid> PlayersVotedPositiveIds { get; } = [];
     public List<Guid> PlayersVotedNegativeIds { get; } = [];
 
@@ -22,8 +20,7 @@ namespace RuleChaos.Models.Votings
     public abstract string Title { get; }
     public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
 
-    public long StartAt { get; init; }
-    public long EndAt { get; init; }
+    protected int PotentialMaximumVotesNumber { get => this.PlayersAllowedToVoteIds.Count; }
 
     protected GameSession GameSession { get; }
 
@@ -55,7 +52,7 @@ namespace RuleChaos.Models.Votings
         throw new Exception("Уже есть активное голосование");
       }
 
-      this.PotentialMaximumVotesNumber = (byte)this.GameSession.Players.Count;
+      this.PlayersAllowedToVoteIds = this.GameSession.Players.Select((player) => player.Id).ToList();
 
       this.GameSession.ActiveVoting = this;
 
@@ -73,6 +70,12 @@ namespace RuleChaos.Models.Votings
 
     public void Vote(Player player, VoteValue voteValue)
     {
+      if (!this.PlayerIsAllowedToVote(player))
+      {
+        // Если нельзя ему голосовать
+        return;
+      }
+
       if (this.PlayerHasVoted(player))
       {
         // Если уже проголосовал
@@ -105,6 +108,7 @@ namespace RuleChaos.Models.Votings
       }
     }
 
+    public bool PlayerIsAllowedToVote(Player player) => this.PlayersAllowedToVoteIds.Contains(player.Id);
     public bool PlayerHasVoted(Player player) => this.VotedPlayersIds.Contains(player.Id);
 
     public VotingDTO ToDTO() => new VotingDTO(this);
@@ -124,24 +128,5 @@ namespace RuleChaos.Models.Votings
     }
 
     protected abstract void OnPositive();
-  }
-
-  public class VotingDTO(Voting voting)
-  {
-    [JsonPropertyName("title")]
-    public string Title { get; } = voting.Title;
-
-    [JsonPropertyName("playersVotedPositiveIds")]
-    public Guid[] PlayersVotedPositiveIds { get; } = voting.PlayersVotedPositiveIds.ToArray();
-
-    [JsonPropertyName("playersVotedNegativeIds")]
-    public Guid[] PlayersVotedNegativeIds { get; } = voting.PlayersVotedNegativeIds.ToArray();
-
-    [JsonPropertyName("absoluteTimerLimits")]
-    public AbsoluteTimerLimitsDTO AbsoluteTimerLimits { get; } = voting.AbsoluteTimerLimits.ToDTO();
-
-    [JsonPropertyName("result")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public VoteValue? Result { get; } = voting.Result;
   }
 }

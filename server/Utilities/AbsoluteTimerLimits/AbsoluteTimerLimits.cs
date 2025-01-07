@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using RuleChaos.Utilities.DTOs;
 
 namespace RuleChaos.Utilities
 {
@@ -18,14 +18,5 @@ namespace RuleChaos.Utilities
     }
 
     public AbsoluteTimerLimitsDTO ToDTO() => new AbsoluteTimerLimitsDTO(this);
-  }
-
-  public class AbsoluteTimerLimitsDTO(AbsoluteTimerLimits absoluteTimer)
-  {
-    [JsonPropertyName("startAt")]
-    public long StartAt { get; } = absoluteTimer.StartAt;
-
-    [JsonPropertyName("endAt")]
-    public long EndAt { get; } = absoluteTimer.EndAt;
   }
 }
