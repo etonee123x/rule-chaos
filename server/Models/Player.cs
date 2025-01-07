@@ -2,32 +2,25 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json.Serialization;
 using RuleChaos.Models.Messages;
+using RuleChaos.Utilities;
 
 namespace RuleChaos.Models
 {
   public class Player
   {
-    public static string GenerateName()
-    {
-      string[] adjectives = [
-        "Ленивый", "Грозный", "Весёлый", "Пушистый", "Тучный",
-        "Скользкий", "Могучий", "Кислый", "Пронзительный", "Вялый",
-        "Зловещий", "Шумный", "Гладкий", "Древний", "Наглый"
-      ];
+    private static RandomElementPicker<string> elementPickerAdjective = new RandomElementPicker<string>([
+      "Ленивый", "Грозный", "Весёлый", "Пушистый", "Тучный",
+      "Скользкий", "Могучий", "Кислый", "Пронзительный", "Вялый",
+      "Зловещий", "Шумный", "Гладкий", "Древний", "Наглый"
+    ]);
 
-      string[] nouns = [
-        "Титан", "Жаб", "Ёж", "Вепрь", "Дракон",
-        "Хомяк", "Колобок", "Страж", "Пират", "Грифон",
-        "Кабан", "Рысь", "Медведь", "Утконос", "Василёк"
-      ];
+    private static RandomElementPicker<string> elementPickerNoun = new RandomElementPicker<string>([
+      "Титан", "Жаб", "Ёж", "Вепрь", "Дракон",
+      "Хомяк", "Колобок", "Страж", "Пират", "Грифон",
+      "Кабан", "Рысь", "Медведь", "Утконос", "Василёк"
+    ]);
 
-      var random = new Random();
-
-      var adjective = adjectives[random.Next(adjectives.Length)];
-      var noun = nouns[random.Next(nouns.Length)];
-
-      return string.Join(" ", adjective, noun);
-    }
+    public static string GenerateName() => string.Join(" ", Player.elementPickerAdjective.Next(), Player.elementPickerNoun.Next());
 
     public WebSocket WebSocket { get; }
     public Guid Id { get; } = Guid.NewGuid();

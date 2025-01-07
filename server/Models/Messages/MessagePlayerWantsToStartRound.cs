@@ -20,7 +20,7 @@ namespace RuleChaos.Models.Messages
       }
       catch (Exception exception)
       {
-        player.SendMessage(new MessageNotification(exception.Message, NotificationType.Error));
+        player.SendMessage(new MessageNotification(NotificationType.Error, exception.Message));
       }
     }
   }

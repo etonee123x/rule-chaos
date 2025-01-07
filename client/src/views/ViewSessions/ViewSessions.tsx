@@ -65,9 +65,9 @@ export const ViewSessions: FC = () => {
         ) : (
           <ol>
             {sessions.map((session) => (
-              <li className="mb-2 last:mb-0 rounded bg-slate-100 text" key={session.id}>
+              <li className="mb-2 last:mb-0 rounded bg-gray-100 text hover:bg-gray-200" key={session.id}>
                 <Link className="flex items-center p-4" to={SESSION(session.id)}>
-                  <div className="text-gray-500 flex gap-4">
+                  <div className="flex gap-4">
                     {sessionToMeta(session).map((sessionMeta) => (
                       <div className="flex flex-col gap-1 items-center" key={sessionMeta.id} title={sessionMeta.title}>
                         <BaseIcon path={sessionMeta.path} />

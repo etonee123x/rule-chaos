@@ -24,6 +24,7 @@ namespace RuleChaos.Models
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
     public TimeSpan? TurnDuration { get; init; }
+    private Timer? turnTimer;
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
@@ -47,23 +48,20 @@ namespace RuleChaos.Models
 
     public Voting? ActiveVoting { get; set; }
 
+    public HistoryRecord[] History { get; private set; } = [];
+
     private DateTime lastActivity = DateTime.UtcNow;
 
     private ItemGenerator? ItemGenerator { get; set; }
 
-    private HistoryRecord[] history = [];
-
-    internal HistoryRecord[] History
-    {
-      get => this.history;
-      set
-      {
-        var historyLast = value.Length >= GameSession.HistoryRecordsCount ? value[^GameSession.HistoryRecordsCount..] : value;
-
-        this.SendMessageToPlayers(new MessageHistoryUpdate(historyLast));
-        this.history = historyLast;
-      }
-    }
+    private static RandomElementPicker<string> elementPickerSkipTurnReasons = new RandomElementPicker<string>([
+      "забыл, что его ход",
+      "немного отвлёкся",
+      "задумался и потерял время",
+      "не успел сообразить, что нужно сделать",
+      "слишком долго думал",
+      "немного растерялся",
+    ]);
 
     public GameSessionListingDTO ToListingDTO() => new GameSessionListingDTO(this);
 
@@ -101,20 +99,50 @@ namespace RuleChaos.Models
 
     public void MakeFirstOrNextPlayerActive()
     {
-      void MakePlayerActiveAndSendMessage(Player player)
+      try
       {
-        this.ActivePlayer = player;
+        if (this.PlayersInRound.Count == 0)
+        {
+          throw new Exception("В раунде нет игроков");
+        }
+
+        void MakePlayerActiveAndSendMessage(Player player)
+        {
+          this.ActivePlayer = player;
+
+          if (this.TurnDuration is not null)
+          {
+            this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
+          }
+
+          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer, this.ActivePlayerAbsoluteTimerLimits));
+        }
 
         if (this.TurnDuration is not null)
         {
-          this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
+          this.turnTimer?.Dispose();
+          this.turnTimer = new Timer(
+            _ =>
+            {
+              if (this.PlayersInRound.Count == 0)
+              {
+                this.turnTimer?.Dispose();
+                return;
+              }
+
+              if (this.ActivePlayer is not null)
+              {
+                this.ActivePlayer.SendMessage(new MessageNotification(NotificationType.Info, "Твой ход перешёл следующему игроку"));
+                this.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this.ActivePlayer)} {GameSession.elementPickerSkipTurnReasons.Next()}. Ход переходит к следующему игроку."));
+              }
+
+              this.MakeFirstOrNextPlayerActive();
+            },
+            null,
+            this.TurnDuration.Value,
+            Timeout.InfiniteTimeSpan);
         }
 
-        this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer, this.ActivePlayerAbsoluteTimerLimits));
-      }
-
-      try
-      {
         if (this.ActivePlayer is null)
         {
           MakePlayerActiveAndSendMessage(this.PlayersInRound[0]);
@@ -185,7 +213,7 @@ namespace RuleChaos.Models
         return;
       }
 
-      this.History = [.. this.History, maybeHistoryRecord];
+      this.AddHistoryRecord(maybeHistoryRecord);
     }
 
     public void StartRound(List<Guid> playersIds)
@@ -214,6 +242,15 @@ namespace RuleChaos.Models
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
+    }
+
+    private void AddHistoryRecord(HistoryRecord historyRecord)
+    {
+      HistoryRecord[] history = [.. this.History, historyRecord];
+
+      this.History = history.Length >= GameSession.HistoryRecordsCount ? history[^GameSession.HistoryRecordsCount..] : history;
+
+      this.SendMessageToPlayers(new MessageHistoryUpdate(this.History));
     }
 
     private void HandlePlayerMessage(Player player, string serializedMessage)

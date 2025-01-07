@@ -3,7 +3,7 @@ using RuleChaos.Models.Votings;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageNotification(string title, NotificationType notificationType, string? description = null)
+  public class MessageNotification(NotificationType notificationType, string title, string? description = null)
     : MessageFromServer
   {
     [JsonPropertyName("title")]
