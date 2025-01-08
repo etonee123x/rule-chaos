@@ -40,7 +40,7 @@ namespace RuleChaos.Models.Votings
 
     private readonly Timer? timer;
 
-    public AbsoluteTimerLimits AbsoluteTimerLimits { get; init; }
+    public TimerLimits TimerLimits { get; init; }
 
     public Voting(Player player, GameSession gameSession)
     {
@@ -55,7 +55,7 @@ namespace RuleChaos.Models.Votings
 
       this.GameSession.ActiveVoting = this;
 
-      this.AbsoluteTimerLimits = new AbsoluteTimerLimits(this.Duration);
+      this.TimerLimits = new TimerLimits(this.Duration);
 
       this.timer = new Timer(
         _ => this.End(this.ShouldEndAsPositive),
@@ -108,7 +108,14 @@ namespace RuleChaos.Models.Votings
       }
     }
 
-    public VotingDTO ToDTO() => new VotingDTO(this);
+    public VotingDTO ToDTO() => new VotingDTO()
+    {
+      Title = this.Title,
+      PlayersVotedPositiveIds = this.PlayersVotedPositiveIds.ToArray(),
+      PlayersVotedNegativeIds = this.PlayersVotedNegativeIds.ToArray(),
+      TimerLimits = this.TimerLimits.ToDTO(),
+      Result = this.Result,
+    };
 
     public void End(bool isPositive)
     {

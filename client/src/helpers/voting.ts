@@ -1,4 +1,4 @@
-import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+import type { TimerLimits } from '@/helpers/timerLimits';
 
 export enum VotingValue {
   Positive = 'Positive',
@@ -14,7 +14,7 @@ interface VotingBase {
   title: string;
   playersVotedPositiveIds: Array<string>;
   playersVotedNegativeIds: Array<string>;
-  absoluteTimerLimits: AbsoluteTimerLimits;
+  timerLimits: TimerLimits;
 }
 
 export interface VotingActive extends VotingBase {

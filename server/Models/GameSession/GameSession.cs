@@ -24,13 +24,13 @@ namespace RuleChaos.Models
 
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
-    public TimeSpan? TurnDuration { get; }
+    private TimeSpan? TurnDuration { get; }
     private Timer? turnTimer;
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
     public Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
-    public AbsoluteTimerLimits? ActivePlayerAbsoluteTimerLimits { get; private set; }
+    public TimerLimits? TurnTimerLimits { get; private set; }
 
     private static readonly byte PlayersNumber = 4;
     private static readonly byte ItemsPerPlayer = 8;
@@ -64,9 +64,23 @@ namespace RuleChaos.Models
       "немного растерялся",
     ]);
 
-    public GameSessionListingDTO ToListingDTO() => new GameSessionListingDTO(this);
+    public GameSessionListingDTO ToListingDTO() => new GameSessionListingDTO()
+    {
+      Id = this.Id,
+      Players = this.Players.Select((player) => player.ToDTO()).ToArray(),
+      TurnDuration = this.TurnDuration,
+    };
 
-    public GameSessionDTO ToDTO() => new GameSessionDTO(this);
+    public GameSessionDTO ToDTO() => new GameSessionDTO()
+    {
+      Players = this.Players.Select((player) => player.ToDTO()).ToArray(),
+      ItemsInHand = this.ItemsInHand.Select((itemInHand) => itemInHand.ToDTO()).ToArray(),
+      ItemsOnField = this.ItemsOnField.Select((itemOnField) => itemOnField.ToDTO()).ToArray(),
+      History = this.History.Select((historyRecord) => historyRecord.ToDTO()).ToArray(),
+      IsRoundActive = this.IsRoundActive,
+      ActiveVoting = this.ActiveVoting?.ToDTO(),
+      TurnTimerLimits = this.TurnTimerLimits?.ToDTO(),
+    };
 
     public Task HandlePlayer(Player player)
     {
@@ -115,7 +129,7 @@ namespace RuleChaos.Models
             return;
           }
 
-          this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
+          this.TurnTimerLimits = new TimerLimits(this.TurnDuration.Value);
         }
 
         if (this.TurnDuration is not null)
@@ -137,7 +151,7 @@ namespace RuleChaos.Models
               }
 
               this.MakeFirstOrNextPlayerActive();
-              this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+              this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
               if (this.ActivePlayer is null)
               {
                 return;
@@ -204,7 +218,7 @@ namespace RuleChaos.Models
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
-      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
       if (this.ActivePlayer is not null)
       {
         this.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(this.ActivePlayer)}."));
@@ -246,7 +260,7 @@ namespace RuleChaos.Models
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
-      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
       if (this.ActivePlayer is null)
       {
         return;
@@ -289,7 +303,7 @@ namespace RuleChaos.Models
         }
 
         this.Players.Add(player);
-        this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+        this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
         this.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(player)} подключился к сессии."));
       }
       catch (Exception exception)

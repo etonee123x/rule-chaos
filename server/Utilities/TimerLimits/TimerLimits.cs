@@ -2,21 +2,25 @@ using RuleChaos.Utilities.DTOs;
 
 namespace RuleChaos.Utilities
 {
-  public class AbsoluteTimerLimits
+  public class TimerLimits
   {
     public long EndAt { get; }
     public long StartAt { get; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-    public AbsoluteTimerLimits(long endAt)
+    public TimerLimits(long endAt)
     {
       this.EndAt = endAt;
     }
 
-    public AbsoluteTimerLimits(TimeSpan duration)
+    public TimerLimits(TimeSpan duration)
     {
       this.EndAt = this.StartAt + (long)duration.TotalMilliseconds;
     }
 
-    public AbsoluteTimerLimitsDTO ToDTO() => new AbsoluteTimerLimitsDTO(this);
+    public TimerLimitsDTO ToDTO() => new TimerLimitsDTO()
+    {
+      StartAt = this.StartAt,
+      EndAt = this.EndAt,
+    };
   }
 }

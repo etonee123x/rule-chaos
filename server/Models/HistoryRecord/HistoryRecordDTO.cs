@@ -2,15 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.DTOs
 {
-  public class HistoryRecordDTO(HistoryRecord historyRecord)
+  public class HistoryRecordDTO()
   {
     [JsonPropertyName("id")]
-    public Guid Id { get; } = historyRecord.Id;
+    required public Guid Id { get; init; }
 
     [JsonPropertyName("timestamp")]
-    public DateTime Timestamp { get; } = historyRecord.Timestamp;
+    required public DateTime Timestamp { get; init; }
 
     [JsonPropertyName("message")]
-    public string Message { get; } = historyRecord.Message;
+    required public string Message { get; init; }
   }
 }

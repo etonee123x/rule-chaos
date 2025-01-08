@@ -2,18 +2,18 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.DTOs
 {
-  public class PlayerDTO(Player player)
+  public class PlayerDTO()
   {
     [JsonPropertyName("id")]
-    public Guid Id { get; } = player.Id;
+    required public Guid Id { get; init; }
 
     [JsonPropertyName("name")]
-    public string Name { get; } = player.Name;
+    required public string Name { get; init; }
 
     [JsonPropertyName("isInRound")]
-    public bool IsInRound { get; } = player.IsInRound;
+    required public bool IsInRound { get; init; }
 
     [JsonPropertyName("isActive")]
-    public bool IsActive { get; } = player.IsActive;
+    required public bool IsActive { get; init; }
   }
 }

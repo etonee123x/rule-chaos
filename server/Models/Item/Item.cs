@@ -40,7 +40,12 @@ namespace RuleChaos.Models
 
     public override int GetHashCode() => this.Id.GetHashCode();
 
-    public ItemDTO ToDTO() => new ItemDTO(this);
+    public ItemDTO ToDTO() => new ItemDTO()
+    {
+      Id = this.Id,
+      Text = this.Text,
+      Value = this.Value,
+    };
   }
 
   public class Position(byte row, byte col)
@@ -65,7 +70,11 @@ namespace RuleChaos.Models
 
     public override string ToString() => $"{this.Row}:{this.Col}";
 
-    public PositionDTO ToDTO() => new PositionDTO(this);
+    public PositionDTO ToDTO() => new PositionDTO()
+    {
+      Row = this.Row,
+      Col = this.Col,
+    };
   }
 
   public class ItemWithPosition : Item
@@ -80,7 +89,13 @@ namespace RuleChaos.Models
       this.Position = position;
     }
 
-    public new ItemWithPositionDTO ToDTO() => new ItemWithPositionDTO(this);
+    public new ItemWithPositionDTO ToDTO() => new ItemWithPositionDTO()
+    {
+      Id = this.Id,
+      Text = this.Text,
+      Value = this.Value,
+      Position = this.Position.ToDTO(),
+    };
   }
 
   public class ItemGenerator

@@ -3,22 +3,22 @@ using RuleChaos.Utilities.DTOs;
 
 namespace RuleChaos.Models.Votings.DTOs
 {
-  public class VotingDTO(Voting voting)
+  public class VotingDTO()
   {
     [JsonPropertyName("title")]
-    public string Title { get; } = voting.Title;
+    required public string Title { get; init; }
 
     [JsonPropertyName("playersVotedPositiveIds")]
-    public Guid[] PlayersVotedPositiveIds { get; } = voting.PlayersVotedPositiveIds.ToArray();
+    required public Guid[] PlayersVotedPositiveIds { get; init; }
 
     [JsonPropertyName("playersVotedNegativeIds")]
-    public Guid[] PlayersVotedNegativeIds { get; } = voting.PlayersVotedNegativeIds.ToArray();
+    required public Guid[] PlayersVotedNegativeIds { get; init; }
 
-    [JsonPropertyName("absoluteTimerLimits")]
-    public AbsoluteTimerLimitsDTO AbsoluteTimerLimits { get; } = voting.AbsoluteTimerLimits.ToDTO();
+    [JsonPropertyName("timerLimits")]
+    required public TimerLimitsDTO TimerLimits { get; init; }
 
     [JsonPropertyName("result")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public VoteValue? Result { get; } = voting.Result;
+    required public VoteValue? Result { get; init; }
   }
 }

@@ -10,7 +10,7 @@ import { useEffect, useMemo, type FC, type HTMLAttributes } from 'react';
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const ThePlayersList: FC<Props> = ({ className }) => {
-  const { players, player, activePlayerAbsoluteTimerLimits } = useSession();
+  const { players, player, turnTimerLimits } = useSession();
 
   const playersTypeToPlayers = useMemo(
     () =>
@@ -32,11 +32,8 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
   const { partPassed, startTo, stop } = useCountdown();
 
   useEffect(
-    () =>
-      isNil(activePlayerAbsoluteTimerLimits)
-        ? stop()
-        : startTo(activePlayerAbsoluteTimerLimits.endAt, { timeStart: activePlayerAbsoluteTimerLimits.startAt }),
-    [activePlayerAbsoluteTimerLimits, stop, startTo],
+    () => (isNil(turnTimerLimits) ? stop() : startTo(turnTimerLimits.endAt, { timeStart: turnTimerLimits.startAt })),
+    [turnTimerLimits, stop, startTo],
   );
 
   const Players: FC<{ players: Array<Player>; sectionText: string }> = ({ sectionText, players }) => (

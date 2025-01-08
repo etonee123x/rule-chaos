@@ -49,7 +49,7 @@ namespace RuleChaos.Models
       }
 
       this.gameSession.Players.Remove(this);
-      this.gameSession.SendMessageToPlayers(new MessagePlayersUpdate(this.gameSession.Players, this.gameSession.ActivePlayerAbsoluteTimerLimits));
+      this.gameSession.SendMessageToPlayers(new MessagePlayersUpdate(this.gameSession.Players, this.gameSession.TurnTimerLimits));
       this.gameSession.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this)} отключился."));
       if (maybeNewActivePlayer is not null)
       {
@@ -63,7 +63,13 @@ namespace RuleChaos.Models
       true,
       CancellationToken.None);
 
-    public PlayerDTO ToDTO() => new PlayerDTO(this);
+    public PlayerDTO ToDTO() => new PlayerDTO()
+    {
+      Id = this.Id,
+      Name = this.Name,
+      IsInRound = this.IsInRound,
+      IsActive = this.IsActive,
+    };
 
     public override string ToString() => this.Name;
   }

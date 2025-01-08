@@ -26,7 +26,7 @@ import { SessionProvider } from '@/contexts/sessionContext';
 import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
-import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+import type { TimerLimits } from '@/helpers/timerLimits';
 import { useNotifications } from '@/contexts/notifications';
 import { pick } from '@/utils/pick';
 
@@ -37,9 +37,7 @@ export const ViewSession: FC = () => {
 
   const { SESSIONS } = ROUTER_ID_TO_PATH_BUILDER;
 
-  const [activePlayerAbsoluteTimerLimits, setActivePlayerAbsoluteTimerLimits] = useState<AbsoluteTimerLimits | null>(
-    null,
-  );
+  const [turnTimerLimits, setTurnTimerLimits] = useState<TimerLimits | null>(null);
   const [players, setPlayers] = useState<Array<Player>>([]);
   const [player, setPlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
@@ -61,9 +59,9 @@ export const ViewSession: FC = () => {
       history,
       isRoundActive,
       activeVoting,
-      activePlayerAbsoluteTimerLimits,
+      turnTimerLimits,
     }),
-    [player, players, itemsInHand, history, itemsOnField, isRoundActive, activeVoting, activePlayerAbsoluteTimerLimits],
+    [player, players, itemsInHand, history, itemsOnField, isRoundActive, activeVoting, turnTimerLimits],
   );
 
   useEffect(() => {
@@ -96,7 +94,7 @@ export const ViewSession: FC = () => {
         setItemsOnField(message.sessionState.itemsOnField);
         setIsRoundActive(message.sessionState.isRoundActive);
         setActiveVoting(message.sessionState.activeVoting);
-        setActivePlayerAbsoluteTimerLimits(message.sessionState.activePlayerAbsoluteTimerLimits);
+        setTurnTimerLimits(message.sessionState.turnTimerLimits);
 
         return;
       }
@@ -109,7 +107,7 @@ export const ViewSession: FC = () => {
           setPlayer(maybePlayer);
         }
 
-        setActivePlayerAbsoluteTimerLimits(message.activePlayerAbsoluteTimerLimits);
+        setTurnTimerLimits(message.turnTimerLimits);
 
         return;
       }

@@ -1,7 +1,7 @@
 import type { Player } from '@/helpers/player';
 import type { WithId } from '@/types';
 import type { Voting, VotingActive, VotingEnded, VotingValue } from '@/helpers/voting';
-import type { AbsoluteTimerLimits } from '@/helpers/absoluteTimerLimits';
+import type { TimerLimits } from '@/helpers/timerLimits';
 import type { NotificationType } from '@/contexts/notifications/_context';
 
 export interface Message<TType extends MessageType = MessageType> {
@@ -51,7 +51,7 @@ export interface MessageTypeToMessage {
 
 export interface MessagePlayersUpdate extends Message<MessageType.PlayersUpdate> {
   players: Array<Player>;
-  activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
+  turnTimerLimits: TimerLimits | null;
 }
 
 export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {
@@ -139,7 +139,7 @@ export interface SessionState {
   history: Array<HistoryRecord>;
   isRoundActive: boolean;
   activeVoting: Voting | null;
-  activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
+  turnTimerLimits: TimerLimits | null;
 }
 
 export const doesMessageHasType = <Type extends MessageType>(

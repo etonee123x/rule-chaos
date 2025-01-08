@@ -5,14 +5,14 @@ using RuleChaos.Utilities.DTOs;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessagePlayersUpdate(List<Player> players, AbsoluteTimerLimits? activePlayerAbsoluteTimerLimits)
+  public class MessagePlayersUpdate(List<Player> players, TimerLimits? turnTimerLimits)
     : MessageFromServer
   {
     [JsonPropertyName("players")]
     public PlayerDTO[] Players { get; } = players.Select((player) => player.ToDTO()).ToArray();
 
-    [JsonPropertyName("activePlayerAbsoluteTimerLimits")]
-    public AbsoluteTimerLimitsDTO? ActivePlayerAbsoluteTimerLimits { get; } = activePlayerAbsoluteTimerLimits?.ToDTO();
+    [JsonPropertyName("turnTimerLimits")]
+    public TimerLimitsDTO? TurnTimerLimits { get; } = turnTimerLimits?.ToDTO();
 
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

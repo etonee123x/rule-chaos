@@ -2,15 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.DTOs
 {
-  public class GameSessionListingDTO(GameSession gameSession)
+  public class GameSessionListingDTO()
   {
     [JsonPropertyName("id")]
-    public Guid Id { get; } = gameSession.Id;
+    required public Guid Id { get; init; }
 
     [JsonPropertyName("players")]
-    public PlayerDTO[] Players { get; } = gameSession.Players.Select((player) => player.ToDTO()).ToArray();
+    required public PlayerDTO[] Players { get; init; }
 
     [JsonPropertyName("turnDuration")]
-    public TimeSpan? TurnDuration { get; } = gameSession.TurnDuration;
+    required public TimeSpan? TurnDuration { get; init; }
   }
 }

@@ -2,31 +2,31 @@ using System.Text.Json.Serialization;
 
 namespace RuleChaos.Models.DTOs
 {
-  public class ItemDTO(Item item)
+  public class ItemDTO()
   {
     [JsonPropertyName("id")]
-    public Guid Id { get; init; } = item.Id;
+    required public Guid Id { get; init; }
 
     [JsonPropertyName("text")]
-    public string Text { get; init; } = item.Text;
+    required public string Text { get; init; }
 
     [JsonPropertyName("value")]
-    public string Value { get; init; } = item.Value;
+    required public string Value { get; init; }
   }
 
-  public class PositionDTO(Position position)
+  public class PositionDTO()
   {
     [JsonPropertyName("row")]
-    public byte Row { get; init; } = position.Row;
+    required public byte Row { get; init; }
 
     [JsonPropertyName("col")]
-    public byte Col { get; init; } = position.Col;
+    required public byte Col { get; init; }
   }
 
-  public class ItemWithPositionDTO(ItemWithPosition itemWithPosition)
-    : ItemDTO(itemWithPosition)
+  public class ItemWithPositionDTO()
+    : ItemDTO()
   {
     [JsonPropertyName("position")]
-    public PositionDTO Position { get; init; } = itemWithPosition.Position.ToDTO();
+    required public PositionDTO Position { get; init; }
   }
 }
