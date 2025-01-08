@@ -23,12 +23,12 @@ export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) 
   const thePlayer = useThePlayer();
 
   const playerVotedPositive = useMemo(
-    () => Boolean(thePlayer && activeVoting?.playersVotedPositiveIds.includes(thePlayer.id)),
+    () => Boolean(activeVoting?.playersVotedPositiveIds.includes(thePlayer.id)),
     [thePlayer, activeVoting],
   );
 
   const playerVotedNegative = useMemo(
-    () => Boolean(thePlayer && activeVoting?.playersVotedNegativeIds.includes(thePlayer.id)),
+    () => Boolean(activeVoting?.playersVotedNegativeIds.includes(thePlayer.id)),
     [thePlayer, activeVoting],
   );
 

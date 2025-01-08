@@ -14,22 +14,8 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
   const { players, turnTimerLimits } = useGameSession();
   const thePlayer = useThePlayer();
 
-  const playersTypeToPlayers = useMemo(
-    () =>
-      players.reduce<{ inRound: Array<Player>; inWaitingRoom: Array<Player> }>(
-        (acc, player) => {
-          if (player.isInRound) {
-            acc.inRound.push(player);
-          } else {
-            acc.inWaitingRoom.push(player);
-          }
-
-          return acc;
-        },
-        { inRound: [], inWaitingRoom: [] },
-      ),
-    [players],
-  );
+  const playersInRound = useMemo(() => players.filter((player) => player.isInRound), [players]);
+  const playersNotInRound = useMemo(() => players.filter((player) => !player.isInRound), [players]);
 
   const { partPassed, startTo, stop } = useCountdown();
 
@@ -51,12 +37,10 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
             className={classNames([
               'text-lg',
               player.isActive && 'list-[disclosure-closed]',
-              thePlayer &&
-                arePlayersEqual(thePlayer, player) &&
-                'font-semibold text-primary-500 marker:text-body-initial',
+              arePlayersEqual(thePlayer, player) && 'font-semibold text-primary-500 marker:text-body-initial',
             ])}
           >
-            {player.name} {thePlayer && arePlayersEqual(thePlayer, player) && '(you)'}
+            {player.name} {arePlayersEqual(thePlayer, player) && '(you)'}
             {player.isActive && isNotNil(partPassed) && (
               <BaseProgressBar className="h-1" value={partPassed} isProgressInverted />
             )}
@@ -69,12 +53,8 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
   return (
     <div className={className}>
       <div className="sticky top-0 bg-white pb-2 text-xl">Игроки ({players.length}):</div>
-      {playersTypeToPlayers.inRound.length > 0 && (
-        <Players players={playersTypeToPlayers.inRound} sectionText="В игре" />
-      )}
-      {playersTypeToPlayers.inWaitingRoom.length > 0 && (
-        <Players players={playersTypeToPlayers.inWaitingRoom} sectionText="Ожидание" />
-      )}
+      {playersInRound.length > 0 && <Players players={playersInRound} sectionText="В игре" />}
+      {playersNotInRound.length > 0 && <Players players={playersNotInRound} sectionText="Ожидание" />}
     </div>
   );
 };
