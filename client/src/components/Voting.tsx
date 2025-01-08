@@ -5,12 +5,12 @@ import { mdiBallotOutline } from '@mdi/js';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { BaseDialog } from '@/components/ui/BaseDialog';
 import classNames from 'classnames';
-import { BaseButton } from './ui/BaseButton';
+import { BaseButton } from '@/components/ui/BaseButton';
 import type { FunctionCallback } from '@/types';
 import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
 import { useCountdown } from '@/hooks/useCountdown';
 import { isNotNil } from '@/utils/isNotNil';
-import { BaseProgressBar } from './ui/BaseProgressBar';
+import { BaseProgressBar } from '@/components/ui/BaseProgressBar';
 import { useThePlayer } from '@/contexts/thePlayer';
 
 interface Props {

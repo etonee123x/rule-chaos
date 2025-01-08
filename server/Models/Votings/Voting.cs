@@ -124,7 +124,7 @@ namespace RuleChaos.Models.Votings
 
       this.GameSession.ActiveVoting = null;
       this.GameSession.SendMessageToPlayers(new MessageVotingEnd(this));
-      this.GameSession.AddHistoryRecord(new HistoryRecord($"Голосование \"{this.Title}\" завершено. Результат: {HistoryRecord.Accent(isPositive ? "успешно" : "неуспешно")}"));
+      this.GameSession.AddHistoryRecord(new HistoryRecord($"Голосование \"{this.Title}\" завершено. Результат: {HistoryRecord.Accent(isPositive ? "УСПЕШНО" : "НЕУСПЕШНО")}."));
 
       if (isPositive)
       {

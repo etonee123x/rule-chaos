@@ -2,7 +2,7 @@ import { useNotifications } from '@/contexts/notifications';
 import { NotificationType, type Notification } from '@/contexts/notifications/_context';
 import { checkExhaustive } from '@/utils/checkExhaustive';
 import classNames from 'classnames';
-import { BaseIcon } from './ui/BaseIcon';
+import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
 
 const MAX_NOTIFICATION_NUMBER_TO_RENDER = 3;

@@ -27,8 +27,9 @@ namespace RuleChaos.Models
     public string Name { get; } = Player.GenerateName();
     public bool IsInRound { get; set; }
     public bool IsActive { get; set; }
+    public uint Score { get; set; } = 0;
 
-    private GameSession gameSession;
+    private readonly GameSession gameSession;
 
     public Player(WebSocket webSocket, GameSession gameSession)
     {
