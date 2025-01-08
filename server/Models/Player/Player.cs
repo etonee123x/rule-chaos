@@ -8,23 +8,23 @@ namespace RuleChaos.Models
 {
   public class Player
   {
-    private static RandomElementPicker<string> elementPickerAdjective = new RandomElementPicker<string>([
+    private static readonly RandomElementPicker<string> ElementPickerAdjective = new RandomElementPicker<string>([
       "Ленивый", "Грозный", "Весёлый", "Пушистый", "Тучный",
       "Скользкий", "Могучий", "Кислый", "Пронзительный", "Вялый",
       "Зловещий", "Шумный", "Гладкий", "Древний", "Наглый"
     ]);
 
-    private static RandomElementPicker<string> elementPickerNoun = new RandomElementPicker<string>([
+    private static readonly RandomElementPicker<string> ElementPickerNoun = new RandomElementPicker<string>([
       "Титан", "Жаб", "Ёж", "Вепрь", "Дракон",
       "Хомяк", "Колобок", "Страж", "Пират", "Грифон",
       "Кабан", "Рысь", "Медведь", "Утконос", "Василёк"
     ]);
 
-    public static string GenerateName() => string.Join(" ", Player.elementPickerAdjective.Next(), Player.elementPickerNoun.Next());
+    private static string GenerateName() => string.Join(" ", Player.ElementPickerAdjective.Next(), Player.ElementPickerNoun.Next());
 
     public WebSocket WebSocket { get; }
     public Guid Id { get; } = Guid.NewGuid();
-    public string Name { get; }
+    public string Name { get; } = Player.GenerateName();
     public bool IsInRound { get; set; }
     public bool IsActive { get; set; }
 
@@ -32,7 +32,6 @@ namespace RuleChaos.Models
 
     public Player(WebSocket webSocket, GameSession gameSession)
     {
-      this.Name = Player.GenerateName();
       this.WebSocket = webSocket;
       this.gameSession = gameSession;
 

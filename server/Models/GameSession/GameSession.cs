@@ -1,7 +1,7 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using RuleChaos.Models.DTOs;
 using RuleChaos.Models.Messages;
 using RuleChaos.Models.Votings;
@@ -24,13 +24,13 @@ namespace RuleChaos.Models
 
     public Guid Id { get; } = Guid.NewGuid();
     public bool IsPrivate { get; }
-    public TimeSpan? TurnDuration { get; init; }
+    public TimeSpan? TurnDuration { get; }
     private Timer? turnTimer;
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
-    internal Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
-    internal AbsoluteTimerLimits? ActivePlayerAbsoluteTimerLimits { get; private set; }
+    public Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
+    public AbsoluteTimerLimits? ActivePlayerAbsoluteTimerLimits { get; private set; }
 
     private static readonly byte PlayersNumber = 4;
     private static readonly byte ItemsPerPlayer = 8;
@@ -43,19 +43,19 @@ namespace RuleChaos.Models
     }
 
     public List<ItemWithPosition> ItemsOnField { get; } = [];
-    public List<Item> ItemsInHand { get; private set; } = [];
+    public List<Item> ItemsInHand { get; } = [];
 
     public bool IsRoundActive { get; set; }
 
     public Voting? ActiveVoting { get; set; }
 
-    public HistoryRecord[] History { get; private set; } = [];
+    public List<HistoryRecord> History { get; } = [];
 
     private DateTime lastActivity = DateTime.UtcNow;
 
     private ItemGenerator? ItemGenerator { get; set; }
 
-    private static RandomElementPicker<string> elementPickerSkipTurnReasons = new RandomElementPicker<string>([
+    private static readonly RandomElementPicker<string> ElementPickerSkipTurnReasons = new RandomElementPicker<string>([
       "забыл, что его ход",
       "немного отвлёкся",
       "задумался и потерял время",
@@ -133,7 +133,7 @@ namespace RuleChaos.Models
               if (this.ActivePlayer is not null)
               {
                 this.ActivePlayer.SendMessage(new MessageNotification(NotificationType.Info, "Твой ход перешёл следующему игроку"));
-                this.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this.ActivePlayer)} {GameSession.elementPickerSkipTurnReasons.Next()}. Ход переходит к следующему игроку."));
+                this.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this.ActivePlayer)} {GameSession.ElementPickerSkipTurnReasons.Next()}. Ход переходит к следующему игроку."));
               }
 
               this.MakeFirstOrNextPlayerActive();
@@ -211,11 +211,6 @@ namespace RuleChaos.Models
       }
     }
 
-    public void UpdateActivity()
-    {
-      this.lastActivity = DateTime.UtcNow;
-    }
-
     public bool IsInactive(TimeSpan timeSpan) => DateTime.UtcNow - this.lastActivity > timeSpan;
 
     public void SendMessageToPlayers(MessageFromServer message) => this.Players.ForEach((player) => player.SendMessage(message));
@@ -243,7 +238,11 @@ namespace RuleChaos.Models
         throw new Exception("Has no item generator");
       }
 
-      this.ItemsInHand = new Item[this.PlayersInRound.Count * GameSession.ItemsPerPlayer].Select((item) => this.ItemGenerator.Next()).ToList();
+      for (var i = 0; i < this.PlayersInRound.Count * GameSession.ItemsPerPlayer; i++)
+      {
+        this.ItemsInHand.Add(this.ItemGenerator.Next());
+      }
+
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
@@ -258,9 +257,12 @@ namespace RuleChaos.Models
 
     public void AddHistoryRecord(HistoryRecord historyRecord)
     {
-      HistoryRecord[] history = [.. this.History, historyRecord];
+      this.History.Add(historyRecord);
 
-      this.History = history.Length >= GameSession.HistoryRecordsCount ? history[^GameSession.HistoryRecordsCount..] : history;
+      if (this.History.Count > GameSession.HistoryRecordsCount)
+      {
+        this.History.RemoveRange(0, this.History.Count - GameSession.HistoryRecordsCount);
+      }
 
       this.SendMessageToPlayers(new MessageHistoryUpdate(this.History));
     }
@@ -305,6 +307,11 @@ namespace RuleChaos.Models
     private void Log(params object[] args)
     {
       Console.WriteLine(string.Join(' ', args));
+    }
+
+    private void UpdateActivity()
+    {
+      this.lastActivity = DateTime.UtcNow;
     }
   }
 }

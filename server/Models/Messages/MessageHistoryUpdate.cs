@@ -3,7 +3,7 @@ using RuleChaos.Models.DTOs;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageHistoryUpdate(HistoryRecord[] history)
+  public class MessageHistoryUpdate(List<HistoryRecord> history)
     : MessageFromServer
   {
     [JsonPropertyName("history")]

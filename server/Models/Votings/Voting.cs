@@ -6,21 +6,18 @@ namespace RuleChaos.Models.Votings
 {
   public abstract class Voting
   {
-    public List<Guid> PlayersAllowedToVoteIds { get; }
     public List<Guid> PlayersVotedPositiveIds { get; } = [];
     public List<Guid> PlayersVotedNegativeIds { get; } = [];
-
-    public List<Guid> VotedPlayersIds
-    {
-      get => [.. this.PlayersVotedPositiveIds, .. this.PlayersVotedNegativeIds];
-    }
 
     public VoteValue? Result { get; private set; }
 
     public abstract string Title { get; }
     public virtual TimeSpan Duration { get; init; } = TimeSpan.FromSeconds(30);
 
-    protected int PotentialMaximumVotesNumber { get => this.PlayersAllowedToVoteIds.Count; }
+    protected List<Guid> VotedPlayersIds
+    { get => [.. this.PlayersVotedPositiveIds, .. this.PlayersVotedNegativeIds]; }
+
+    protected int PotentialMaximumVotesNumber { get => this.playersAllowedToVoteIds.Count; }
 
     protected GameSession GameSession { get; }
 
@@ -39,6 +36,8 @@ namespace RuleChaos.Models.Votings
       }
     }
 
+    private readonly List<Guid> playersAllowedToVoteIds;
+
     private readonly Timer? timer;
 
     public AbsoluteTimerLimits AbsoluteTimerLimits { get; init; }
@@ -52,7 +51,7 @@ namespace RuleChaos.Models.Votings
         throw new Exception("Уже есть активное голосование");
       }
 
-      this.PlayersAllowedToVoteIds = this.GameSession.Players.Select((player) => player.Id).ToList();
+      this.playersAllowedToVoteIds = this.GameSession.Players.Select((player) => player.Id).ToList();
 
       this.GameSession.ActiveVoting = this;
 
@@ -109,9 +108,6 @@ namespace RuleChaos.Models.Votings
       }
     }
 
-    public bool PlayerIsAllowedToVote(Player player) => this.PlayersAllowedToVoteIds.Contains(player.Id);
-    public bool PlayerHasVoted(Player player) => this.VotedPlayersIds.Contains(player.Id);
-
     public VotingDTO ToDTO() => new VotingDTO(this);
 
     public void End(bool isPositive)
@@ -130,5 +126,8 @@ namespace RuleChaos.Models.Votings
     }
 
     protected abstract void OnPositive();
+
+    private bool PlayerIsAllowedToVote(Player player) => this.playersAllowedToVoteIds.Contains(player.Id);
+    private bool PlayerHasVoted(Player player) => this.VotedPlayersIds.Contains(player.Id);
   }
 }
