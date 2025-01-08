@@ -1,5 +1,5 @@
 import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
 import type { Item as IItem, ItemWithPosition } from '@/helpers/message';
 import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
@@ -25,7 +25,7 @@ const indexToRowCol = (index: number) => ({
 });
 
 const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
-  const { itemsOnField } = useSession();
+  const { itemsOnField } = useGameSession();
 
   const position = useMemo(() => ({ col, row }), [col, row]);
 

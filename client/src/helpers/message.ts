@@ -15,6 +15,7 @@ export class Message<TType extends MessageType = MessageType> implements Message
 export enum MessageType {
   PlayersUpdate = 'PlayersUpdate',
   RoundWasStarted = 'RoundWasStarted',
+  PlayerInitiation = 'PlayerInitiation',
   SessionInitiation = 'SessionInitiation',
   ItemsInHandUpdate = 'ItemsInHandUpdate',
   ItemsOnFieldUpdate = 'ItemsOnFieldUpdate',
@@ -34,6 +35,7 @@ export enum MessageType {
 export interface MessageTypeToMessage {
   [MessageType.PlayersUpdate]: MessagePlayersUpdate;
   [MessageType.RoundWasStarted]: MessageRoundWasStarted;
+  [MessageType.PlayerInitiation]: MessagePlayerInitiation;
   [MessageType.SessionInitiation]: MessageSessionInitiation;
   [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
   [MessageType.ItemsOnFieldUpdate]: MessageItemsOnFieldUpdate;
@@ -59,8 +61,11 @@ export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStar
 }
 
 export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation> {
-  player: Player;
-  sessionState: SessionState;
+  gameSession: GameSession;
+}
+
+export interface MessagePlayerInitiation extends Message<MessageType.PlayerInitiation> {
+  thePlayer: Player;
 }
 
 export interface MessageHistoryUpdate extends Message<MessageType.HistoryUpdate> {
@@ -130,9 +135,7 @@ export interface ItemWithPosition extends Item {
   position: Position;
 }
 
-export interface SessionState {
-  // TODO: убрать бы плеера, т.к. это не сессия
-  player: Player | null;
+export interface GameSession {
   players: Array<Player>;
   itemsInHand: Array<Item>;
   itemsOnField: Array<ItemWithPosition>;

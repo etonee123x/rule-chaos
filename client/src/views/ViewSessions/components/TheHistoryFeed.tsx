@@ -1,4 +1,4 @@
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
 import type { HistoryRecord } from '@/helpers/message';
 import classNames from 'classnames';
 import { forwardRef, type HTMLAttributes } from 'react';
@@ -9,7 +9,7 @@ const historyRecordMessageToHTML = (historyRecordMessage: HistoryRecord['message
   `<span>${historyRecordMessage.replace(/{([^}]+)}/g, (...[, content]) => `<span class="text-primary-500">${content}</span>`)}</span>`;
 
 export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>(({ className }, ref) => {
-  const { history } = useSession();
+  const { history } = useGameSession();
 
   return (
     <div ref={ref} className={classNames(className)}>

@@ -1,6 +1,6 @@
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { BaseWidget } from '@/components/ui/BaseWidget';
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
 import { mdiBallotOutline } from '@mdi/js';
 import { useEffect, useMemo, useState, type FC } from 'react';
 import { BaseDialog } from '@/components/ui/BaseDialog';
@@ -11,6 +11,7 @@ import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
 import { useCountdown } from '@/hooks/useCountdown';
 import { isNotNil } from '@/utils/isNotNil';
 import { BaseProgressBar } from './ui/BaseProgressBar';
+import { useThePlayer } from '@/contexts/thePlayer';
 
 interface Props {
   onClickVotePositive: FunctionCallback;
@@ -18,16 +19,17 @@ interface Props {
 }
 
 export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) => {
-  const { activeVoting, player } = useSession();
+  const { activeVoting } = useGameSession();
+  const thePlayer = useThePlayer();
 
   const playerVotedPositive = useMemo(
-    () => Boolean(player && activeVoting?.playersVotedPositiveIds.includes(player.id)),
-    [player, activeVoting],
+    () => Boolean(thePlayer && activeVoting?.playersVotedPositiveIds.includes(thePlayer.id)),
+    [thePlayer, activeVoting],
   );
 
   const playerVotedNegative = useMemo(
-    () => Boolean(player && activeVoting?.playersVotedNegativeIds.includes(player.id)),
-    [player, activeVoting],
+    () => Boolean(thePlayer && activeVoting?.playersVotedNegativeIds.includes(thePlayer.id)),
+    [thePlayer, activeVoting],
   );
 
   const playerVoted = useMemo(

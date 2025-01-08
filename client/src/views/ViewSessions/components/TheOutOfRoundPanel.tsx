@@ -1,6 +1,6 @@
 import { BaseButton } from '@/components/ui/BaseButton';
 import { BaseIcon } from '@/components/ui/BaseIcon';
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
 import type { FunctionCallback } from '@/types';
 import { mdiLinkVariant } from '@mdi/js';
 import { useClipboard } from '@/hooks/useClipboard';
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound }) => {
-  const { players } = useSession();
+  const { players } = useGameSession();
 
   const [, copy] = useClipboard();
 

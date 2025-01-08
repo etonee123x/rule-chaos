@@ -6,7 +6,7 @@ import {
   type HistoryRecord,
   type Item,
   type ItemWithPosition,
-  type SessionState,
+  type GameSession,
 } from '@/helpers/message';
 import { BasePage } from '@/components/BasePage';
 import { useWebSocket } from '@/contexts/webSocket';
@@ -22,13 +22,14 @@ import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
 import { arePlayersEqual, type Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-import { SessionProvider } from '@/contexts/sessionContext';
+import { GameSessionProvider } from '@/contexts/gameSession';
 import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
 import type { TimerLimits } from '@/helpers/timerLimits';
 import { useNotifications } from '@/contexts/notifications';
 import { pick } from '@/utils/pick';
+import { ThePlayerProvider } from '@/contexts/thePlayer';
 
 export const ViewSession: FC = () => {
   const { id } = useParams();
@@ -39,7 +40,7 @@ export const ViewSession: FC = () => {
 
   const [turnTimerLimits, setTurnTimerLimits] = useState<TimerLimits | null>(null);
   const [players, setPlayers] = useState<Array<Player>>([]);
-  const [player, setPlayer] = useState<Player | null>(null);
+  const [thePlayer, setThePlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
@@ -50,9 +51,8 @@ export const ViewSession: FC = () => {
 
   const { notify } = useNotifications();
 
-  const session: SessionState = useMemo(
+  const gameSession = useMemo<GameSession>(
     () => ({
-      player,
       players,
       itemsInHand,
       itemsOnField,
@@ -61,7 +61,7 @@ export const ViewSession: FC = () => {
       activeVoting,
       turnTimerLimits,
     }),
-    [player, players, itemsInHand, history, itemsOnField, isRoundActive, activeVoting, turnTimerLimits],
+    [players, itemsInHand, history, itemsOnField, isRoundActive, activeVoting, turnTimerLimits],
   );
 
   useEffect(() => {
@@ -86,25 +86,30 @@ export const ViewSession: FC = () => {
 
   useEffect(() =>
     addEventListener('message', (message) => {
+      if (doesMessageHasType(message, MessageType.PlayerInitiation)) {
+        setThePlayer(message.thePlayer);
+
+        return;
+      }
+
       if (doesMessageHasType(message, MessageType.SessionInitiation)) {
-        setPlayer(message.player);
-        setPlayers(message.sessionState.players);
-        setHistory(message.sessionState.history);
-        setItemsInHand(message.sessionState.itemsInHand);
-        setItemsOnField(message.sessionState.itemsOnField);
-        setIsRoundActive(message.sessionState.isRoundActive);
-        setActiveVoting(message.sessionState.activeVoting);
-        setTurnTimerLimits(message.sessionState.turnTimerLimits);
+        setPlayers(message.gameSession.players);
+        setHistory(message.gameSession.history);
+        setItemsInHand(message.gameSession.itemsInHand);
+        setItemsOnField(message.gameSession.itemsOnField);
+        setIsRoundActive(message.gameSession.isRoundActive);
+        setActiveVoting(message.gameSession.activeVoting);
+        setTurnTimerLimits(message.gameSession.turnTimerLimits);
 
         return;
       }
 
       if (doesMessageHasType(message, MessageType.PlayersUpdate)) {
         setPlayers(message.players);
-        const maybePlayer = player && message.players.find((_player) => arePlayersEqual(_player, player));
+        const maybeThePlayer = thePlayer && message.players.find((player) => arePlayersEqual(player, thePlayer));
 
-        if (maybePlayer) {
-          setPlayer(maybePlayer);
+        if (maybeThePlayer) {
+          setThePlayer(maybeThePlayer);
         }
 
         setTurnTimerLimits(message.turnTimerLimits);
@@ -178,21 +183,27 @@ export const ViewSession: FC = () => {
   return (
     <BasePage className="flex flex-col h-[calc(100vh-65px)]">
       <DndProvider backend={HTML5Backend}>
-        <SessionProvider session={session}>
-          <div className="flex mb-5 gap-8 h-5/6">
-            <div className="aspect-square">
-              {isRoundActive ? ( //
-                <TheField onDrop={onDrop} />
-              ) : (
-                <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} />
-              )}
-            </div>
-            <ThePlayersList className="w-1/6 overflow-y-auto" />
-            <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
-          </div>
-          {isRoundActive && <TheHand className="mt-auto h-1/6" />}
-          <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
-        </SessionProvider>
+        <GameSessionProvider gameSession={gameSession}>
+          {!thePlayer ? (
+            <div>Инициализация игрока...</div>
+          ) : (
+            <ThePlayerProvider thePlayer={thePlayer}>
+              <div className="flex mb-5 gap-8 h-5/6">
+                <div className="aspect-square">
+                  {isRoundActive ? ( //
+                    <TheField onDrop={onDrop} />
+                  ) : (
+                    <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} />
+                  )}
+                </div>
+                <ThePlayersList className="w-1/6 overflow-y-auto" />
+                <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
+              </div>
+              {isRoundActive && <TheHand className="mt-auto h-1/6" />}
+              <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
+            </ThePlayerProvider>
+          )}
+        </GameSessionProvider>
       </DndProvider>
     </BasePage>
   );

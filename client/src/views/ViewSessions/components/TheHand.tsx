@@ -1,12 +1,14 @@
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
 import classNames from 'classnames';
 import { useCallback, type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
 import { Item } from './Item';
+import { useThePlayer } from '@/contexts/thePlayer';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const TheHand: FC<Props> = ({ className }) => {
-  const { itemsInHand, player } = useSession();
+  const { itemsInHand } = useGameSession();
+  const thePlayer = useThePlayer();
 
   const onWheel: WheelEventHandler<HTMLUListElement> = useCallback((event) => {
     if (!event.deltaY) {
@@ -26,10 +28,10 @@ export const TheHand: FC<Props> = ({ className }) => {
             {itemsInHand.map((item, index) => (
               <li className="shrink-0 aspect-square" key={index}>
                 <Item
-                  title={player?.isActive ? '' : 'Ход другого игрока'}
-                  className={classNames(['size-full', !player?.isActive && 'cursor-not-allowed'])}
+                  title={thePlayer.isActive ? '' : 'Ход другого игрока'}
+                  className={classNames(['size-full', !thePlayer.isActive && 'cursor-not-allowed'])}
                   item={item}
-                  isDraggable={player?.isActive}
+                  isDraggable={thePlayer.isActive}
                 />
               </li>
             ))}

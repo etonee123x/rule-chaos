@@ -3,6 +3,7 @@ namespace RuleChaos.Models.Messages
   public enum MessageType
   {
     RoundWasStarted,
+    PlayerInitiation,
     SessionInitiation,
     ItemsInHandUpdate,
     ItemsOnFieldUpdate,

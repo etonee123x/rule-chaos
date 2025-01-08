@@ -1,5 +1,6 @@
 import { BaseProgressBar } from '@/components/ui/BaseProgressBar';
-import { useSession } from '@/contexts/sessionContext';
+import { useGameSession } from '@/contexts/gameSession';
+import { useThePlayer } from '@/contexts/thePlayer';
 import { arePlayersEqual, type Player } from '@/helpers/player';
 import { useCountdown } from '@/hooks/useCountdown';
 import { isNil } from '@/utils/isNil';
@@ -10,7 +11,8 @@ import { useEffect, useMemo, type FC, type HTMLAttributes } from 'react';
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const ThePlayersList: FC<Props> = ({ className }) => {
-  const { players, player, turnTimerLimits } = useSession();
+  const { players, turnTimerLimits } = useGameSession();
+  const thePlayer = useThePlayer();
 
   const playersTypeToPlayers = useMemo(
     () =>
@@ -43,17 +45,19 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
       </div>
       <hr className="my-1" />
       <ul className="list-inside">
-        {players.map((_player) => (
+        {players.map((player) => (
           <li
-            key={_player.id}
+            key={player.id}
             className={classNames([
               'text-lg',
-              _player.isActive && 'list-[disclosure-closed]',
-              player && arePlayersEqual(player, _player) && 'font-semibold text-primary-500 marker:text-body-initial',
+              player.isActive && 'list-[disclosure-closed]',
+              thePlayer &&
+                arePlayersEqual(thePlayer, player) &&
+                'font-semibold text-primary-500 marker:text-body-initial',
             ])}
           >
-            {_player.name} {player && arePlayersEqual(player, _player) && '(you)'}
-            {_player.isActive && isNotNil(partPassed) && (
+            {player.name} {thePlayer && arePlayersEqual(thePlayer, player) && '(you)'}
+            {player.isActive && isNotNil(partPassed) && (
               <BaseProgressBar className="h-1" value={partPassed} isProgressInverted />
             )}
           </li>

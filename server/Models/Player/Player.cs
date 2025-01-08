@@ -35,8 +35,8 @@ namespace RuleChaos.Models
       this.WebSocket = webSocket;
       this.gameSession = gameSession;
 
-      // тут пытаемся отправить клиенту игрока и состояние сессии
-      this.SendMessage(new MessageSessionInitiation(this, gameSession));
+      this.SendMessage(new MessagePlayerInitiation(this));
+      this.SendMessage(new MessageSessionInitiation(gameSession));
     }
 
     public void OnDisconnect()
