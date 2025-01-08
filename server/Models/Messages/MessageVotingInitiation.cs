@@ -16,11 +16,5 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.VotingInitiation;
     }
-
-    [JsonIgnore]
-    public override HistoryRecord HistoryRecord
-    {
-      get => new HistoryRecord($"Запущено голосование {HistoryRecord.Accent(voting.Title)}");
-    }
   }
 }

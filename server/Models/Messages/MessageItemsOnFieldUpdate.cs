@@ -15,10 +15,5 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.ItemsOnFieldUpdate;
     }
-
-    public override HistoryRecord HistoryRecord
-    {
-      get => new HistoryRecord("Предмет выставлен на поле.");
-    }
   }
 }

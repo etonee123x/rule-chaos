@@ -9,9 +9,6 @@ namespace RuleChaos.Models.DTOs
     [JsonPropertyName("players")]
     public PlayerDTO[] Players { get; } = gameSession.Players.Select((player) => player.ToDTO()).ToArray();
 
-    [JsonPropertyName("activePlayer")]
-    public PlayerDTO? ActivePlayer { get; } = gameSession.ActivePlayer?.ToDTO();
-
     [JsonPropertyName("itemsInHand")]
     public ItemDTO[] ItemsInHand { get; } = gameSession.ItemsInHand.Select((itemInHand) => itemInHand.ToDTO()).ToArray();
 

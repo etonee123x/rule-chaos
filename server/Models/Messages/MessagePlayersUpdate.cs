@@ -5,11 +5,11 @@ using RuleChaos.Utilities.DTOs;
 
 namespace RuleChaos.Models.Messages
 {
-  public class MessageNewActivePlayer(Player player, AbsoluteTimerLimits? activePlayerAbsoluteTimerLimits)
+  public class MessagePlayersUpdate(List<Player> players, AbsoluteTimerLimits? activePlayerAbsoluteTimerLimits)
     : MessageFromServer
   {
-    [JsonPropertyName("player")]
-    public PlayerDTO Player { get; } = player.ToDTO();
+    [JsonPropertyName("players")]
+    public PlayerDTO[] Players { get; } = players.Select((player) => player.ToDTO()).ToArray();
 
     [JsonPropertyName("activePlayerAbsoluteTimerLimits")]
     public AbsoluteTimerLimitsDTO? ActivePlayerAbsoluteTimerLimits { get; } = activePlayerAbsoluteTimerLimits?.ToDTO();
@@ -18,13 +18,7 @@ namespace RuleChaos.Models.Messages
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public override MessageType Type
     {
-      get => MessageType.NewActivePlayer;
-    }
-
-    [JsonIgnore]
-    public override HistoryRecord HistoryRecord
-    {
-      get => new HistoryRecord($"Ход игрока {HistoryRecord.Accent(player)}.");
+      get => MessageType.PlayersUpdate;
     }
   }
 }

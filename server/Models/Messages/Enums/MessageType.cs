@@ -1,13 +1,8 @@
-using System.Runtime.Serialization;
-
 namespace RuleChaos.Models.Messages
 {
   public enum MessageType
   {
-    PlayerJoinedSession,
-    PlayerLeftSession,
     RoundWasStarted,
-    NewActivePlayer,
     SessionInitiation,
     ItemsInHandUpdate,
     ItemsOnFieldUpdate,
@@ -19,5 +14,6 @@ namespace RuleChaos.Models.Messages
     VotingUpdate,
     VotingEnd,
     PlayerVotes,
+    PlayersUpdate,
   }
 }

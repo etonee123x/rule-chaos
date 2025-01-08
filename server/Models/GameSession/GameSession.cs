@@ -29,7 +29,7 @@ namespace RuleChaos.Models
 
     public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
 
-    internal Player? ActivePlayer { get; private set; }
+    internal Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
     internal AbsoluteTimerLimits? ActivePlayerAbsoluteTimerLimits { get; private set; }
 
     private static readonly byte PlayersNumber = 4;
@@ -93,8 +93,7 @@ namespace RuleChaos.Models
           this.HandlePlayerMessage(player, serializedMessage);
         }
 
-        this.RemovePlayer(player);
-        this.SendMessageToPlayers(new MessagePlayerLeftSession(player, this.Players));
+        player.OnDisconnect();
       });
     }
 
@@ -107,16 +106,16 @@ namespace RuleChaos.Models
           throw new Exception("В раунде нет игроков");
         }
 
-        void MakePlayerActiveAndSendMessage(Player player)
+        void MakePlayerActive(Player player)
         {
-          this.ActivePlayer = player;
+          player.IsActive = true;
 
-          if (this.TurnDuration is not null)
+          if (this.TurnDuration is null)
           {
-            this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
+            return;
           }
 
-          this.SendMessageToPlayers(new MessageNewActivePlayer(this.ActivePlayer, this.ActivePlayerAbsoluteTimerLimits));
+          this.ActivePlayerAbsoluteTimerLimits = new AbsoluteTimerLimits(this.TurnDuration.Value);
         }
 
         if (this.TurnDuration is not null)
@@ -138,6 +137,13 @@ namespace RuleChaos.Models
               }
 
               this.MakeFirstOrNextPlayerActive();
+              this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+              if (this.ActivePlayer is null)
+              {
+                return;
+              }
+
+              this.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(this.ActivePlayer)}."));
             },
             null,
             this.TurnDuration.Value,
@@ -146,7 +152,7 @@ namespace RuleChaos.Models
 
         if (this.ActivePlayer is null)
         {
-          MakePlayerActiveAndSendMessage(this.PlayersInRound[0]);
+          MakePlayerActive(this.PlayersInRound[0]);
           return;
         }
 
@@ -157,7 +163,10 @@ namespace RuleChaos.Models
           throw new Exception($"Не найден игрок с  id {this.ActivePlayer.Id}");
         }
 
-        MakePlayerActiveAndSendMessage(this.PlayersInRound[(index + 1) % this.PlayersInRound.Count]);
+        this.PlayersInRound[index].IsActive = false;
+
+        MakePlayerActive(this.PlayersInRound[(index + 1) % this.PlayersInRound.Count]);
+        return;
       }
       catch (Exception exception)
       {
@@ -189,11 +198,17 @@ namespace RuleChaos.Models
 
       this.ItemsOnField.Add(itemWithPosition);
       this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(this.ItemsOnField));
+      this.AddHistoryRecord(new HistoryRecord($"Предмет {HistoryRecord.Accent(itemWithPosition.Text)} выставлен на поле ({itemWithPosition.Position})."));
 
       this.ItemsInHand.Remove(itemInHand);
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
+      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+      if (this.ActivePlayer is not null)
+      {
+        this.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(this.ActivePlayer)}."));
+      }
     }
 
     public void UpdateActivity()
@@ -203,19 +218,7 @@ namespace RuleChaos.Models
 
     public bool IsInactive(TimeSpan timeSpan) => DateTime.UtcNow - this.lastActivity > timeSpan;
 
-    public void SendMessageToPlayers(MessageFromServer message)
-    {
-      this.Players.ForEach((player) => player.SendMessage(message));
-
-      var maybeHistoryRecord = message.HistoryRecord;
-
-      if (maybeHistoryRecord is null)
-      {
-        return;
-      }
-
-      this.AddHistoryRecord(maybeHistoryRecord);
-    }
+    public void SendMessageToPlayers(MessageFromServer message) => this.Players.ForEach((player) => player.SendMessage(message));
 
     public void StartRound(List<Guid> playersIds)
     {
@@ -233,6 +236,7 @@ namespace RuleChaos.Models
 
       this.IsRoundActive = true;
       this.SendMessageToPlayers(new MessageRoundWasStarted(this.PlayersInRound));
+      this.AddHistoryRecord(new HistoryRecord("Раунд начался!"));
 
       if (this.ItemGenerator is null)
       {
@@ -243,9 +247,16 @@ namespace RuleChaos.Models
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
       this.MakeFirstOrNextPlayerActive();
+      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+      if (this.ActivePlayer is null)
+      {
+        return;
+      }
+
+      this.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(this.ActivePlayer)}."));
     }
 
-    private void AddHistoryRecord(HistoryRecord historyRecord)
+    public void AddHistoryRecord(HistoryRecord historyRecord)
     {
       HistoryRecord[] history = [.. this.History, historyRecord];
 
@@ -276,26 +287,13 @@ namespace RuleChaos.Models
         }
 
         this.Players.Add(player);
-        this.SendMessageToPlayers(new MessagePlayerJoinedSession(player, this.Players));
-
-        this.Log($"Игрок {player} подключился");
+        this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.ActivePlayerAbsoluteTimerLimits));
+        this.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(player)} подключился к сессии."));
       }
       catch (Exception exception)
       {
         this.Log(exception);
       }
-    }
-
-    private void RemovePlayer(Player player)
-    {
-      if (player.Equals(this.ActivePlayer))
-      {
-        this.ActivePlayer = null;
-      }
-
-      this.Players.Remove(player);
-
-      this.Log($"Игрок {player} отключился");
     }
 
     private bool IsThisPlayerActive(Player player) => player == this.ActivePlayer;

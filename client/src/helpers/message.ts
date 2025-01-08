@@ -13,10 +13,8 @@ export class Message<TType extends MessageType = MessageType> implements Message
 }
 
 export enum MessageType {
-  PlayerJoinedSession = 'PlayerJoinedSession',
-  PlayerLeftSession = 'PlayerLeftSession',
+  PlayersUpdate = 'PlayersUpdate',
   RoundWasStarted = 'RoundWasStarted',
-  NewActivePlayer = 'NewActivePlayer',
   SessionInitiation = 'SessionInitiation',
   ItemsInHandUpdate = 'ItemsInHandUpdate',
   ItemsOnFieldUpdate = 'ItemsOnFieldUpdate',
@@ -34,10 +32,8 @@ export enum MessageType {
 }
 
 export interface MessageTypeToMessage {
-  [MessageType.NewActivePlayer]: MessageNewActivePlayer;
+  [MessageType.PlayersUpdate]: MessagePlayersUpdate;
   [MessageType.RoundWasStarted]: MessageRoundWasStarted;
-  [MessageType.PlayerJoinedSession]: MessagePlayerJoinedSession;
-  [MessageType.PlayerLeftSession]: MessagePlayerLeftSession;
   [MessageType.SessionInitiation]: MessageSessionInitiation;
   [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
   [MessageType.ItemsOnFieldUpdate]: MessageItemsOnFieldUpdate;
@@ -53,18 +49,8 @@ export interface MessageTypeToMessage {
   [MessageType.Notification]: MessageNotification;
 }
 
-export interface MessagePlayerLeftSession extends Message<MessageType.PlayerLeftSession> {
+export interface MessagePlayersUpdate extends Message<MessageType.PlayersUpdate> {
   players: Array<Player>;
-  player: Player;
-}
-
-export interface MessagePlayerJoinedSession extends Message<MessageType.PlayerJoinedSession> {
-  players: Array<Player>;
-  player: Player;
-}
-
-export interface MessageNewActivePlayer extends Message<MessageType.NewActivePlayer> {
-  player: Player;
   activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
 }
 
@@ -153,7 +139,6 @@ export interface SessionState {
   history: Array<HistoryRecord>;
   isRoundActive: boolean;
   activeVoting: Voting | null;
-  activePlayer: Player | null;
   activePlayerAbsoluteTimerLimits: AbsoluteTimerLimits | null;
 }
 

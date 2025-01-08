@@ -16,11 +16,5 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.VotingEnd;
     }
-
-    [JsonIgnore]
-    public override HistoryRecord HistoryRecord
-    {
-      get => new HistoryRecord($"Закончено голосование {HistoryRecord.Accent(voting.Title)}. Результат: {HistoryRecord.Accent(voting.Result == VoteValue.Positive ? "Успешно" : "Неуспешно")}");
-    }
   }
 }

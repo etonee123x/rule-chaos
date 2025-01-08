@@ -65,6 +65,7 @@ namespace RuleChaos.Models.Votings
         Timeout.InfiniteTimeSpan);
 
       this.GameSession.SendMessageToPlayers(new MessageVotingInitiation(this));
+      this.GameSession.AddHistoryRecord(new HistoryRecord($"Запущено голосование \"{HistoryRecord.Accent(this.Title)}\"."));
       this.Vote(player, VoteValue.Positive);
     }
 
@@ -120,6 +121,7 @@ namespace RuleChaos.Models.Votings
 
       this.GameSession.ActiveVoting = null;
       this.GameSession.SendMessageToPlayers(new MessageVotingEnd(this));
+      this.GameSession.AddHistoryRecord(new HistoryRecord($"Голосование \"{this.Title}\" завершено. Результат: {HistoryRecord.Accent(isPositive ? "успешно" : "неуспешно")}"));
 
       if (isPositive)
       {

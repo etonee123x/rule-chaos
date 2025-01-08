@@ -63,6 +63,8 @@ namespace RuleChaos.Models
 
     public override int GetHashCode() => HashCode.Combine(this.Row, this.Col);
 
+    public override string ToString() => $"{this.Row}:{this.Col}";
+
     public PositionDTO ToDTO() => new PositionDTO(this);
   }
 

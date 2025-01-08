@@ -2,13 +2,11 @@ import { useSession } from '@/contexts/sessionContext';
 import classNames from 'classnames';
 import { useCallback, type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
 import { Item } from './Item';
-import { useIsActivePlayer } from '@/hooks/useIsActivePlayer';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const TheHand: FC<Props> = ({ className }) => {
-  const { itemsInHand } = useSession();
-  const isActivePlayer = useIsActivePlayer();
+  const { itemsInHand, player } = useSession();
 
   const onWheel: WheelEventHandler<HTMLUListElement> = useCallback((event) => {
     if (!event.deltaY) {
@@ -28,10 +26,10 @@ export const TheHand: FC<Props> = ({ className }) => {
             {itemsInHand.map((item, index) => (
               <li className="shrink-0 aspect-square" key={index}>
                 <Item
-                  title={isActivePlayer ? '' : 'Ход другого игрока'}
-                  className={classNames(['size-full', !isActivePlayer && 'cursor-not-allowed'])}
+                  title={player?.isActive ? '' : 'Ход другого игрока'}
+                  className={classNames(['size-full', !player?.isActive && 'cursor-not-allowed'])}
                   item={item}
-                  isDraggable={isActivePlayer}
+                  isDraggable={player?.isActive}
                 />
               </li>
             ))}

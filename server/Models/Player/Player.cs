@@ -26,14 +26,36 @@ namespace RuleChaos.Models
     public Guid Id { get; } = Guid.NewGuid();
     public string Name { get; }
     public bool IsInRound { get; set; }
+    public bool IsActive { get; set; }
+
+    private GameSession gameSession;
 
     public Player(WebSocket webSocket, GameSession gameSession)
     {
       this.Name = Player.GenerateName();
       this.WebSocket = webSocket;
+      this.gameSession = gameSession;
 
       // тут пытаемся отправить клиенту игрока и состояние сессии
       this.SendMessage(new MessageSessionInitiation(this, gameSession));
+    }
+
+    public void OnDisconnect()
+    {
+      Player? maybeNewActivePlayer = null;
+      if (this.gameSession.ActivePlayer is not null && this.gameSession.ActivePlayer.Equals(this))
+      {
+        this.gameSession.MakeFirstOrNextPlayerActive();
+        maybeNewActivePlayer = this.gameSession.ActivePlayer;
+      }
+
+      this.gameSession.Players.Remove(this);
+      this.gameSession.SendMessageToPlayers(new MessagePlayersUpdate(this.gameSession.Players, this.gameSession.ActivePlayerAbsoluteTimerLimits));
+      this.gameSession.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this)} отключился."));
+      if (maybeNewActivePlayer is not null)
+      {
+        this.gameSession.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(maybeNewActivePlayer)}."));
+      }
     }
 
     public Task SendMessage(Message message) => this.WebSocket.SendAsync(

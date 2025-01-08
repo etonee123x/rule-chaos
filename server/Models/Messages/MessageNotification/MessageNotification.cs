@@ -23,11 +23,5 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.Notification;
     }
-
-    [JsonIgnore]
-    public override HistoryRecord? HistoryRecord
-    {
-      get => null;
-    }
   }
 }

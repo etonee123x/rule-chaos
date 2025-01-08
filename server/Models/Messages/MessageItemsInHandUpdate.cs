@@ -15,10 +15,5 @@ namespace RuleChaos.Models.Messages
     {
       get => MessageType.ItemsInHandUpdate;
     }
-
-    public override HistoryRecord? HistoryRecord
-    {
-      get => null;
-    }
   }
 }

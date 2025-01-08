@@ -10,7 +10,7 @@ import { useEffect, useMemo, type FC, type HTMLAttributes } from 'react';
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
 export const ThePlayersList: FC<Props> = ({ className }) => {
-  const { players, player, activePlayer, activePlayerAbsoluteTimerLimits } = useSession();
+  const { players, player, activePlayerAbsoluteTimerLimits } = useSession();
 
   const playersTypeToPlayers = useMemo(
     () =>
@@ -28,8 +28,6 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
       ),
     [players],
   );
-
-  const isActivePlayer = (player: Player) => Boolean(activePlayer && arePlayersEqual(player, activePlayer));
 
   const { partPassed, startTo, stop } = useCountdown();
 
@@ -53,12 +51,12 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
             key={_player.id}
             className={classNames([
               'text-lg',
-              isActivePlayer(_player) && 'list-[disclosure-closed]',
+              _player.isActive && 'list-[disclosure-closed]',
               player && arePlayersEqual(player, _player) && 'font-semibold text-primary-500 marker:text-body-initial',
             ])}
           >
             {_player.name} {player && arePlayersEqual(player, _player) && '(you)'}
-            {isActivePlayer(_player) && isNotNil(partPassed) && (
+            {_player.isActive && isNotNil(partPassed) && (
               <BaseProgressBar className="h-1" value={partPassed} isProgressInverted />
             )}
           </li>

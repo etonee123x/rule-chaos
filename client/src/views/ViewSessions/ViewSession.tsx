@@ -19,7 +19,7 @@ import { TheHand } from './components/TheHand';
 import { TheField } from './components/TheField';
 import { TheHistoryFeed } from './components/TheHistoryFeed';
 import { ROUTER_ID_TO_PATH_BUILDER } from '@/router';
-import type { Player } from '@/helpers/player';
+import { arePlayersEqual, type Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { SessionProvider } from '@/contexts/sessionContext';
@@ -41,7 +41,6 @@ export const ViewSession: FC = () => {
     null,
   );
   const [players, setPlayers] = useState<Array<Player>>([]);
-  const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
   const [itemsInHand, setItemsInHand] = useState<Array<Item>>([]);
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
@@ -60,22 +59,11 @@ export const ViewSession: FC = () => {
       itemsInHand,
       itemsOnField,
       history,
-      activePlayer,
       isRoundActive,
       activeVoting,
       activePlayerAbsoluteTimerLimits,
     }),
-    [
-      player,
-      players,
-      itemsInHand,
-      history,
-      activePlayer,
-      itemsOnField,
-      isRoundActive,
-      activeVoting,
-      activePlayerAbsoluteTimerLimits,
-    ],
+    [player, players, itemsInHand, history, itemsOnField, isRoundActive, activeVoting, activePlayerAbsoluteTimerLimits],
   );
 
   useEffect(() => {
@@ -104,7 +92,6 @@ export const ViewSession: FC = () => {
         setPlayer(message.player);
         setPlayers(message.sessionState.players);
         setHistory(message.sessionState.history);
-        setActivePlayer(message.sessionState.activePlayer);
         setItemsInHand(message.sessionState.itemsInHand);
         setItemsOnField(message.sessionState.itemsOnField);
         setIsRoundActive(message.sessionState.isRoundActive);
@@ -114,14 +101,15 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.PlayerJoinedSession)) {
+      if (doesMessageHasType(message, MessageType.PlayersUpdate)) {
         setPlayers(message.players);
+        const maybePlayer = player && message.players.find((_player) => arePlayersEqual(_player, player));
 
-        return;
-      }
+        if (maybePlayer) {
+          setPlayer(maybePlayer);
+        }
 
-      if (doesMessageHasType(message, MessageType.PlayerLeftSession)) {
-        setPlayers(message.players);
+        setActivePlayerAbsoluteTimerLimits(message.activePlayerAbsoluteTimerLimits);
 
         return;
       }
@@ -141,13 +129,6 @@ export const ViewSession: FC = () => {
       if (doesMessageHasType(message, MessageType.RoundWasStarted)) {
         setPlayers(message.players);
         setIsRoundActive(true);
-
-        return;
-      }
-
-      if (doesMessageHasType(message, MessageType.NewActivePlayer)) {
-        setActivePlayer(message.player);
-        setActivePlayerAbsoluteTimerLimits(message.activePlayerAbsoluteTimerLimits);
 
         return;
       }

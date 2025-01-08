@@ -12,5 +12,8 @@ namespace RuleChaos.Models.DTOs
 
     [JsonPropertyName("isInRound")]
     public bool IsInRound { get; } = player.IsInRound;
+
+    [JsonPropertyName("isActive")]
+    public bool IsActive { get; } = player.IsActive;
   }
 }
