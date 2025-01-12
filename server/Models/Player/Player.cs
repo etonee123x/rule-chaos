@@ -27,7 +27,7 @@ namespace RuleChaos.Models
     public string Name { get; } = Player.GenerateName();
     public bool IsInRound { get; set; }
     public bool IsActive { get; set; }
-    public uint Score { get; set; } = 0;
+    public int Score { get; set; } = 0;
 
     private readonly GameSession gameSession;
 
@@ -52,10 +52,24 @@ namespace RuleChaos.Models
       this.gameSession.Players.Remove(this);
       this.gameSession.SendMessageToPlayers(new MessagePlayersUpdate(this.gameSession.Players, this.gameSession.TurnTimerLimits));
       this.gameSession.AddHistoryRecord(new HistoryRecord($"Игрок {HistoryRecord.Accent(this)} отключился."));
+
+      if (this.gameSession.Players.Count < 2)
+      {
+        this.gameSession.EndRound();
+        return;
+      }
+
       if (maybeNewActivePlayer is not null)
       {
         this.gameSession.AddHistoryRecord(new HistoryRecord($"Ход игрока {HistoryRecord.Accent(maybeNewActivePlayer)}."));
       }
+    }
+
+    public void RemoveRoundActivity()
+    {
+      this.Score = 0;
+      this.IsInRound = false;
+      this.IsActive = false;
     }
 
     public Task SendMessage(Message message) => this.WebSocket.SendAsync(
@@ -70,6 +84,7 @@ namespace RuleChaos.Models
       Name = this.Name,
       IsInRound = this.IsInRound,
       IsActive = this.IsActive,
+      Score = this.Score,
     };
 
     public override string ToString() => this.Name;

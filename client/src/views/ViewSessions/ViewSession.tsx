@@ -23,7 +23,6 @@ import { arePlayersEqual, type Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { GameSessionProvider } from '@/contexts/gameSession';
-import { TheOutOfRoundPanel } from './components/TheOutOfRoundPanel';
 import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
 import { Voting } from '@/components/Voting';
 import type { TimerLimits } from '@/helpers/timerLimits';
@@ -129,9 +128,8 @@ export const ViewSession: FC = () => {
         return;
       }
 
-      if (doesMessageHasType(message, MessageType.RoundWasStarted)) {
-        setPlayers(message.players);
-        setIsRoundActive(true);
+      if (doesMessageHasType(message, MessageType.RoundUpdate)) {
+        setIsRoundActive(message.isRoundActive);
 
         return;
       }
@@ -189,15 +187,13 @@ export const ViewSession: FC = () => {
           ) : (
             <ThePlayerProvider thePlayer={thePlayer}>
               <div className="flex mb-5 gap-8 h-5/6">
-                <div className="aspect-square">
-                  {isRoundActive ? ( //
-                    <TheField onDrop={onDrop} />
-                  ) : (
-                    <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} />
-                  )}
-                </div>
+                <TheField onDrop={onDrop} />
                 <ThePlayersList className="w-1/6 overflow-y-auto" />
-                <TheHistoryFeed ref={refHistory} className="flex-1 overflow-y-auto" />
+                <TheHistoryFeed
+                  ref={refHistory}
+                  className="flex-1 overflow-y-auto"
+                  onClickButtonStartRound={onClickButtonStartRound}
+                />
               </div>
               {isRoundActive && <TheHand className="mt-auto h-1/6" />}
               <Voting {...{ onClickVotePositive, onClickVoteNegative }} />

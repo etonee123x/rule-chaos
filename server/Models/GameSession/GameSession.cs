@@ -1,7 +1,6 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using RuleChaos.Models.DTOs;
 using RuleChaos.Models.Messages;
 using RuleChaos.Models.Votings;
@@ -27,13 +26,13 @@ namespace RuleChaos.Models
     private TimeSpan? TurnDuration { get; }
     private Timer? turnTimer;
 
-    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.PlayersNumber; }
+    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.MaxPlayersNumber; }
 
     public Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
     public TimerLimits? TurnTimerLimits { get; private set; }
 
-    private static readonly byte PlayersNumber = 4;
-    private static readonly byte ItemsPerPlayer = 8;
+    private static readonly byte MaxPlayersNumber = 8;
+    private static readonly byte ItemsPerPlayer = 2;
     private static readonly byte HistoryRecordsCount = 50;
 
     public List<Player> Players { get; } = [];
@@ -42,10 +41,20 @@ namespace RuleChaos.Models
       get => this.Players.Where(player => player.IsInRound).ToList();
     }
 
-    public List<ItemWithPosition> ItemsOnField { get; } = [];
+    public List<ItemWithPosition> ItemsOnField { get; private set; } = [];
     public List<Item> ItemsInHand { get; } = [];
 
-    public bool IsRoundActive { get; set; }
+    private bool isRoundActive;
+
+    public bool IsRoundActive
+    {
+      get => this.isRoundActive;
+      private set
+      {
+        this.isRoundActive = value;
+        this.SendMessageToPlayers(new MessageRoundUpdate(this.IsRoundActive));
+      }
+    }
 
     public Voting? ActiveVoting { get; set; }
 
@@ -210,12 +219,19 @@ namespace RuleChaos.Models
         return;
       }
 
+      this.OnPlaceItem(player, itemWithPosition);
       this.ItemsOnField.Add(itemWithPosition);
       this.SendMessageToPlayers(new MessageItemsOnFieldUpdate(this.ItemsOnField));
       this.AddHistoryRecord(new HistoryRecord($"Предмет {HistoryRecord.Accent(itemWithPosition.Text)} выставлен на поле ({itemWithPosition.Position})."));
 
       this.ItemsInHand.Remove(itemInHand);
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
+
+      if (this.ItemsInHand.Count == 0)
+      {
+        this.EndRound();
+        return;
+      }
 
       this.MakeFirstOrNextPlayerActive();
       this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
@@ -231,22 +247,6 @@ namespace RuleChaos.Models
 
     public void StartRound(List<Guid> playersIds)
     {
-      playersIds.ForEach(playerId =>
-      {
-        var maybePlayer = this.Players.Find(player => player.Id.Equals(playerId));
-
-        if (maybePlayer is null)
-        {
-          return;
-        }
-
-        maybePlayer.IsInRound = true;
-      });
-
-      this.IsRoundActive = true;
-      this.SendMessageToPlayers(new MessageRoundWasStarted(this.PlayersInRound));
-      this.AddHistoryRecord(new HistoryRecord("Раунд начался!"));
-
       if (this.ItemGenerator is null)
       {
         throw new Exception("Has no item generator");
@@ -256,6 +256,11 @@ namespace RuleChaos.Models
       {
         this.ItemsInHand.Add(this.ItemGenerator.Next());
       }
+
+      this.ItemsOnField = new List<ItemWithPosition>();
+
+      this.IsRoundActive = true;
+      this.AddHistoryRecord(new HistoryRecord("Раунд начался!"));
 
       this.SendMessageToPlayers(new MessageItemsInHandUpdate(this.ItemsInHand));
 
@@ -281,6 +286,35 @@ namespace RuleChaos.Models
       this.SendMessageToPlayers(new MessageHistoryUpdate(this.History));
     }
 
+    public void EndRound()
+    {
+      this.IsRoundActive = false;
+
+      int maxScore = int.MinValue;
+      this.PlayersInRound.ForEach((playerInRound) =>
+      {
+        if (playerInRound.Score <= maxScore)
+        {
+          return;
+        }
+
+        maxScore = playerInRound.Score;
+      });
+
+      var winners = this.PlayersInRound.Where((playerInRound) => playerInRound.Score == maxScore).ToList();
+
+      this.AddHistoryRecord(new HistoryRecord(string.Join(' ', ["Раунд завершён.", winners.Count > 1 ? $"Победители: {string.Join(", ", winners.Select(HistoryRecord.Accent))}" : $"Победитель: {HistoryRecord.Accent(winners[0])}", $"со счётом {HistoryRecord.Accent(maxScore)}"])));
+
+      this.Players.ForEach((player) => player.RemoveRoundActivity());
+
+      this.SendMessageToPlayers(new MessagePlayersUpdate(this.Players, this.TurnTimerLimits));
+    }
+
+    private void OnPlaceItem(Player player, ItemWithPosition itemWithPosition)
+    {
+      player.Score += (itemWithPosition.Position.Col + itemWithPosition.Position.Row) * 100;
+    }
+
     private void HandlePlayerMessage(Player player, string serializedMessage)
     {
       if (!(Enum.TryParse(JsonDocument.Parse(serializedMessage).RootElement.GetProperty("type").GetString(), out MessageType messageType)
@@ -297,9 +331,9 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.Players.Count >= GameSession.PlayersNumber)
+        if (this.Players.Count >= GameSession.MaxPlayersNumber)
         {
-          throw new Exception($"{this.Players.Count} игроков из ${GameSession.PlayersNumber}");
+          throw new Exception($"{this.Players.Count} игроков из ${GameSession.MaxPlayersNumber}");
         }
 
         this.Players.Add(player);

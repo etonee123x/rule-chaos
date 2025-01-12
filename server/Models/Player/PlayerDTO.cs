@@ -15,5 +15,8 @@ namespace RuleChaos.Models.DTOs
 
     [JsonPropertyName("isActive")]
     required public bool IsActive { get; init; }
+
+    [JsonPropertyName("score")]
+    required public int Score { get; init; }
   }
 }

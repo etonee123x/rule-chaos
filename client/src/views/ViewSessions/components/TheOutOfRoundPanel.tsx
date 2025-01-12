@@ -6,7 +6,7 @@ import { mdiLinkVariant } from '@mdi/js';
 import { useClipboard } from '@/hooks/useClipboard';
 import { type FC, type MouseEventHandler } from 'react';
 
-interface Props {
+export interface Props {
   onClickButtonStartRound: FunctionCallback;
 }
 

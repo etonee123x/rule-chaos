@@ -14,7 +14,7 @@ export class Message<TType extends MessageType = MessageType> implements Message
 
 export enum MessageType {
   PlayersUpdate = 'PlayersUpdate',
-  RoundWasStarted = 'RoundWasStarted',
+  RoundUpdate = 'RoundUpdate',
   PlayerInitiation = 'PlayerInitiation',
   SessionInitiation = 'SessionInitiation',
   ItemsInHandUpdate = 'ItemsInHandUpdate',
@@ -34,7 +34,7 @@ export enum MessageType {
 
 export interface MessageTypeToMessage {
   [MessageType.PlayersUpdate]: MessagePlayersUpdate;
-  [MessageType.RoundWasStarted]: MessageRoundWasStarted;
+  [MessageType.RoundUpdate]: MessageRoundUpdate;
   [MessageType.PlayerInitiation]: MessagePlayerInitiation;
   [MessageType.SessionInitiation]: MessageSessionInitiation;
   [MessageType.ItemsInHandUpdate]: MessageItemsInHandUpdate;
@@ -56,8 +56,8 @@ export interface MessagePlayersUpdate extends Message<MessageType.PlayersUpdate>
   turnTimerLimits: TimerLimits | null;
 }
 
-export interface MessageRoundWasStarted extends Message<MessageType.RoundWasStarted> {
-  players: Array<Player>;
+export interface MessageRoundUpdate extends Message<MessageType.RoundUpdate> {
+  isRoundActive: boolean;
 }
 
 export interface MessageSessionInitiation extends Message<MessageType.SessionInitiation> {
