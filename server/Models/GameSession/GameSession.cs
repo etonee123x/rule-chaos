@@ -252,6 +252,16 @@ namespace RuleChaos.Models
         throw new Exception("Has no item generator");
       }
 
+      this.Players.ForEach((player) =>
+      {
+        if (!playersIds.Contains(player.Id))
+        {
+          return;
+        }
+
+        player.IsInRound = true;
+      });
+
       for (var i = 0; i < this.PlayersInRound.Count * GameSession.ItemsPerPlayer; i++)
       {
         this.ItemsInHand.Add(this.ItemGenerator.Next());
