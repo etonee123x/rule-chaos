@@ -28,8 +28,8 @@ export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound }) => {
         <BaseButton onClick={onClickButtonStartRound}>Начать раунд</BaseButton>
       ) : (
         <div>
-          <div className="text-xl mb-2">Ожидание игроков...</div>
-          <a onClick={onClickA} className="flex gap-1 items-center cursor-pointer">
+          <span className="text-xl">Ожидание игроков... </span>
+          <a onClick={onClickA} className="inline-flex gap-1 items-center cursor-pointer">
             Ссылка
             <BaseIcon path={mdiLinkVariant} />
           </a>
