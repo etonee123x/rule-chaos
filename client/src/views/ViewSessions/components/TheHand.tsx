@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { useCallback, type FC, type HTMLAttributes, type WheelEventHandler } from 'react';
 import { Item } from './Item';
 import { useThePlayer } from '@/contexts/thePlayer';
+import { UI } from '@/helpers/ui';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
@@ -19,7 +20,7 @@ export const TheHand: FC<Props> = ({ className }) => {
   }, []);
 
   return (
-    <div className={classNames([className, 'bg-gray-200 p-2 flex items-center relative'])}>
+    <div className={classNames([className, UI.ACCENTED_BLOCK, ' flex items-center relative'])}>
       {itemsInHand.length === 0 ? (
         <span className="text-2xl mx-auto">Нету предметов!</span>
       ) : (

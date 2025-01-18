@@ -124,6 +124,10 @@
       @apply cursor-grab;
     }
   }
+
+  .accented-block {
+    @apply bg-gray-100 p-2 rounded;
+  }
 }
 
 @tailwind components;

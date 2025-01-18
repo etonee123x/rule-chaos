@@ -22,4 +22,5 @@ export const UI = Object.freeze({
     DRAGGING: 'item_dragging',
     DRAGGABLE: 'item_draggable',
   }),
+  ACCENTED_BLOCK: 'accented-block',
 });

@@ -82,7 +82,7 @@ const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
 
 export const TheField: FC<PropsTheField> = ({ className, onDrop }) => (
   <div className={classNames(['aspect-square', className])}>
-    <div className="size-full grid grid-cols-8 border-8 border-gray-400">
+    <div className="size-full grid grid-cols-8 border-4 border-gray-400">
       {Array.from({ length: SIZE * SIZE }, (...[, index]) => {
         const { row, col } = indexToRowCol(index);
 

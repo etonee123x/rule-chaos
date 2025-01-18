@@ -4,6 +4,7 @@ import { arePlayersEqual, type Player } from '@/helpers/player';
 import classNames from 'classnames';
 import { useMemo, type FC, type HTMLAttributes } from 'react';
 import { TurnTimerLimitProgressBar } from './TurnTimerLimitProgressBar';
+import { UI } from '@/helpers/ui';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {}
 
@@ -19,7 +20,7 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
     players,
     shouldRenderScores,
   }) => (
-    <div className="bg-gray-100 p-2 rounded mb-4 last:mb-0">
+    <div className={UI.ACCENTED_BLOCK}>
       <div className="text-gray-500">
         {sectionText} ({players.length})
       </div>
@@ -47,7 +48,7 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
   );
 
   return (
-    <div className={className}>
+    <div className={classNames(className, ['*:mb-4 *:last:mb-0'])}>
       {playersInRound.length > 0 && (
         <Players players={playersInRound} sectionText="Игроки в раунде" shouldRenderScores />
       )}

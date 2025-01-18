@@ -4,13 +4,13 @@ import { useGameSession } from '@/contexts/gameSession';
 import type { FunctionCallback } from '@/types';
 import { mdiLinkVariant } from '@mdi/js';
 import { useClipboard } from '@/hooks/useClipboard';
-import { type FC, type MouseEventHandler } from 'react';
+import { type FC, type HtmlHTMLAttributes, type MouseEventHandler } from 'react';
 
-export interface Props {
+export interface Props extends HtmlHTMLAttributes<HTMLDivElement> {
   onClickButtonStartRound: FunctionCallback;
 }
 
-export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound }) => {
+export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound, className }) => {
   const { players } = useGameSession();
 
   const [, copy] = useClipboard();
@@ -23,17 +23,17 @@ export const TheOutOfRoundPanel: FC<Props> = ({ onClickButtonStartRound }) => {
   };
 
   return (
-    <div>
+    <div className={className}>
       {players.length > 1 ? (
         <BaseButton onClick={onClickButtonStartRound}>Начать раунд</BaseButton>
       ) : (
-        <div>
+        <>
           <span className="text-xl">Ожидание игроков... </span>
           <a onClick={onClickA} className="inline-flex gap-1 items-center cursor-pointer">
             Ссылка
             <BaseIcon path={mdiLinkVariant} />
           </a>
-        </div>
+        </>
       )}
     </div>
   );

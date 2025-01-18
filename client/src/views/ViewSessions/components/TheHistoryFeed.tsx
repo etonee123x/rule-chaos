@@ -3,6 +3,7 @@ import type { HistoryRecord } from '@/helpers/message';
 import classNames from 'classnames';
 import { forwardRef, type HTMLAttributes } from 'react';
 import { TheOutOfRoundPanel, type Props as PropsTheOutOfRoundPanel } from './TheOutOfRoundPanel';
+import { UI } from '@/helpers/ui';
 
 interface Props extends HTMLAttributes<HTMLDivElement>, PropsTheOutOfRoundPanel {}
 
@@ -13,9 +14,9 @@ export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>(({ className, on
   const { history, isRoundActive } = useGameSession();
 
   return (
-    <div ref={ref} className={classNames(className)}>
+    <div ref={ref} className={classNames([className, UI.ACCENTED_BLOCK, 'flex flex-col'])}>
       {history.length > 0 && (
-        <ul className="*:mb-1 last:*:mb-0 mb-2">
+        <ul className="*:mb-1 last:*:mb-0 overflow-y-auto">
           {history.map((historyRecord) => (
             <li key={historyRecord.id}>
               <span className="w-16 inline-block text-gray-500">
@@ -31,7 +32,9 @@ export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>(({ className, on
           ))}
         </ul>
       )}
-      {!isRoundActive && <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} />}
+      {!isRoundActive && (
+        <TheOutOfRoundPanel onClickButtonStartRound={onClickButtonStartRound} className="mt-auto pt-2" />
+      )}
     </div>
   );
 });

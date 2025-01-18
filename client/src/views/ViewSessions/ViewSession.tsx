@@ -189,11 +189,7 @@ export const ViewSession: FC = () => {
               <div className="flex mb-5 gap-8 h-5/6">
                 <TheField onDrop={onDrop} />
                 <ThePlayersList className="w-1/6 overflow-y-auto" />
-                <TheHistoryFeed
-                  ref={refHistory}
-                  className="flex-1 overflow-y-auto"
-                  onClickButtonStartRound={onClickButtonStartRound}
-                />
+                <TheHistoryFeed ref={refHistory} className="flex-1" onClickButtonStartRound={onClickButtonStartRound} />
               </div>
               {isRoundActive && <TheHand className="mt-auto h-1/6" />}
               <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
