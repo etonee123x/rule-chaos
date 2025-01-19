@@ -27,7 +27,7 @@ namespace RuleChaos.Models
         return;
       }
 
-      if (maybeGameSession.HasEnoughPlayers)
+      if (maybeGameSession.HasMaximumPlayers)
       {
         context.Response.StatusCode = StatusCodes.Status409Conflict;
         await context.Response.WriteAsync("Session has enough players");

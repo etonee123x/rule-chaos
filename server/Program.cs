@@ -25,7 +25,21 @@ app.MapPost("/sessions", async (context) =>
       ? TimeSpan.FromSeconds(turnTimeLimitResult)
       : null;
 
-  var gameSession = new GameSession(isPrivate, turnDuration);
+  int maxPlayersNumber = int.TryParse(context.Request.Form["maxPlayersNumber"], out int parsedMaxPlayersNumber)
+    ? parsedMaxPlayersNumber
+    : GameSession.DefaultMaxPlayersNumber;
+  int itemsPerPlayer = int.TryParse(context.Request.Form["itemsPerPlayer"], out int parsedItemsPerPlayer)
+    ? parsedItemsPerPlayer
+    : GameSession.DefaultItemsPerPlayer;
+
+  var gameSession = new GameSession()
+  {
+    IsPrivate = isPrivate,
+    TurnDuration = turnDuration,
+    ItemsPerPlayer = itemsPerPlayer,
+    MaxPlayersNumber = maxPlayersNumber,
+  };
+
   gameServer.AddSession(gameSession);
 
   await context.Response.WriteAsJsonAsync(gameSession.ToListingDTO());
