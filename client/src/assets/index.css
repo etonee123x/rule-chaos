@@ -18,7 +18,9 @@
   }
 
   a {
-    @apply hover:text-primary-600;
+    &:not(.button) {
+      @apply hover:text-primary-600;
+    }
   }
 
   .container {

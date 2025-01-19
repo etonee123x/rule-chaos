@@ -18,6 +18,7 @@ export default {
         tetriary: colors.pink,
       },
       spacing: {
+        unset: 'unset',
         '5.5': '22px',
         120: '480px',
       },
