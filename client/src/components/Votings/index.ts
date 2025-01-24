@@ -1,0 +1,1 @@
+export { Votings } from './Votings';

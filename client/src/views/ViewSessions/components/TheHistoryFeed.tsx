@@ -16,7 +16,7 @@ export const TheHistoryFeed = forwardRef<HTMLDivElement, Props>(({ className, on
   return (
     <div ref={ref} className={classNames([className, UI.ACCENTED_BLOCK, 'flex flex-col'])}>
       {history.length > 0 && (
-        <ul className="flex flex-col gap-1 overflow-y-auto">
+        <ul className="flex flex-col gap-1 overflow-y-auto h-full">
           {history.map((historyRecord) => (
             <li key={historyRecord.id}>
               <span className="w-16 inline-block text-gray-500">
