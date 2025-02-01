@@ -2,5 +2,5 @@
 
 export const invoke =
   <T extends (...args: Array<any>) => any>(...parameters: Parameters<T>) =>
-  (_function: T): ReturnType<T> =>
-    _function(...parameters);
+    (_function: T): ReturnType<T> =>
+      _function(...parameters);

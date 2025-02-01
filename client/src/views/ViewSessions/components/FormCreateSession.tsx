@@ -10,13 +10,11 @@ import classNames from 'classnames';
 import { BaseInput } from '@/components/ui/BaseInput';
 import { UI } from '@/helpers/ui';
 
-export interface Props
-  extends Partial<{
-      onPost: (session: Session) => unknown;
-    }>,
-    HTMLAttributes<HTMLDivElement> {}
+export interface Props extends HTMLAttributes<HTMLDivElement>, Partial<{
+  onPost: (session: Session) => unknown;
+}> {}
 
-export const FormCreateSession: FC<Props> = ({ onPost, ...restProps }) => {
+export const FormCreateSession: FC< Props > = ({ onPost, ...restProps }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [isPrivate, setIsPrivate] = useState(false);

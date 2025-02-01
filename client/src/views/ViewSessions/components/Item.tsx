@@ -2,7 +2,7 @@ import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import type { Item as IItem } from '@/helpers/message';
 import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
-import type { FC, HTMLAttributes } from 'react';
+import { useRef, type FC, type HTMLAttributes } from 'react';
 import { useDrag } from 'react-dnd';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -13,6 +13,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 export const Item: FC<Props> = ({ isDraggable: _isDraggable, item, className, title }) => {
   const isDraggable = Boolean(_isDraggable);
 
+  const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
       type: ITEM,
@@ -25,6 +26,8 @@ export const Item: FC<Props> = ({ isDraggable: _isDraggable, item, className, ti
     [isDraggable],
   );
 
+  dragRef(ref);
+
   return (
     <div
       className={classNames([
@@ -34,7 +37,7 @@ export const Item: FC<Props> = ({ isDraggable: _isDraggable, item, className, ti
         isDraggable && UI.ITEM.DRAGGABLE,
       ])}
       title={title}
-      ref={dragRef}
+      ref={ref}
     >
       {item.text}
     </div>

@@ -10,10 +10,9 @@ import {
 import type { FunctionCallback } from '@/types';
 import { invoke } from '@/utils/invoke';
 
-interface Props
-  extends HTMLAttributes<HTMLFormElement>,
-    PropsWithChildren,
-    Partial<{ validations: Record<string, FunctionCallback> }> {}
+interface Props extends HTMLAttributes<HTMLFormElement>, PropsWithChildren, Partial<{
+  validations: Record<string, FunctionCallback>
+}> {}
 
 export interface BaseForm {
   form: HTMLFormElement | null;

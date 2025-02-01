@@ -19,7 +19,7 @@ export default {
       },
       spacing: {
         unset: 'unset',
-        '5.5': '22px',
+        5.5: '22px',
         120: '480px',
       },
       keyframes: {
