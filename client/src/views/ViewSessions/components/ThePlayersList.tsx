@@ -48,7 +48,7 @@ export const ThePlayersList: FC<Props> = ({ className }) => {
   );
 
   return (
-    <div className={classNames(className, ['*:mb-4 *:last:mb-0'])}>
+    <div className={classNames(className, ['*:mb-4 last:*:mb-0'])}>
       {playersInRound.length > 0 && (
         <Players players={playersInRound} sectionText="Игроки в раунде" shouldRenderScores />
       )}

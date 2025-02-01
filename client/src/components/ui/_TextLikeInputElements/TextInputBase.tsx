@@ -98,7 +98,7 @@ export const TextInputBase = forwardRef<TextInputBase, Props>(
           {children ?? (
             <button
               tabIndex={-1}
-              className="hidden text-body-initial active:block group-has-[input:focus]:group-has-[input:read-only]:hidden group-has-[input:focus]:block cursor-pointer"
+              className="hidden text-body-initial active:block group-has-[input:read-only]:group-has-[input:focus]:hidden group-has-[input:focus]:block cursor-pointer"
               onClick={onClickButtonClear}
             >
               <BaseIcon path={mdiClose} />
