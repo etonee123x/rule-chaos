@@ -56,7 +56,7 @@ const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
 
   const FallBack = () => (
     <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
-      {row + 1}:{col + 1}
+      {row}:{col}
     </div>
   );
 
