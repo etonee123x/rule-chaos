@@ -12,7 +12,7 @@
     "preview": "npm run preview --workspaces --if-present"
   },
   "workspaces": [
-    "apps/*",
+    "apps/client",
     "shared"
   ],
   "author": "etonee123x",
