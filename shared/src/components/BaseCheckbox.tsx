@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useRef, type FC, type InputHTMLAttributes, type PropsWithChildren } from 'react';
-import { BaseIcon } from '@/components/BaseIcon';
-import { UI } from '@/helpers/ui';
+import { BaseIcon } from './BaseIcon';
+import { UI } from '../helpers/ui';
 import { mdiCheckboxBlank, mdiCheckboxMarked } from '@mdi/js';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement>, PropsWithChildren {}

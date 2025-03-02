@@ -1,4 +1,4 @@
-import { isNil } from '@/utils/isNil';
+import { isNil } from './isNil';
 
 export const objectGet = (object: object, path: string | number | Array<string | number>): unknown | undefined => {
   let pathArray: Array<string>;

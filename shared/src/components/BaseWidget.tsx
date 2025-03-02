@@ -1,4 +1,4 @@
-import type { FunctionCallback } from '@/types';
+import type { FunctionCallback } from '../types';
 import { useDraggable, useElementBounding, useWindowSize } from '@reactuses/core';
 import classNames from 'classnames';
 import { useEffect, useMemo, useRef, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';

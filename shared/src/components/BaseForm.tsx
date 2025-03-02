@@ -7,8 +7,8 @@ import {
   useRef,
 } from 'react';
 
-import type { FunctionCallback } from '@/types';
-import { invoke } from '@/utils/invoke';
+import type { FunctionCallback } from '../types';
+import { invoke } from '../utils/invoke';
 
 interface Props extends HTMLAttributes<HTMLFormElement>, PropsWithChildren, Partial<{
   validations: Record<string, FunctionCallback>
