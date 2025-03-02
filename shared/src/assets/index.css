@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Tektur:wdth,wght@90,400..900&display=swap') layer(base);
+
+@import 'tailwindcss';
+
+@theme {
+  --radius-*: initial;
+  --radius-0: 0;
+  --radius: 8px;
+  --radius-lg: 16px;
+  --radius-sm: 4px;
+  --radius-full: 9999px;
+  --radius-circle: 100%;
+
+  --cursor-inherit: inherit;
+
+  --color-initial: initial;
+  --color-body-initial: #171717;
+  --color-transparent: transparent;
+  --color-current-color: currentColor;
+
+  --color-primary-50: #ecfdf5;
+  --color-primary-100: #d1fae5;
+  --color-primary-200: #a7f3d0;
+  --color-primary-300: #6ee7b7;
+  --color-primary-400: #34d399;
+  --color-primary-500: #10b981;
+  --color-primary-600: #059669;
+  --color-primary-700: #047857;
+  --color-primary-800: #065f46;
+  --color-primary-900: #064e3b;
+  --color-primary-950: #022c22;
+
+  --color-secondary-50: #fff7ed;
+  --color-secondary-100: #ffedd5;
+  --color-secondary-200: #fed7aa;
+  --color-secondary-300: #fdba74;
+  --color-secondary-400: #fb923c;
+  --color-secondary-500: #f97316;
+  --color-secondary-600: #ea580c;
+  --color-secondary-700: #c2410c;
+  --color-secondary-800: #9a3412;
+  --color-secondary-900: #7c2d12;
+  --color-secondary-950: #431407;
+
+  --color-tetriary-50: #fdf2f8;
+  --color-tetriary-100: #fce7f3;
+  --color-tetriary-200: #fbcfe8;
+  --color-tetriary-300: #f9a8d4;
+  --color-tetriary-400: #f472b6;
+  --color-tetriary-500: #ec4899;
+  --color-tetriary-600: #db2777;
+  --color-tetriary-700: #be185d;
+  --color-tetriary-800: #9d174d;
+  --color-tetriary-900: #831843;
+  --color-tetriary-950: #500724;
+
+  --spacing-120: 480px;
+  --spacing-unset: unset;
+  --spacing-5_5: 22px;
+
+  --animate-shake-protesting: shake-protesting 2s ease-in-out infinite;
+
+  @keyframes shake-protesting {
+    10% {
+      transform: translateX(0);
+    }
+
+    14% {
+      transform: translateX(-5%);
+    }
+
+    18% {
+      transform: translateX(5%);
+    }
+
+    22% {
+      transform: translateX(-5%);
+    }
+
+    26% {
+      transform: translateX(0);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer base {
+
+  html,
+  body {
+    font-family: "Tektur", sans-serif;
+    font-variation-settings:
+      "wdth" 90;
+    font-optical-sizing: auto;
+    @apply text-neutral-900;
+  }
+
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+
+  a {
+    &:not(.button) {
+      @apply hover:text-primary-600;
+    }
+  }
+}
+
+@layer components {
+  .container {
+    @apply w-11/12 max-w-[100rem];
+  }
+
+  .button {
+    @apply cursor-pointer bg-primary-500 text-white h-8 px-4 rounded flex items-center text-base gap-1;
+
+    &:hover {
+      @apply bg-primary-600;
+    }
+
+    &[disabled] {
+      @apply pointer-events-none bg-primary-200;
+    }
+
+    &.button_theme_secondary {
+      @apply bg-gray-200 text-body-initial;
+
+      &:hover {
+        @apply bg-gray-300;
+      }
+
+      &[disabled] {
+        @apply bg-gray-100;
+      }
+    }
+  }
+
+  .icon {
+    @apply size-[1em];
+
+    &.icon_size_base {
+      @apply size-6;
+    }
+
+    &.icon_size_sm {
+      @apply size-4;
+    }
+  }
+
+  .divider {
+    @apply flex after:w-full after:border-dotted after:border-t;
+  }
+
+  .element-title {
+    @apply text-neutral-500 text-sm;
+  }
+
+  .text-input-base {
+    @apply min-w-60 min-h-8 flex items-center gap-1 bg-white border border-current rounded px-2 cursor-text justify-between box-border;
+    @apply has-[input:read-only]:cursor-pointer;
+    @apply has-[input:disabled]:pointer-events-none;
+    @apply has-[input:focus]:outline-2;
+
+    input {
+      all: unset;
+      @apply text-body-initial flex-1;
+    }
+  }
+
+  .checkbox {
+    @apply inline-flex items-center gap-2 cursor-pointer text-gray-300;
+    @apply has-[input:disabled]:pointer-events-none has-[input:disabled]:text-gray-300;
+    @apply has-[input:checked]:text-primary-500;
+    @apply has-[input:checked]:has-[input:disabled]:text-gray-300;
+    @apply hover:text-primary-500;
+
+    &.checkbox_size_sm {
+      .icon {
+        @apply size-4;
+      }
+    }
+
+    &.checkbox_size_xs {
+      .icon {
+        @apply size-3;
+      }
+    }
+  }
+
+  .dialog {
+    @apply rounded bg-white m-0 absolute start-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .progress-bar {
+    @apply bg-gray-300 w-full h-2;
+  }
+
+  .widget {
+    @apply fixed backdrop-blur-xs z-50 p-2 cursor-move touch-none border border-gray-300 flex justify-center items-center rounded text-4xl overflow-hidden;
+  }
+
+  .accented-block {
+    @apply bg-gray-100 p-2 rounded;
+  }
+}

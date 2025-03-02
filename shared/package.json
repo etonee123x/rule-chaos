@@ -1,0 +1,20 @@
+{
+  "name": "@rule-chaos/ui-kit",
+  "version": "1.0.0",
+  "type": "module",
+  "author": "etonee123x",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "typecheck": "tsc --noEmit",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mdi/js": "^7.4.47",
+    "classnames": "^2.5.1"
+  }
+}
