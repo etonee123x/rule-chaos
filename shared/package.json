@@ -9,9 +9,5 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@mdi/js": "^7.4.47",
-    "classnames": "^2.5.1"
   }
 }
