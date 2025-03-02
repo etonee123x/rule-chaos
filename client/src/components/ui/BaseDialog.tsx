@@ -4,21 +4,18 @@ import { useClickOutside } from '@reactuses/core';
 import { useEffect, useRef, type CSSProperties, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';
 import { createPortal } from 'react-dom';
 
-interface Props
-  extends HTMLAttributes<HTMLDialogElement>,
-    PropsWithChildren,
-    Partial<{
-      title: string;
-      onOpen: FunctionCallback;
-      onClose: FunctionCallback;
-      onBeforeClose: () => boolean | Promise<boolean>;
-    }> {
+interface Props extends HTMLAttributes<HTMLDialogElement>, PropsWithChildren, Partial<{
+  title: string;
+  onOpen: FunctionCallback;
+  onClose: FunctionCallback;
+  onBeforeClose: () => boolean | Promise<boolean>;
+}> {
   open: boolean;
 }
 
 const STYLE = Object.freeze({ '--dialog-content--padding': '16px' }) as CSSProperties;
 
-export const BaseDialog: FC<Props> = ({ open, title, children, onBeforeClose, onClose: _onClose }) => {
+export const BaseDialog: FC< Props > = ({ open, title, children, onBeforeClose, onClose: _onClose }) => {
   const refDialog = useRef<HTMLDialogElement>(null);
   const refContent = useRef<HTMLDivElement>(null);
 

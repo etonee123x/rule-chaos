@@ -9,5 +9,5 @@ export const pick = <TObject extends object, Key extends keyof TObject>(
 
 export const pickCurried =
   <TObject extends object, Key extends keyof TObject>(keys: Array<Key>) =>
-  (object: TObject) =>
-    pick(object, keys);
+    (object: TObject) =>
+      pick(object, keys);

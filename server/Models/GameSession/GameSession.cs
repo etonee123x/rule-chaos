@@ -10,11 +10,10 @@ namespace RuleChaos.Models
 {
   public class GameSession
   {
-    public GameSession(bool isPrivate, TimeSpan? turnDuration)
+    public static readonly int DefaultItemsPerPlayer = 5;
+    public static readonly int DefaultMaxPlayersNumber = 8;
+    public GameSession()
     {
-      this.IsPrivate = isPrivate;
-      this.TurnDuration = turnDuration;
-
       Task.Run(async () =>
       {
         this.ItemGenerator = await ItemGenerator.CreateInstanse();
@@ -22,17 +21,17 @@ namespace RuleChaos.Models
     }
 
     public Guid Id { get; } = Guid.NewGuid();
-    public bool IsPrivate { get; }
-    private TimeSpan? TurnDuration { get; }
+    required public bool IsPrivate { get; init; }
+    required public TimeSpan? TurnDuration { private get; init; }
     private Timer? turnTimer;
 
-    public bool HasEnoughPlayers { get => this.Players.Count == GameSession.MaxPlayersNumber; }
+    public bool HasMaximumPlayers { get => this.Players.Count == this.MaxPlayersNumber; }
 
     public Player? ActivePlayer { get => this.Players.Find((player) => player.IsActive); }
     public TimerLimits? TurnTimerLimits { get; private set; }
 
-    private static readonly byte MaxPlayersNumber = 8;
-    private static readonly byte ItemsPerPlayer = 2;
+    public int MaxPlayersNumber { private get; init; } = 8;
+    public int ItemsPerPlayer { private get; init; } = 8;
     private static readonly byte HistoryRecordsCount = 50;
 
     public List<Player> Players { get; } = [];
@@ -262,7 +261,7 @@ namespace RuleChaos.Models
         player.IsInRound = true;
       });
 
-      for (var i = 0; i < this.PlayersInRound.Count * GameSession.ItemsPerPlayer; i++)
+      for (var i = 0; i < this.PlayersInRound.Count * this.ItemsPerPlayer; i++)
       {
         this.ItemsInHand.Add(this.ItemGenerator.Next());
       }
@@ -341,9 +340,9 @@ namespace RuleChaos.Models
     {
       try
       {
-        if (this.Players.Count >= GameSession.MaxPlayersNumber)
+        if (this.Players.Count >= this.MaxPlayersNumber)
         {
-          throw new Exception($"{this.Players.Count} игроков из ${GameSession.MaxPlayersNumber}");
+          throw new Exception($"{this.Players.Count} игроков из ${this.MaxPlayersNumber}");
         }
 
         this.Players.Add(player);

@@ -27,7 +27,7 @@ export const TheNotifications = () => {
 
   return (
     notifications.length > 0 && (
-      <ul className="fixed z-[100] end-4 bottom-4 w-120 flex flex-col gap-1">
+      <ul className="fixed z-100 end-4 bottom-4 w-120 flex flex-col gap-1">
         {notifications.slice(0, MAX_NOTIFICATION_NUMBER_TO_RENDER).map((notification) => (
           <li
             key={notification.id}

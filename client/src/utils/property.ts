@@ -5,5 +5,5 @@ export const property = <TObject extends object, TProperty extends keyof TObject
 
 export const propertyCurried =
   <TObject extends object, TProperty extends keyof TObject>(_property: TProperty) =>
-  (object: TObject) =>
-    property(object, _property);
+    (object: TObject) =>
+      property(object, _property);

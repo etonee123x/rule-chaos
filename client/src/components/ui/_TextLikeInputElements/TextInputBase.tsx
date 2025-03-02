@@ -10,13 +10,10 @@ import {
 import { BaseIcon } from '@/components/ui/BaseIcon';
 import { mdiClose } from '@mdi/js';
 
-export interface Props
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>,
-    Partial<{
-      onChange: (value: string) => void;
-      value: InputHTMLAttributes<HTMLInputElement>['value'] | null;
-    }>,
-    PropsWithChildren {}
+export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>, PropsWithChildren, Partial<{
+  onChange: (value: string) => void;
+  value: InputHTMLAttributes<HTMLInputElement>['value'] | null;
+}> {}
 
 export interface TextInputBase {
   setCustomValidity: HTMLInputElement['setCustomValidity'];
@@ -101,7 +98,7 @@ export const TextInputBase = forwardRef<TextInputBase, Props>(
           {children ?? (
             <button
               tabIndex={-1}
-              className="hidden text-body-initial active:block group-has-[input:focus]:group-has-[input:read-only]:hidden group-has-[input:focus]:block cursor-pointer"
+              className="hidden text-body-initial active:block group-has-[input:read-only]:group-has-[input:focus]:hidden group-has-[input:focus]:block cursor-pointer"
               onClick={onClickButtonClear}
             >
               <BaseIcon path={mdiClose} />

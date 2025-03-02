@@ -3,15 +3,13 @@ import classNames from 'classnames';
 
 import { UI } from '@/helpers/ui';
 
-export interface Props
-  extends PropsWithChildren,
-    Partial<{
-      labelFor: HTMLLabelElement['htmlFor'];
-      validationMessage: HTMLInputElement['validationMessage'];
-      message: string;
-      label: string;
-      childrenBottom: ReactNode;
-    }> {}
+export interface Props extends PropsWithChildren, Partial<{
+  labelFor: HTMLLabelElement['htmlFor'];
+  validationMessage: HTMLInputElement['validationMessage'];
+  message: string;
+  label: string;
+  childrenBottom: ReactNode;
+}> {}
 
 export const TextInputWrapper: FC<Props> = ({
   childrenBottom: _childrenBottom,

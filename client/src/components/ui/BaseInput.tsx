@@ -5,13 +5,10 @@ import {
 } from '@/components/ui/_TextLikeInputElements/TextInputWrapper';
 import { TextInputBase, type Props as PropsTextInputBase } from '@/components/ui/_TextLikeInputElements/TextInputBase';
 
-export interface Props
-  extends PropsTextInputWrapper,
-    PropsTextInputBase,
-    Partial<{
-      isLoading: boolean;
-      childrenEnd: ReactNode;
-    }> {}
+export interface Props extends PropsTextInputWrapper, PropsTextInputBase, Partial<{
+  isLoading: boolean;
+  childrenEnd: ReactNode;
+}> {}
 
 export interface BaseInput extends TextInputBase {}
 

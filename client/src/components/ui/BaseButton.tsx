@@ -6,11 +6,10 @@ import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
 
 export interface Props
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    Partial<{
-      propsIconPrepend: PropsIcon;
-      propsIconAppend: PropsIcon;
-    }> {}
+  extends ButtonHTMLAttributes<HTMLButtonElement>, Partial<{
+    propsIconPrepend: PropsIcon;
+    propsIconAppend: PropsIcon;
+  }> {}
 
 export const BaseButton: FC<Props> = ({
   className,

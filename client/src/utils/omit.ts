@@ -9,5 +9,5 @@ export const omit = <TObject extends object, Key extends keyof TObject>(
 
 export const omitCurried =
   <TObject extends object, Key extends keyof TObject>(keys: Array<Key>) =>
-  (object: TObject) =>
-    omit(object, keys);
+    (object: TObject) =>
+      omit(object, keys);

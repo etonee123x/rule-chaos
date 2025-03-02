@@ -23,8 +23,8 @@ import { arePlayersEqual, type Player } from '@/helpers/player';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { GameSessionProvider } from '@/contexts/gameSession';
-import { VotingValue, type Voting as IVoting } from '@/helpers/voting';
-import { Voting } from '@/components/Voting';
+import { VotingValue, type Voting } from '@/helpers/voting';
+import { Votings } from '@/components/Votings';
 import type { TimerLimits } from '@/helpers/timerLimits';
 import { useNotifications } from '@/contexts/notifications';
 import { pick } from '@/utils/pick';
@@ -44,7 +44,7 @@ export const ViewSession: FC = () => {
   const [itemsOnField, setItemsOnField] = useState<Array<ItemWithPosition>>([]);
   const [history, setHistory] = useState<Array<HistoryRecord>>([]);
   const [isRoundActive, setIsRoundActive] = useState(false);
-  const [activeVoting, setActiveVoting] = useState<IVoting | null>(null);
+  const [activeVoting, setActiveVoting] = useState<Voting | null>(null);
 
   const refHistory = useRef<HTMLDivElement>(null);
 
@@ -192,7 +192,7 @@ export const ViewSession: FC = () => {
                 <TheHistoryFeed ref={refHistory} className="flex-1" onClickButtonStartRound={onClickButtonStartRound} />
               </div>
               {isRoundActive && <TheHand className="mt-auto h-1/6" />}
-              <Voting {...{ onClickVotePositive, onClickVoteNegative }} />
+              <Votings {...{ onClickVotePositive, onClickVoteNegative }} />
             </ThePlayerProvider>
           )}
         </GameSessionProvider>

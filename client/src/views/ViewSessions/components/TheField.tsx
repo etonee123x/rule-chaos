@@ -2,7 +2,7 @@ import { ITEM } from '@/constants/REACT_DND_ITEM_TYPES';
 import { useGameSession } from '@/contexts/gameSession';
 import type { Item as IItem, ItemWithPosition } from '@/helpers/message';
 import classNames from 'classnames';
-import { useMemo, type FC, type HTMLAttributes } from 'react';
+import { useMemo, useRef, type FC, type HTMLAttributes } from 'react';
 import { useDrop } from 'react-dnd';
 import { Item } from './Item';
 import { arePositionsEqual } from '@/helpers/position';
@@ -36,6 +36,7 @@ const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
 
   const cellHasItem = useMemo(() => Boolean(maybeItem), [maybeItem]);
 
+  const ref = useRef<HTMLDivElement>(null);
   const [{ canDrop, isOver }, dropRef] = useDrop(
     () => ({
       accept: ITEM,
@@ -49,11 +50,13 @@ const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
     [cellHasItem],
   );
 
+  dropRef(ref);
+
   const cantDropHere = useMemo(() => !canDrop && isOver, [canDrop, isOver]);
 
   const FallBack = () => (
     <div className="text-xs absolute bottom-0 end-0.5 text-gray-500">
-      {row + 1}:{col + 1}
+      {row}:{col}
     </div>
   );
 
@@ -70,7 +73,7 @@ const Cell: FC<PropsCell> = ({ col, row, onDrop }) => {
   }, [cantDropHere, row, col]);
 
   return (
-    <div ref={dropRef} className={className}>
+    <div ref={ref} className={className}>
       {maybeItem ? (
         <Item className={classNames(['size-11/12', cantDropHere && 'animate-shake-protesting'])} item={maybeItem} />
       ) : (
