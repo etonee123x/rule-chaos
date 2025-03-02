@@ -1,6 +1,6 @@
 import type { FunctionCallback } from '@rule-chaos/types';
-import { clamp } from '@/utils/clamp';
-import { isNil } from '@/utils/isNil';
+import { clamp } from '@rule-chaos/utils/clamp';
+import { isNil } from '@rule-chaos/utils/isNil';
 import { useInterval } from '@reactuses/core';
 import { useCallback, useMemo, useState } from 'react';
 

@@ -14,7 +14,7 @@ import { doesMessageHasType } from '@/helpers/message';
 import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ThePlayersList } from './components/ThePlayersList';
-import { isNil } from '@/utils/isNil';
+import { isNil } from '@rule-chaos/utils/isNil';
 import { TheHand } from './components/TheHand';
 import { TheField } from './components/TheField';
 import { TheHistoryFeed } from './components/TheHistoryFeed';
@@ -27,7 +27,7 @@ import { VotingValue, type Voting } from '@/helpers/voting';
 import { Votings } from '@/components/Votings';
 import type { TimerLimits } from '@/helpers/timerLimits';
 import { useNotifications } from '@/contexts/notifications';
-import { pick } from '@/utils/pick';
+import { pick } from '@rule-chaos/utils/pick';
 import { ThePlayerProvider } from '@/contexts/thePlayer';
 
 export const ViewSession: FC = () => {

@@ -1,8 +1,8 @@
 import type { ButtonHTMLAttributes, FC } from 'react';
 
-import { BaseIcon, type Props as PropsIcon } from './BaseIcon';
+import { BaseIcon, type Props as PropsIcon } from '@/components/BaseIcon';
 
-import { UI } from '../helpers/ui';
+import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
 
 export interface Props

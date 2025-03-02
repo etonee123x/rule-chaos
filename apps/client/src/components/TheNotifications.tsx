@@ -1,6 +1,6 @@
 import { useNotifications } from '@/contexts/notifications';
 import { NotificationType, type Notification } from '@/contexts/notifications/_context';
-import { checkExhaustive } from '@/utils/checkExhaustive';
+import { checkExhaustive } from '@rule-chaos/utils/checkExhaustive';
 import classNames from 'classnames';
 import { BaseIcon } from '@rule-chaos/components/BaseIcon';
 import { mdiClose } from '@mdi/js';

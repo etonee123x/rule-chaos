@@ -5,7 +5,7 @@ import { mdiBallotOutline } from '@mdi/js';
 import { useEffect, useState, type FC } from 'react';
 import { BaseDialog } from '@rule-chaos/components/BaseDialog';
 import classNames from 'classnames';
-import { isNotNil } from '@/utils/isNotNil';
+import { isNotNil } from '@rule-chaos/utils/isNotNil';
 import { BaseProgressBar } from '@rule-chaos/components/BaseProgressBar';
 import { useActiveVotingCountDown } from '@/hooks/useActiveVotingCountdown';
 import { VotingActive, type Props as PropsVotingActive } from './VotingActive';

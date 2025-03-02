@@ -1,4 +1,4 @@
-import type { FunctionCallback } from '@rule-chaos/types';
+import type { FunctionCallback } from '@/types';
 import { isNotNil } from '@/utils/isNotNil';
 import { useClickOutside } from '@reactuses/core';
 import { useEffect, useRef, type CSSProperties, type FC, type HTMLAttributes, type PropsWithChildren } from 'react';

@@ -13,7 +13,7 @@
   },
   "workspaces": [
     "apps/*",
-    "shared/*"
+    "shared"
   ],
   "author": "etonee123x",
   "license": "ISC",

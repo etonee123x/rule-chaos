@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, type FC, type PropsWithChildren } from 'react';
 import { WebSocketContext, type Handler, type WebSocketEventType } from './_context';
-import { invoke } from '@/utils/invoke';
+import { invoke } from '@rule-chaos/utils/invoke';
 import type { Message } from '@/helpers/message';
 
 const messageEventToMessage = (messageEvent: MessageEvent) => {

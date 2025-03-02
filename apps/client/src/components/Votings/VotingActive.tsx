@@ -3,7 +3,7 @@ import { useGameSession } from '@/contexts/gameSession';
 import { useThePlayer } from '@/contexts/thePlayer';
 import { VOTING_VALUE_TO_TEXT, VotingValue } from '@/helpers/voting';
 import type { FunctionCallback } from '@rule-chaos/types';
-import { isNotNil } from '@/utils/isNotNil';
+import { isNotNil } from '@rule-chaos/utils/isNotNil';
 import { useMemo, type FC } from 'react';
 import { BaseProgressBar } from '@rule-chaos/components/BaseProgressBar';
 import { useActiveVotingCountDown } from '@/hooks/useActiveVotingCountdown';

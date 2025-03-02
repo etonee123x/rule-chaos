@@ -1,4 +1,4 @@
-import { UI } from '../helpers/ui';
+import { UI } from '@/helpers/ui';
 import classNames from 'classnames';
 import type { FC, HTMLAttributes } from 'react';
 

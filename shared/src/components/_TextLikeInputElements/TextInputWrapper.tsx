@@ -1,7 +1,7 @@
 import type { FC, PropsWithChildren, ReactNode } from 'react';
 import classNames from 'classnames';
 
-import { UI } from '@rule-chaos/helpers/ui';
+import { UI } from '@/helpers/ui';
 
 export interface Props extends PropsWithChildren, Partial<{
   labelFor: HTMLLabelElement['htmlFor'];

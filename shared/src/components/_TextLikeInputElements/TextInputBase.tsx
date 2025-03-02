@@ -7,7 +7,7 @@ import {
   type PropsWithChildren,
 } from 'react';
 
-import { BaseIcon } from '../BaseIcon';
+import { BaseIcon } from '@/components/BaseIcon';
 import { mdiClose } from '@mdi/js';
 
 export interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>, PropsWithChildren, Partial<{
