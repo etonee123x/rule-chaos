@@ -86,7 +86,11 @@ export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) 
       <BaseWidget className={classNames(isDialogOpen && 'hidden')} onClick={onClickWidget}>
         <BaseIcon path={mdiBallotOutline} />
         {isNotNil(partPassed) && (
-          <BaseProgressBar className="h-1 absolute bottom-0 start-0 pointer-events-none" value={partPassed} />
+          <BaseProgressBar
+            className="h-1 absolute bottom-0 start-0 pointer-events-none"
+            value={partPassed}
+            isProgressInverted
+          />
         )}
       </BaseWidget>
       {activeVoting && (
@@ -121,7 +125,7 @@ export const Voting: FC<Props> = ({ onClickVoteNegative, onClickVotePositive }) 
                   ' ',
                 )}
               </div>
-              <BaseProgressBar className="absolute bottom-0 start-0" value={partPassed} />
+              <BaseProgressBar className="absolute bottom-0 start-0" value={partPassed} isProgressInverted />
             </>
           )}
         </BaseDialog>
